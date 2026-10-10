@@ -2,7 +2,7 @@
 <html lang="es-AR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Consultorios Dina Huapi</title>
 <meta name="description" content="Consultorio odontológico equipado en alquiler por horas en Dina Huapi, Río Negro. Sin inversión inicial ni costos fijos.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,12 +14,12 @@
   /* Paleta del manual de marca v2 (logo de círculos) */
   --bg: #FFFFFF;
   --surface: #FFFFFF;
-  --soft: #E9EDF2;       /* gris neutro, fondos */
-  --fg: #2E2E2E;         /* gris carbón, texto principal */
-  --ink: #2E2E2E;
-  --muted: #5B6470;      /* texto secundario, derivado (6:1 sobre blanco) */
+  --soft: #F5F5F5;       /* gris neutro, fondos */
+  --fg: #333333;         /* gris carbón, texto principal */
+  --ink: #333333;
+  --muted: #6E6E6E;      /* texto secundario, derivado (6:1 sobre blanco) */
   --neutral: #8FB7D9;
-  --line: #DFE5EC;
+  --line: #E0E0E0;
   --green: #2F5D8A;      /* azul principal (se conserva el nombre del token) */
   --green-hover: #264C72;
   --sky: #8FB7D9;        /* azul claro */
@@ -30,7 +30,7 @@
   --ph-line: #A99BD6;
   --font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
   --brand: "Montserrat", "Helvetica Neue", Arial, sans-serif;
-  --shadow: 0 1px 2px rgba(47,93,138,.04), 0 10px 28px -14px rgba(47,93,138,.18);
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 28px -14px rgba(0,0,0,.18);
   --r-lg: 20px;
   --r-md: 14px;
   color-scheme: light;
@@ -67,10 +67,10 @@ header.top .wrap { display: flex; align-items: center; justify-content: space-be
 @media (max-width: 440px) { header.top .btn-sm { display: none; } }
 .wordmark .wm { display: grid; line-height: 1.05; font-family: var(--brand); }
 .wordmark .wm span:first-child { font-size: .64rem; letter-spacing: .34em; font-weight: 400; color: var(--fg); }
-.wordmark .wm span:last-child { font-size: 1.08rem; letter-spacing: .12em; font-weight: 500; color: var(--green); }
+.wordmark .wm span:last-child { font-size: 1.08rem; letter-spacing: .12em; font-weight: 500; color: #2F5D8A; }
 .iso .c1 { fill: var(--sky); }
 .iso .c2 { fill: var(--mint); opacity: .9; }
-.iso .lens { fill: var(--green); }
+.iso .lens { fill: #2F5D8A; }
 .iso .smile { fill: #FFFFFF; }
 .on-dark .iso .c1 { fill: #8FB7D9; opacity: .85; }
 .on-dark .iso .c2 { fill: #D9E6F2; opacity: .55; }
@@ -179,6 +179,117 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 .fab { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 20; box-shadow: 0 8px 22px rgba(47, 93, 143, .25); }
 @media (min-width: 960px) { .fab { display: none; } }
 @media (prefers-reduced-motion: no-preference) { .btn { transition: background .15s ease, transform .15s ease; } .btn:hover { transform: translateY(-1px); } }
+
+/* Estilo Acid Frog (según capturas): hero claro a todo ancho con texto enorme fino en mayúsculas, menú espaciado, títulos finos centrados con raya corta, tarjetas grises planas, botones rectos, fila de fotos a todo ancho, botones flotantes redondos. Paleta Acid Frog (blancos y grises neutros, texto gris) con el azul de marca #2F5D8A como acento. */
+:root { --grey: #F4F4F4; --r-lg: 0; --r-md: 0; }
+body { font-weight: 400; color: #5A5A5A; }
+h1, h2, h3 { font-weight: 300; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); }
+h2 { font-size: clamp(1.5rem, 3.4vw, 2.2rem); line-height: 1.25; }
+h3 { font-size: 1.02rem; font-weight: 400; letter-spacing: .14em; }
+p strong { color: var(--ink); font-weight: 600; }
+.lead { font-size: 1.08rem; }
+.label { font-size: .72rem; letter-spacing: .3em; font-weight: 500; }
+.btn { border-radius: 0; text-transform: uppercase; letter-spacing: .18em; font-size: .8rem; font-weight: 500; padding: 1rem 2rem; }
+.btn-sm { padding: .7rem 1.2rem; font-size: .72rem; }
+.btn-ghost { box-shadow: inset 0 0 0 1px var(--green); }
+header.top { background: rgba(255,255,255,.96); }
+header.top .wrap { padding-block: 1rem; }
+nav.links { gap: 1.7rem; font-size: .72rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; }
+@media (max-width: 1099px) { nav.links { display: none !important; } }
+.wordmark { flex: none; }
+nav.links a { color: #5A5A5A; padding-block: .3rem; border-bottom: 1px solid transparent; }
+nav.links a:hover { color: var(--green); border-bottom-color: var(--green); }
+.sec-head { justify-items: center; text-align: center; margin-inline: auto; margin-bottom: 3rem; gap: 1rem; }
+.sec-head p { margin-inline: auto; }
+h2.rule::after, .sec-head h2::after { content: ""; display: block; width: 48px; height: 2px; background: var(--green); margin: 1.1rem auto 0; }
+.copy h2::after { content: ""; display: block; width: 48px; height: 2px; background: var(--green); margin-top: 1.1rem; }
+.band { background: #F7F7F7; }
+section.block { padding-block: 4.5rem; }
+@media (min-width: 960px) { section.block { padding-block: 6rem; } }
+.photo { border-radius: 0; border: 0; background: linear-gradient(135deg, #EFEFEF, #E2E2E2); color: #777777; }
+
+/* Hero */
+.slider { position: relative; overflow: hidden; background: linear-gradient(115deg, #F4F4F4 0%, #E9E9E9 55%, #DDDDDD 100%); color: var(--ink); }
+.slider-note { position: absolute; right: 16px; bottom: 14px; font-size: .75rem; color: #777777; }
+.slider-mark { position: absolute; right: -60px; top: 50%; transform: translateY(-50%); width: 620px; max-width: 80vw; opacity: .22; pointer-events: none; }
+.slides { position: relative; display: grid; padding-block: 5rem 4rem; min-height: 28rem; }
+@media (min-width: 960px) { .slides { min-height: 38rem; padding-block: 7rem 5rem; } }
+.slide { grid-area: 1 / 1; display: grid; gap: 1.4rem; align-content: center; justify-items: start; transition: opacity .7s ease, transform .7s ease; }
+.slide:not(.is-on) { opacity: 0; transform: translateY(10px); pointer-events: none; }
+.slide .tagline { color: var(--green); font-weight: 500; font-size: .72rem; letter-spacing: .34em; }
+.slide h1, .slide .big { color: var(--ink); text-transform: uppercase; font-weight: 200; letter-spacing: .06em; line-height: 1.08; font-size: clamp(2.3rem, 7.4vw, 5.6rem); margin: 0; max-width: none; font-family: var(--brand); }
+.slide h1 em, .slide .big em { font-style: normal; color: var(--green); font-weight: 300; }
+.dots { grid-area: 2 / 1; display: flex; gap: .55rem; margin-top: 2.5rem; }
+.dots button { width: 10px; height: 10px; border: 1px solid var(--green); border-radius: 50%; background: transparent; cursor: pointer; padding: 0; }
+.dots button[aria-selected="true"] { background: var(--green); }
+
+/* Intro + fila de fotos */
+.intro { padding-top: 5rem; }
+@media (min-width: 960px) { .intro { padding-top: 6.5rem; } }
+.intro-copy { display: grid; gap: 1.3rem; justify-items: center; text-align: center; max-width: 52rem; }
+.intro-copy p { max-width: 62ch; font-size: 1.06rem; line-height: 1.85; }
+.strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 3.5rem; }
+@media (min-width: 760px) { .strip { grid-template-columns: repeat(4, 1fr); } }
+.strip .photo { aspect-ratio: 1 / 1; font-size: .85rem; padding: .75rem; }
+.strip-cta { display: flex; justify-content: center; padding-block: 3rem 1rem; }
+
+/* Servicios */
+.benefits { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1.5rem; }
+.benefit { background: var(--grey); border: 0; box-shadow: none; text-align: center; justify-items: center; padding: 2.75rem 1.6rem 2.5rem; gap: .9rem; }
+.benefit .ico { width: auto; height: auto; background: none; border-radius: 0; color: var(--green); margin-bottom: .2rem; }
+.benefit .ico svg { width: 52px; height: 52px; stroke-width: 1; }
+.benefit h3 { font-size: .98rem; }
+.benefit p { font-size: .95rem; line-height: 1.75; }
+
+/* Equipamiento, paquetes, pasos, tabla, FAQ: planos */
+.feature .photo { aspect-ratio: 4 / 3; }
+.checklist li::before { content: ""; width: 14px; height: 1px; background: var(--green); transform: translateY(-4px); }
+.plan { background: #fff; border: 1px solid #E0E0E0; box-shadow: none; text-align: center; justify-items: center; padding: 2rem 1.4rem; }
+.plan .hrs { font-weight: 200; font-size: 2.8rem; }
+.plan.feat { border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); }
+.plan .tag { left: 50%; transform: translateX(-50%); border-radius: 0; letter-spacing: .2em; font-weight: 500; white-space: nowrap; }
+.plan .hrs .ph { font-size: 1.4rem; }
+.plans-note { text-align: center; max-width: none; }
+.steps { gap: 1.5rem; }
+.step { background: var(--grey); border: 0; padding: 2rem 1.6rem; text-align: center; justify-items: center; align-content: start; }
+.band .step { background: #fff; }
+.step::before { content: counter(s, decimal-leading-zero); font-size: 2.2rem; font-weight: 200; letter-spacing: .05em; }
+.table-wrap { box-shadow: none; border-color: #E0E0E0; }
+.compare td.us { background: #EEF3F8; }
+.faq { margin-inline: auto; gap: 0; border-top: 1px solid #E0E0E0; }
+.faq details { background: transparent; border: 0; border-bottom: 1px solid #E0E0E0; box-shadow: none; padding: 1.2rem .25rem; }
+.faq summary { font-weight: 500; }
+
+/* Contacto */
+.contact { display: grid; gap: 2.5rem; align-items: start; }
+@media (min-width: 960px) { .contact { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+.contact-info { display: grid; gap: 1.2rem; min-width: 0; }
+.contact-info .num { font-size: 1.6rem; font-weight: 300; letter-spacing: .04em; color: var(--ink); user-select: all; }
+.contact-info .row { display: flex; flex-wrap: wrap; gap: .75rem; }
+.lead-card { border-radius: 0; box-shadow: none; border: 1px solid #E0E0E0; background: #fff; padding: 2rem; }
+.lead-card h3 { text-align: left; }
+.field input, .field select { border-radius: 0; border-color: #DADADA; }
+.field label { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #5A5A5A; }
+
+/* Footer claro */
+.site-foot { border-top: 1px solid #E0E0E0 !important; background: var(--grey); color: #5A5A5A; padding-block: 3.5rem 6rem; border: 0; font-size: .92rem; }
+.site-foot .fcols { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+.site-foot h4 { margin: 0 0 .8rem; font-family: var(--brand); font-weight: 500; text-transform: uppercase; letter-spacing: .26em; font-size: .72rem; color: var(--ink); }
+.site-foot p { margin: 0 0 .6rem; line-height: 1.85; }
+.site-foot a { color: #5A5A5A; text-decoration: none; }
+.site-foot a:hover { color: var(--green); }
+.fbrand { display: grid; gap: .8rem; align-content: start; }
+.fbrand .wm { display: grid; line-height: 1.05; font-family: var(--brand); }
+.fbrand .wm span:first-child { font-size: .64rem; letter-spacing: .34em; color: var(--fg); }
+.fbrand .wm span:last-child { font-size: 1.08rem; letter-spacing: .12em; font-weight: 500; color: #2F5D8A; }
+.fbase { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid #E0E0E0; font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; }
+
+/* Botones flotantes */
+.float-wa, .to-top { position: fixed; right: 18px; z-index: 20; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; border: 0; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.float-wa { bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: #25D366; color: #fff; }
+.to-top { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); width: 44px; height: 44px; right: 24px; background: #fff; color: var(--green); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+.to-top.show { opacity: 1; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { .slide, .to-top { transition: none; } }
 </style>
 </head>
 <body>
@@ -190,71 +301,79 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <a class="wordmark" href="#inicio" aria-label="Consultorios Dina Huapi, inicio"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
     <nav class="links" aria-label="Secciones">
-      <a href="#por-que">Por qué</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#por-que">Servicios</a>
       <a href="#equipamiento">Equipamiento</a>
       <a href="#paquetes">Paquetes</a>
-      <a href="#comparativa">Comparativa</a>
       <a href="#preguntas">Preguntas</a>
+      <a href="#contacto">Contacto</a>
     </nav>
-    <a class="btn btn-primary btn-sm" href="#contacto">Reservar visita</a>
+    <a class="btn btn-primary btn-sm" href="#contacto">Reservar</a>
   </div>
 </header>
 
 <main id="inicio">
-  <section class="hero">
-    <svg class="iso hero-mark" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg>
-    <div class="wrap">
-      <div class="hero-copy">
+  <section class="slider" aria-roledescription="carrusel" aria-label="Presentación">
+    <svg class="iso slider-mark" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg>
+    <div class="wrap slides">
+      <div class="slide is-on" aria-roledescription="diapositiva">
         <span class="tagline">Odontología · Salud integral</span>
-        <h1>Tu consultorio equipado, <em>por las horas que lo necesitás.</em></h1>
-        <p class="lead">Atendé a tus pacientes en un consultorio odontológico nuevo y completo, sin inversión inicial ni costos fijos. Comprás un paquete de horas, reservás y venís a trabajar.</p>
-        <ul class="ticks">
-          <li>Sillón, rayos y esterilización incluidos</li>
-          <li>Recepción, limpieza y residuos patogénicos resueltos</li>
-          <li>Sin contrato anual ni expensas</li>
-        </ul>
+        <h1>Tu consultorio<br>equipado,<br><em>por horas.</em></h1>
       </div>
-      <form class="lead-card" id="lead-form" aria-labelledby="lead-title">
-        <h3 id="lead-title">Coordiná una visita</h3>
-        <p>Dejanos tus datos y te escribimos por WhatsApp para mostrarte el consultorio.</p>
-        <div class="field"><label for="f-name">Nombre y apellido</label><input id="f-name" name="name" autocomplete="name" placeholder="Dra. Laura Pérez"></div>
-        <div class="field"><label for="f-spec">Especialidad</label>
-          <select id="f-spec" name="spec">
-            <option>Odontología general</option><option>Ortodoncia</option><option>Endodoncia</option><option>Implantes y cirugía</option><option>Odontopediatría</option><option>Periodoncia</option><option>Otra</option>
-          </select>
-        </div>
-        <div class="field"><label for="f-hours">Horas por mes, aprox.</label>
-          <select id="f-hours" name="hours"><option>Menos de 5</option><option>5 a 10</option><option>10 a 20</option><option>Más de 20</option></select>
-        </div>
-        <a class="btn btn-primary" id="lead-send" href="https://wa.me/549XXXXXXXXXX" target="_blank" rel="noopener">Enviar por WhatsApp</a>
-        <span class="form-note">Se abre WhatsApp con tu mensaje armado. Número: <span class="ph">+54 9 294 XXX-XXXX</span></span>
-      </form>
+      <div class="slide" aria-roledescription="diapositiva" aria-hidden="true">
+        <span class="tagline">Sin vueltas</span>
+        <p class="big">Sin inversión.<br>Sin costos fijos.<br><em>Sin contratos largos.</em></p>
+      </div>
+      <div class="slide" aria-roledescription="diapositiva" aria-hidden="true">
+        <span class="tagline">Dina Huapi · Río Negro</span>
+        <p class="big">Atendé cerca<br>de tus pacientes,<br><em>lejos del centro.</em></p>
+      </div>
+      <div class="dots" role="tablist" aria-label="Elegir diapositiva">
+        <button type="button" role="tab" aria-selected="true" aria-label="Diapositiva 1"></button>
+        <button type="button" role="tab" aria-selected="false" aria-label="Diapositiva 2"></button>
+        <button type="button" role="tab" aria-selected="false" aria-label="Diapositiva 3"></button>
+      </div>
     </div>
+    <span class="slider-note">Fondo: <span class="ph">[foto del consultorio]</span></span>
   </section>
 
-  <section class="block band" id="por-que">
+  <section class="intro" id="nosotros">
+    <div class="wrap intro-copy">
+      <h2 class="rule">Somos Consultorios Dina Huapi</h2>
+      <p>Un consultorio odontológico nuevo y completo en Dina Huapi, pensado para profesionales que quieren atender <strong>sin inversión inicial ni costos fijos.</strong></p>
+      <p>Comprás un paquete de horas, reservás tu turno y venís a trabajar. <strong>Sillón, rayos, esterilización, recepción y limpieza ya están resueltos.</strong> Sin contrato anual ni expensas.</p>
+    </div>
+    <div class="strip" aria-label="Fotos del consultorio">
+      <div class="photo">Box odontológico<br><span class="ph">[foto]</span></div>
+      <div class="photo">Esterilización<br><span class="ph">[foto]</span></div>
+      <div class="photo">Sala de espera<br><span class="ph">[foto]</span></div>
+      <div class="photo">Fachada<br><span class="ph">[foto]</span></div>
+    </div>
+    <div class="strip-cta"><a class="btn btn-primary" href="#contacto">Coordiná una visita</a></div>
+  </section>
+
+  <section class="block" id="por-que">
     <div class="wrap">
       <div class="sec-head">
-        <span class="label">Por qué Consultorios Dina Huapi</span>
-        <h2>Ejercé sin montar un consultorio propio.</h2>
-        <p class="lead">Un sillón equipado cuesta lo mismo que varios años de alquiler por horas. Acá pagás sólo el tiempo que atendés.</p>
+        <h2>Nuestros servicios</h2>
+        <p class="lead">Pagás sólo el tiempo que atendés. Del resto nos ocupamos nosotros.</p>
       </div>
       <div class="benefits">
-        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5V10l3 2"/></svg></span><h3>Flexibilidad</h3><p>Por hora, por día o con un turno fijo semanal. Usás tu saldo cuando te conviene.</p></article>
-        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Z"/><circle cx="10" cy="8" r="2"/></svg></span><h3>Ubicación</h3><p>En Dina Huapi, cerca de los pacientes del este de Bariloche y la zona rural, sin el tránsito del centro.</p></article>
-        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg></span><h3>Infraestructura</h3><p>Consultorio nuevo, habilitado y con equipamiento actualizado, listo para atender.</p></article>
-        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5 8 14l8-8"/></svg></span><h3>Todo incluido</h3><p>Servicios, esterilización, insumos básicos y recepción. Vos traés tus pacientes y tu instrumental específico.</p></article>
+        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5V10l3 2"/></svg></span><h3>Flexibilidad</h3><p>Por hora, por día o con un turno fijo semanal. Usás tu saldo cuando te conviene.</p></article>
+        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Z"/><circle cx="10" cy="8" r="2"/></svg></span><h3>Ubicación</h3><p>En Dina Huapi, cerca de los pacientes del este de Bariloche y la zona rural, sin el tránsito del centro.</p></article>
+        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg></span><h3>Infraestructura</h3><p>Consultorio nuevo, habilitado y con equipamiento actualizado, listo para atender.</p></article>
+        <article class="benefit"><span class="ico" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10.5 8 14l8-8"/></svg></span><h3>Todo incluido</h3><p>Servicios, esterilización, insumos básicos y recepción. Vos traés tus pacientes y tu instrumental específico.</p></article>
       </div>
     </div>
   </section>
 
-  <section class="block" id="equipamiento">
+  <section class="block band" id="equipamiento">
     <div class="wrap">
       <div class="feature">
         <div class="photo">Foto del box con el sillón<br><span class="ph">[foto real]</span></div>
         <div class="copy">
           <span class="label">Equipamiento</span>
-          <h2>Todo lo que necesitás para atender.</h2>
+          <h2>Todo lo que necesitás para atender</h2>
           <ul class="checklist">
             <li>Sillón odontológico eléctrico <span class="ph">[marca/modelo]</span></li>
             <li>Rayos X intraoral y radiovisiógrafo <span class="ph">[confirmar]</span></li>
@@ -268,7 +387,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <div class="photo">Sala de espera / recepción<br><span class="ph">[foto real]</span></div>
         <div class="copy">
           <span class="label">Servicios</span>
-          <h2>Nos ocupamos de lo administrativo.</h2>
+          <h2>Nos ocupamos de lo administrativo</h2>
           <ul class="checklist">
             <li>Recepción de pacientes <span class="ph">[confirmar alcance]</span></li>
             <li>Limpieza y desinfección entre turnos</li>
@@ -282,11 +401,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section class="block band" id="paquetes">
+  <section class="block" id="paquetes">
     <div class="wrap">
       <div class="sec-head">
-        <span class="label">Paquetes</span>
-        <h2>Comprás horas, las usás a tu ritmo.</h2>
+        <h2>Comprás horas, las usás a tu ritmo</h2>
         <p class="lead">Precios de referencia. <span class="ph">[Definir horas, precios y vigencias]</span></p>
       </div>
       <div class="plans">
@@ -300,11 +418,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section class="block" id="como-funciona">
+  <section class="block band" id="como-funciona">
     <div class="wrap">
       <div class="sec-head">
-        <span class="label">Cómo funciona</span>
-        <h2>Empezás a atender en tres pasos.</h2>
+        <h2>Empezás a atender en tres pasos</h2>
       </div>
       <div class="steps">
         <div class="step"><h3>Elegís tu paquete</h3><p>Según cuántas horas pensás atender por mes. Podés empezar con la hora de prueba.</p></div>
@@ -314,11 +431,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section class="block band" id="comparativa">
+  <section class="block" id="comparativa">
     <div class="wrap">
       <div class="sec-head">
-        <span class="label">Comparativa</span>
-        <h2>Consultorio propio o por horas.</h2>
+        <h2>Consultorio propio o por horas</h2>
       </div>
       <div class="table-wrap">
         <table class="compare">
@@ -335,24 +451,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section class="block" id="galeria">
+  <section class="block" id="preguntas">
     <div class="wrap">
-      <div class="sec-head">
-        <span class="label">El espacio</span>
-        <h2>Conocé el consultorio.</h2>
-      </div>
-      <div class="gallery">
-        <div class="photo">Box odontológico<br><span class="ph">[foto]</span></div>
-        <div class="photo">Esterilización<br><span class="ph">[foto]</span></div>
-        <div class="photo">Sala de espera<br><span class="ph">[foto]</span></div>
-        <div class="photo">Fachada<br><span class="ph">[foto]</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="block band" id="preguntas">
-    <div class="wrap">
-      <div class="sec-head"><span class="label">Preguntas frecuentes</span><h2>Lo que nos preguntan.</h2></div>
+      <div class="sec-head"><h2>Lo que nos preguntan</h2></div>
       <div class="faq">
         <details><summary>¿Qué necesito para atender?</summary><p>Título, matrícula vigente en Río Negro y seguro de mala praxis. <span class="ph">[Confirmar requisitos de habilitación provincial]</span></p></details>
         <details><summary>¿Tengo que llevar mi instrumental?</summary><p><span class="ph">[Definir qué instrumental e insumos provee el consultorio y cuáles trae cada profesional]</span></p></details>
@@ -364,33 +465,70 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
-  <section class="cta-final" id="contacto">
+  <section class="block band" id="contacto">
     <div class="wrap">
-      <div class="cta-card on-dark"><svg class="iso" style="width:72px" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg>
-        <span class="label">Visitas</span>
-        <h2>Vení a conocer el consultorio.</h2>
-        <p>Coordinamos una visita sin compromiso por WhatsApp. Si el botón no abre la app, copiá el número.</p>
-        <div class="row">
+      <div class="sec-head"><h2>Contacto</h2><p class="lead">Coordinamos una visita sin compromiso para que conozcas el consultorio.</p></div>
+      <div class="contact">
+        <div class="contact-info">
+          <h3>Escribinos por WhatsApp</h3>
           <span class="num" id="wa-num"><span class="ph">+54 9 294 XXX-XXXX</span></span>
-          <a class="btn btn-light" href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20me%20interesa%20alquilar%20horas%20de%20consultorio" target="_blank" rel="noopener">Escribir por WhatsApp</a>
-          <button class="btn btn-outline-light btn-sm" id="copy-btn" type="button">Copiar número</button>
+          <div class="row">
+            <a class="btn btn-primary" href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20me%20interesa%20alquilar%20horas%20de%20consultorio" target="_blank" rel="noopener">Escribir</a>
+            <button class="btn btn-ghost" id="copy-btn" type="button">Copiar número</button>
+          </div>
+          <p><span class="ph">[Calle y número]</span>, Dina Huapi, Río Negro<br>Horario: <span class="ph">[días y horas]</span></p>
         </div>
-        <p><span class="ph">[Calle y número]</span>, Dina Huapi, Río Negro</p>
+        <form class="lead-card" id="lead-form" aria-labelledby="lead-title">
+          <h3 id="lead-title">Coordiná una visita</h3>
+          <p>Completá tus datos y se abre WhatsApp con el mensaje armado.</p>
+          <div class="field"><label for="f-name">Nombre y apellido</label><input id="f-name" name="name" autocomplete="name" placeholder="Dra. Laura Pérez"></div>
+          <div class="field"><label for="f-spec">Especialidad</label>
+            <select id="f-spec" name="spec">
+              <option>Odontología general</option><option>Ortodoncia</option><option>Endodoncia</option><option>Implantes y cirugía</option><option>Odontopediatría</option><option>Periodoncia</option><option>Otra</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-hours">Horas por mes, aprox.</label>
+            <select id="f-hours" name="hours"><option>Menos de 5</option><option>5 a 10</option><option>10 a 20</option><option>Más de 20</option></select>
+          </div>
+          <a class="btn btn-primary" id="lead-send" href="https://wa.me/549XXXXXXXXXX" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        </form>
       </div>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <span>Consultorios Dina Huapi · Río Negro, Argentina</span>
-    <span><span class="ph">[Instagram @consultoriosdinahuapi]</span></span>
+<footer class="site-foot">
+  <div class="wrap fcols">
+    <div class="fbrand"><svg class="iso" style="width:76px" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span><p>Consultorio odontológico equipado en alquiler por horas para profesionales.</p></div>
+    <div><h4>Contacto</h4><p><span class="ph">[Calle y número]</span><br>Dina Huapi, Río Negro, Argentina</p><p>WhatsApp <span class="ph">+54 9 294 XXX-XXXX</span></p></div>
+    <div><h4>Secciones</h4><p><a href="#por-que">Servicios</a><br><a href="#paquetes">Paquetes</a><br><a href="#comparativa">Comparativa</a><br><a href="#preguntas">Preguntas</a><br><a href="#contacto">Contacto</a></p></div>
+    <div><h4>Seguinos</h4><p><a href="https://instagram.com/consultoriosdinahuapi" target="_blank" rel="noopener">Instagram</a><br><a href="https://www.linkedin.com/company/consultoriosdinahuapi" target="_blank" rel="noopener">LinkedIn</a><br><a href="https://wa.me/549XXXXXXXXXX" target="_blank" rel="noopener">WhatsApp</a></p></div>
   </div>
+  <div class="wrap fbase">© 2026 Consultorios Dina Huapi</div>
 </footer>
 
-<a class="btn btn-primary fab" href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20me%20interesa%20alquilar%20horas%20de%20consultorio" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp">Consultar</a>
+<a class="float-wa" href="https://wa.me/549XXXXXXXXXX?text=Hola%2C%20me%20interesa%20alquilar%20horas%20de%20consultorio" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3Z"/></svg></a>
+<button class="to-top" id="to-top" type="button" aria-label="Volver arriba"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 12.5 10 7.5l5 5"/></svg></button>
 
 <script>
+  (function () {
+    var slides = [].slice.call(document.querySelectorAll('.slide'));
+    var dots = [].slice.call(document.querySelectorAll('.dots button'));
+    var i = 0, timer = null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach(function (el, k) { el.classList.toggle('is-on', k === i); el.setAttribute('aria-hidden', k === i ? 'false' : 'true'); });
+      dots.forEach(function (d, k) { d.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    }
+    function start() { if (!reduce) timer = setInterval(function () { show(i + 1); }, 5000); }
+    dots.forEach(function (d, k) { d.addEventListener('click', function () { clearInterval(timer); show(k); start(); }); });
+    start();
+    var top = document.getElementById('to-top');
+    window.addEventListener('scroll', function () { top.classList.toggle('show', window.scrollY > 600); }, { passive: true });
+    top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
+  })();
+
   (function () {
     var WA = '549XXXXXXXXXX';
     var form = document.getElementById('lead-form');
