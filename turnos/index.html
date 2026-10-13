@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Turnos · Consultorios Dina Huapi</title>
+<meta name="description" content="Reservá tu turno online con los profesionales de Consultorios Dina Huapi.">
+<meta name="theme-color" content="#2F5D8A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="turnos.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="../" aria-label="Consultorios Dina Huapi, sitio principal"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
+    <a class="btn ghost sm" href="panel.html">Profesionales</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="stack">
+    <span class="label">Turnos online</span>
+    <h1>Reservá tu turno</h1>
+  </div>
+
+  <div id="estado"></div>
+
+  <section class="card" id="paso-pro" hidden>
+    <h2>1. Elegí el profesional</h2>
+    <div class="pros" id="pros"></div>
+  </section>
+
+  <section class="card" id="paso-horario" hidden>
+    <h2>2. Elegí día y horario</h2>
+    <div class="semana-nav">
+      <button class="btn ghost sm" id="sem-ant" aria-label="Semana anterior">←</button>
+      <strong id="sem-titulo"></strong>
+      <button class="btn ghost sm" id="sem-sig" aria-label="Semana siguiente">→</button>
+    </div>
+    <div id="sem-estado"></div>
+    <div class="dias" id="dias"></div>
+  </section>
+
+  <section class="card" id="paso-datos" hidden>
+    <h2>3. Tus datos</h2>
+    <p id="resumen" class="aviso info"></p>
+    <form id="form" class="stack" novalidate>
+      <div class="grid2">
+        <div class="field"><label for="f-nombre">Nombre y apellido</label><input id="f-nombre" name="nombre" autocomplete="name" required minlength="2" maxlength="120"></div>
+        <div class="field"><label for="f-tel">Teléfono (WhatsApp)</label><input id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" required placeholder="294 1234567"></div>
+      </div>
+      <div class="field"><label for="f-email">Email <span class="muted">(opcional)</span></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200"></div>
+      <label class="check"><input type="checkbox" id="f-ok" required><span>Acepto que mis datos de contacto se usen solo para gestionar este turno. No se piden ni guardan datos de salud en esta página (Ley 25.326).</span></label>
+      <div id="form-estado"></div>
+      <div class="row"><button class="btn" id="f-enviar" type="submit">Confirmar turno</button><button class="btn link" type="button" id="f-volver">Cambiar horario</button></div>
+    </form>
+  </section>
+
+  <section class="card" id="paso-ok" hidden aria-live="polite">
+    <div class="aviso ok"><strong>¡Turno confirmado!</strong></div>
+    <div id="ok-detalle" class="stack"></div>
+    <div class="row" id="ok-acciones"></div>
+    <p class="small muted">Guardá el link de cancelación: es la única forma de cancelar online. Si no podés asistir, avisá con anticipación.</p>
+    <div><button class="btn ghost" id="otro">Sacar otro turno</button></div>
+  </section>
+</main>
+<footer class="pie wrap">Consultorios Dina Huapi · Dina Huapi, Río Negro</footer>
+
+<script type="module">
+import { sb, configurado, faltaConfig, $, h, aviso, mensajeError, hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, linkGoogleCalendar } from './comun.js';
+
+const estado = $('#estado');
+const st = { pros: [], pro: null, semana: null, slot: null };
+const hoy = fechaLocal(new Date());
+
+if (!configurado) {
+  faltaConfig(estado);
+} else {
+  iniciar();
+}
+
+async function iniciar() {
+  aviso(estado, 'Cargando profesionales…', 'info');
+  const { data, error } = await sb.rpc('profesionales_publicos');
+  if (error) return aviso(estado, mensajeError(error));
+  aviso(estado, '');
+  st.pros = data;
+  if (!data.length) return aviso(estado, 'Por ahora no hay profesionales con turnos online. Consultá por WhatsApp.', 'info');
+
+  const cont = $('#pros');
+  cont.replaceChildren(...data.map((p) => h('button', {
+    class: 'pro', type: 'button', 'aria-pressed': 'false', 'data-id': p.id,
+    onclick: () => elegirPro(p),
+  }, h('strong', {}, p.nombre), h('span', { class: 'muted small' }, p.especialidad || ' '),
+     h('span', { class: 'muted small' }, `Turnos de ${p.duracion_turno} min`))));
+  $('#paso-pro').hidden = false;
+
+  const pedido = new URLSearchParams(location.search).get('p');
+  const pre = data.find((p) => p.id === pedido) || (data.length === 1 ? data[0] : null);
+  if (pre) elegirPro(pre);
+}
+
+function elegirPro(p) {
+  st.pro = p; st.slot = null;
+  document.querySelectorAll('.pro').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
+  $('#paso-datos').hidden = true; $('#paso-ok').hidden = true;
+  $('#paso-horario').hidden = false;
+  cargarSemana(lunesDe(hoy));
+  $('#paso-horario').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function cargarSemana(lunes) {
+  st.semana = lunes;
+  const domingo = sumarDias(lunes, 6);
+  $('#sem-titulo').textContent = `${diaDeFecha(lunes)} – ${diaDeFecha(domingo)}`;
+  $('#sem-ant').disabled = lunes <= lunesDe(hoy);
+  const dias = $('#dias');
+  dias.replaceChildren();
+  aviso($('#sem-estado'), 'Buscando horarios…', 'info');
+
+  const { data, error } = await sb.rpc('turnos_disponibles', { p_profesional: st.pro.id, p_desde: lunes, p_hasta: domingo });
+  if (st.semana !== lunes) return; // el usuario ya cambió de semana
+  if (error) return aviso($('#sem-estado'), mensajeError(error));
+
+  const porDia = new Map();
+  for (const s of data) {
+    const f = fechaLocal(s.inicio);
+    if (!porDia.has(f)) porDia.set(f, []);
+    porDia.get(f).push(s);
+  }
+  aviso($('#sem-estado'), data.length ? '' : 'No hay horarios libres esta semana. Probá con la siguiente.', 'info');
+
+  for (let i = 0; i < 7; i++) {
+    const f = sumarDias(lunes, i);
+    const lista = porDia.get(f) || [];
+    dias.append(h('div', { class: `dia${lista.length ? '' : ' sin-nada'}` },
+      h('h3', {}, diaDeFecha(f)),
+      lista.length
+        ? h('div', { class: 'slots' }, lista.map((s) => h('button', {
+            class: 'slot', type: 'button', 'aria-pressed': 'false',
+            'aria-label': `${diaLargo(s.inicio)} a las ${hora(s.inicio)}`,
+            onclick: (ev) => elegirSlot(s, ev.currentTarget),
+          }, hora(s.inicio))))
+        : h('span', { class: 'vacio' }, '—')));
+  }
+}
+
+$('#sem-ant').addEventListener('click', () => cargarSemana(sumarDias(st.semana, -7)));
+$('#sem-sig').addEventListener('click', () => cargarSemana(sumarDias(st.semana, 7)));
+
+function elegirSlot(s, boton) {
+  st.slot = s;
+  document.querySelectorAll('.slot').forEach((b) => b.setAttribute('aria-pressed', String(b === boton)));
+  $('#resumen').textContent = `${st.pro.nombre} · ${diaLargo(s.inicio)} a las ${hora(s.inicio)} h`;
+  aviso($('#form-estado'), '');
+  $('#paso-datos').hidden = false;
+  $('#paso-datos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('#f-nombre').focus({ preventScroll: true });
+}
+
+$('#f-volver').addEventListener('click', () => {
+  $('#paso-datos').hidden = true;
+  $('#paso-horario').scrollIntoView({ behavior: 'smooth' });
+});
+
+$('#form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const nombre = $('#f-nombre').value.trim();
+  const tel = $('#f-tel').value.trim();
+  const email = $('#f-email').value.trim();
+  const err = $('#form-estado');
+  if (nombre.length < 2) return aviso(err, 'Completá tu nombre y apellido.');
+  if (tel.replace(/\D/g, '').length < 8) return aviso(err, 'Revisá el teléfono: incluí la característica (ej. 294 1234567).');
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return aviso(err, 'Revisá el email.');
+  if (!$('#f-ok').checked) return aviso(err, 'Tenés que aceptar el uso de tus datos para reservar.');
+
+  const btn = $('#f-enviar');
+  btn.disabled = true; btn.textContent = 'Reservando…';
+  const { data, error } = await sb.rpc('reservar_turno', {
+    p_profesional: st.pro.id, p_inicio: st.slot.inicio, p_nombre: nombre, p_telefono: tel, p_email: email,
+  });
+  btn.disabled = false; btn.textContent = 'Confirmar turno';
+
+  if (error) {
+    aviso(err, mensajeError(error));
+    if (error.hint === 'ocupado') cargarSemana(st.semana);
+    return;
+  }
+  mostrarConfirmacion(data);
+});
+
+function mostrarConfirmacion(t) {
+  const linkCancelar = new URL(`cancelar.html?t=${t.token}`, location.href).href;
+  $('#ok-detalle').replaceChildren(
+    h('p', {}, h('strong', {}, `${diaLargo(t.inicio)}, ${hora(t.inicio)} h`)),
+    h('p', {}, `${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
+    h('p', { class: 'muted' }, `${t.consultorio ?? ''} · Consultorios Dina Huapi`),
+  );
+  $('#ok-acciones').replaceChildren(
+    h('a', { class: 'btn', target: '_blank', rel: 'noopener', href: linkGoogleCalendar({
+      titulo: `Turno con ${t.profesional}`, inicio: t.inicio, fin: t.fin,
+      lugar: 'Consultorios Dina Huapi, Dina Huapi, Río Negro',
+      detalle: `Para cancelar: ${linkCancelar}`,
+    }) }, 'Agendar en Google Calendar'),
+    h('a', { class: 'btn ghost', href: linkCancelar }, 'Link para cancelar'),
+    h('button', { class: 'btn link', type: 'button', onclick: async (e) => {
+      try { await navigator.clipboard.writeText(linkCancelar); e.target.textContent = 'Copiado ✓'; }
+      catch { prompt('Copiá este link:', linkCancelar); }
+    } }, 'Copiar link'),
+  );
+  $('#paso-pro').hidden = true; $('#paso-horario').hidden = true; $('#paso-datos').hidden = true;
+  $('#paso-ok').hidden = false;
+  $('#form').reset();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+$('#otro').addEventListener('click', () => {
+  $('#paso-ok').hidden = true;
+  $('#paso-pro').hidden = false;
+  if (st.pro) elegirPro(st.pro);
+});
+</script>
+</body>
+</html>
