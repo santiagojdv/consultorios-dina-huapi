@@ -119,12 +119,25 @@ main { padding-block: 1.5rem 4rem; display: grid; gap: 1.25rem; }
 .item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem; padding: .7rem .85rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
 .item > div { min-width: 0; overflow-wrap: anywhere; }
 
+/* Días de la semana como casilleros (alta de alquileres) */
+.dias-check { border: 0; padding: 0; margin: 0; display: grid; gap: .4rem; }
+.dias-check legend { font-size: .85rem; font-weight: 500; padding: 0; margin-bottom: .4rem; }
+.dia-chip { position: relative; }
+.dia-chip input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.dia-chip span { display: inline-grid; place-items: center; min-width: 3.1rem; min-height: 40px; padding: 0 .6rem; border: 1px solid var(--line); border-radius: 999px; font-size: .88rem; font-weight: 500; background: var(--surface); }
+.dia-chip input:checked + span { background: var(--brand); border-color: var(--brand); color: var(--on-brand, #FFFFFF); }
+.dia-chip input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 2px; }
+
 /* Grilla de ocupación (admin) */
 .ocupacion { overflow-x: auto; }
 .ocupacion table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .8rem; }
 .ocupacion th, .ocupacion td { border: 1px solid var(--line); padding: .35rem .4rem; vertical-align: top; text-align: left; }
 .ocupacion th { background: var(--soft); font-weight: 600; }
 .ocupacion .blk { background: var(--mint); border-radius: 6px; padding: .2rem .35rem; margin-bottom: .25rem; }
+.ocupacion td.asignable { cursor: pointer; }
+.ocupacion td.asignable:hover, .ocupacion td.asignable:focus-visible { background: var(--soft); }
+.ocupacion .mas { display: block; color: var(--muted); font-size: .75rem; text-align: center; padding: .15rem; }
+.ocupacion td.asignable:hover .mas { color: var(--brand); }
 
 dialog { border: 0; border-radius: var(--r); padding: 0; width: min(32rem, calc(100vw - 32px)); box-shadow: 0 20px 60px rgba(0,0,0,.3); }
 dialog::backdrop { background: rgba(0,0,0,.35); }

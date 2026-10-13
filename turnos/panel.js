@@ -502,7 +502,10 @@ async function cargarAdmin() {
   // Selects del formulario
   $('#alq-pro').replaceChildren(...st.profesionales.filter((x) => x.activo).map((x) => h('option', { value: x.id }, x.nombre || x.email)));
   $('#alq-box').replaceChildren(...st.consultorios.filter((x) => x.activo).map((x) => h('option', { value: x.id }, x.nombre)));
-  if (!$('#alq-dia').options.length) $('#alq-dia').replaceChildren(...DIAS.slice(1).map((d, i) => h('option', { value: i + 1 }, d)));
+  if (!$('#alq-dias').children.length) {
+    $('#alq-dias').replaceChildren(...DIAS.slice(1).map((d, i) => h('label', { class: 'dia-chip' },
+      h('input', { type: 'checkbox', value: i + 1, 'aria-label': d }), h('span', {}, d.slice(0, 3)))));
+  }
   if (!$('#alq-vd').value) { $('#alq-vd').value = hoy(); $('#alq-vh').value = finDeMes(hoy()); }
   if (!$('#oc-fecha').value) $('#oc-fecha').value = hoy();
 
@@ -513,9 +516,15 @@ async function cargarAdmin() {
     h('thead', {}, h('tr', {}, h('th', {}, `Semana del ${ddmm(lunes)}`), DIAS.slice(1).map((d) => h('th', {}, d)))),
     h('tbody', {}, st.consultorios.filter((x) => x.activo).map((box) => h('tr', {},
       h('th', {}, box.nombre),
-      [1, 2, 3, 4, 5, 6, 7].map((dia) => h('td', {}, enSemana
+      [1, 2, 3, 4, 5, 6, 7].map((dia) => h('td', {
+        class: 'asignable', tabindex: '0', title: `Asignar ${box.nombre} el ${DIAS[dia].toLowerCase()}`,
+        onclick: () => prepararAlquiler(box.id, dia),
+        onkeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prepararAlquiler(box.id, dia); } },
+      }, enSemana
         .filter((x) => x.consultorio_id === box.id && x.dia_semana === dia)
-        .map((x) => h('div', { class: 'blk' }, h('strong', {}, `${hhmm(x.hora_inicio)}–${hhmm(x.hora_fin)}`), h('br'), nombrePro(x.profesional_id))))))))));
+        .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio))
+        .map((x) => h('div', { class: 'blk' }, h('strong', {}, `${hhmm(x.hora_inicio)}–${hhmm(x.hora_fin)}`), h('br'), nombrePro(x.profesional_id))),
+      h('span', { class: 'mas', 'aria-hidden': 'true' }, '+'))))))));
 
   // Lista de alquileres
   const verPasados = $('#alq-pasados').checked;
@@ -549,20 +558,52 @@ async function cargarAdmin() {
 $('#oc-fecha').addEventListener('change', cargarAdmin);
 $('#alq-pasados').addEventListener('change', cargarAdmin);
 
+/** Desde la grilla: deja el formulario listo con ese consultorio y ese día. */
+function prepararAlquiler(boxId, dia) {
+  $('#alq-box').value = String(boxId);
+  $('#alq-dias').querySelectorAll('input').forEach((c) => { c.checked = Number(c.value) === dia; });
+  aviso($('#alq-estado'), '');
+  $('#alq-titulo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('#alq-pro').focus({ preventScroll: true });
+}
+
+/** Choques con alquileres ya cargados, explicados por día (la base igual los rechaza). */
+function choquesAlquiler(filas) {
+  const pisa = (a, b) => a.dia_semana === b.dia_semana
+    && a.vigente_desde <= b.vigente_hasta && b.vigente_desde <= a.vigente_hasta
+    && hhmm(a.hora_inicio) < hhmm(b.hora_fin) && hhmm(b.hora_inicio) < hhmm(a.hora_fin);
+  const nombre = (id) => { const x = st.profesionales.find((y) => y.id === id); return x ? (x.nombre || x.email) : 'otro profesional'; };
+  const box = (id) => st.consultorios.find((y) => y.id === id)?.nombre ?? 'ese consultorio';
+  const out = [];
+  for (const f of filas) {
+    for (const x of st.alquileres.filter((a) => pisa(a, f))) {
+      if (x.consultorio_id === f.consultorio_id) out.push(`${DIAS[f.dia_semana]}: ${box(x.consultorio_id)} ya está alquilado a ${nombre(x.profesional_id)} de ${hhmm(x.hora_inicio)} a ${hhmm(x.hora_fin)}.`);
+      else if (x.profesional_id === f.profesional_id) out.push(`${DIAS[f.dia_semana]}: ${nombre(x.profesional_id)} ya tiene ${box(x.consultorio_id)} de ${hhmm(x.hora_inicio)} a ${hhmm(x.hora_fin)}.`);
+    }
+  }
+  return out;
+}
+
 $('#alq-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
   const msg = $('#alq-estado');
-  const fila = {
-    profesional_id: $('#alq-pro').value, consultorio_id: Number($('#alq-box').value), dia_semana: Number($('#alq-dia').value),
+  const dias = [...$('#alq-dias').querySelectorAll('input:checked')].map((c) => Number(c.value));
+  const base = {
+    profesional_id: $('#alq-pro').value, consultorio_id: Number($('#alq-box').value),
     hora_inicio: $('#alq-ini').value, hora_fin: $('#alq-fin').value,
     vigente_desde: $('#alq-vd').value, vigente_hasta: $('#alq-vh').value, nota: $('#alq-nota').value.trim(),
   };
-  if (!fila.profesional_id || !fila.consultorio_id) return aviso(msg, 'Primero cargá profesionales y consultorios.');
-  if (!fila.hora_inicio || !fila.hora_fin || fila.hora_fin <= fila.hora_inicio) return aviso(msg, 'La hora de fin tiene que ser posterior a la de inicio.');
-  if (!fila.vigente_desde || !fila.vigente_hasta || fila.vigente_hasta < fila.vigente_desde) return aviso(msg, 'Revisá las fechas de vigencia.');
-  const { error } = await sb.from('alquileres').insert(fila);
-  if (error) return aviso(msg, mensajeError(error));
-  aviso(msg, 'Alquiler agregado.', 'ok');
+  if (!base.profesional_id || !base.consultorio_id) return aviso(msg, 'Primero cargá profesionales y consultorios.');
+  if (!dias.length) return aviso(msg, 'Elegí al menos un día de la semana.');
+  if (!base.hora_inicio || !base.hora_fin || base.hora_fin <= base.hora_inicio) return aviso(msg, 'La hora de fin tiene que ser posterior a la de inicio.');
+  if (!base.vigente_desde || !base.vigente_hasta || base.vigente_hasta < base.vigente_desde) return aviso(msg, 'Revisá las fechas de vigencia.');
+  const filas = dias.map((dia_semana) => ({ ...base, dia_semana }));
+  const choques = choquesAlquiler(filas);
+  if (choques.length) return aviso(msg, `No se guardó ningún día. ${choques.join(' ')}`);
+  // Un solo insert: si un día choca, la base no guarda ninguno.
+  const { error } = await sb.from('alquileres').insert(filas);
+  if (error) return aviso(msg, `No se guardó ningún día. ${mensajeError(error)}`);
+  aviso(msg, `Listo: ${dias.map((d) => DIAS[d].toLowerCase()).join(', ')} de ${base.hora_inicio} a ${base.hora_fin}.`, 'ok');
   $('#alq-nota').value = '';
   cargarAdmin();
 });
