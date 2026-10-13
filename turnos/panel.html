@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel de profesionales · Consultorios Dina Huapi</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2F5D8A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="turnos.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="wordmark" href="panel.html" aria-label="Panel, inicio"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
+    <div class="row" id="sesion" hidden><span class="small muted" id="quien"></span><span class="badge" id="modo-badge" hidden>Admin</span><button class="btn link" id="cambiar-vista" hidden></button><button class="btn ghost sm" id="salir">Salir</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="estado"></div>
+
+  <!-- Login -->
+  <section class="card" id="login" hidden>
+    <div class="stack"><span class="label">Profesionales</span><h1>Ingresar</h1>
+      <p class="muted">Te mandamos un link a tu email para entrar. Sin contraseñas.</p></div>
+    <form id="login-form" class="stack" novalidate>
+      <div class="field"><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="email" required></div>
+      <div id="login-estado"></div>
+      <div><button class="btn" type="submit" id="login-btn">Enviarme el link</button></div>
+    </form>
+  </section>
+
+  <!-- App -->
+  <div id="app" hidden>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="agenda" data-vistas="pro" aria-selected="false">Agenda</button>
+      <button role="tab" data-tab="calendario" data-vistas="pro admin" aria-selected="false">Calendario</button>
+      <button role="tab" data-tab="perfil" data-vistas="pro" aria-selected="false">Mi perfil</button>
+      <button role="tab" data-tab="reservas" data-vistas="admin" aria-selected="false">Reservas</button>
+      <button role="tab" data-tab="profesionales" data-vistas="admin" aria-selected="false">Profesionales</button>
+      <button role="tab" data-tab="consultorios" data-vistas="admin" aria-selected="false">Consultorios</button>
+    </nav>
+
+    <!-- Agenda -->
+    <section data-panel="agenda" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <div class="row between">
+          <h2>Mi agenda</h2>
+          <button class="btn sm" id="nuevo-turno">+ Turno</button>
+        </div>
+        <div class="semana-nav">
+          <button class="btn ghost sm" id="ag-ant" aria-label="Semana anterior">←</button>
+          <strong id="ag-titulo"></strong>
+          <button class="btn ghost sm" id="ag-sig" aria-label="Semana siguiente">→</button>
+        </div>
+        <div class="row small muted"><button class="btn link" id="ag-hoy">Ir a hoy</button>
+          <label class="check"><input type="checkbox" id="ag-libres" checked> Mostrar horarios libres</label></div>
+        <div id="ag-estado"></div>
+        <div class="dias" id="ag-dias"></div>
+      </div>
+    </section>
+
+    <!-- Calendario consolidado -->
+    <section data-panel="calendario" class="stack" style="margin-top:1rem" hidden>
+      <div class="card cal-card">
+        <div class="cal-barra">
+          <button class="btn ghost sm" id="cal-hoy">Hoy</button>
+          <div class="row" style="gap:.15rem">
+            <button class="cal-flecha" id="cal-ant" aria-label="Anterior">‹</button>
+            <button class="cal-flecha" id="cal-sig" aria-label="Siguiente">›</button>
+          </div>
+          <h2 id="cal-titulo" class="cal-titulo"></h2>
+          <div class="cal-controles">
+            <label class="sr" for="cal-box">Consultorio</label>
+            <select id="cal-box" class="cal-select"></select>
+            <label class="sr" for="cal-vista">Vista</label>
+            <select id="cal-vista" class="cal-select">
+              <option value="1">Día</option>
+              <option value="3">3 días</option>
+              <option value="7">Semana</option>
+            </select>
+          </div>
+        </div>
+        <div class="cal-leyenda" id="cal-leyenda"></div>
+        <div id="cal-estado"></div>
+        <div class="cal-scroll"><div class="cal-grilla" id="cal-grilla"></div></div>
+        <p class="small muted" id="cal-ayuda">Franjas de color: horarios alquilados. Tus turnos llevan el nombre del paciente; los de colegas se ven como ocupados. Tocá un día para verlo solo.</p>
+      </div>
+    </section>
+
+    <!-- Perfil -->
+    <section data-panel="perfil" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <h2>Mis datos</h2>
+        <form id="perfil-form" class="stack" novalidate>
+          <div class="grid2">
+            <div class="field"><label for="pf-nombre">Nombre que ven los pacientes</label><input id="pf-nombre" maxlength="80" placeholder="Dra. Ana Pérez"></div>
+            <div class="field"><label for="pf-esp">Especialidad</label><input id="pf-esp" maxlength="80" placeholder="Odontología general"></div>
+            <div class="field"><label for="pf-tel">WhatsApp de contacto</label><input id="pf-tel" type="tel" maxlength="30"><small>Lo ve el paciente solo en su página de turno.</small></div>
+            <div class="field"><label for="pf-dur">Duración del turno (min)</label><input id="pf-dur" type="number" min="10" max="240" step="5"></div>
+            <div class="field"><label for="pf-ant">Anticipación mínima (horas)</label><input id="pf-ant" type="number" min="0" max="168"><small>No se puede reservar online con menos aviso.</small></div>
+            <div class="field"><label for="pf-ven">Agenda abierta (días hacia adelante)</label><input id="pf-ven" type="number" min="1" max="120"></div>
+            <div class="field"><label for="pf-canc">Aviso para cancelar online (horas)</label><input id="pf-canc" type="number" min="0" max="168"></div>
+          </div>
+          <label class="check"><input type="checkbox" id="pf-pub"><span><strong>Aceptar turnos online.</strong> Aparecés en la página pública y los pacientes pueden reservar dentro de tus horarios alquilados.</span></label>
+          <div id="perfil-estado"></div>
+          <div><button class="btn" type="submit">Guardar</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Mi link para pacientes</h2>
+        <p class="muted small">Compartilo por WhatsApp o en redes: abre la reserva directamente con vos.</p>
+        <div class="row"><code id="mi-link" class="small" style="overflow-wrap:anywhere"></code><button class="btn ghost sm" id="copiar-link">Copiar</button></div>
+      </div>
+      <div class="card">
+        <h2>Ver mis turnos en Google Calendar</h2>
+        <p class="muted small">Un link privado que Google Calendar (o el calendario del iPhone) consulta solo. Muestra tus turnos con nombre y teléfono del paciente: no lo compartas.</p>
+        <div id="feed-estado"></div>
+        <div class="stack" id="feed-caja" hidden>
+          <div class="row"><code id="feed-link" class="small" style="overflow-wrap:anywhere"></code><button class="btn ghost sm" id="feed-copiar">Copiar</button></div>
+          <ol class="small muted" style="margin:0;padding-left:1.2rem">
+            <li>En la compu, abrí Google Calendar → <em>Otros calendarios</em> → <strong>+</strong> → <em>Desde URL</em>, pegá el link y guardá. Después aparece también en la app del celular.</li>
+            <li>En iPhone: <a id="feed-webcal" href="#">tocá acá para suscribirte</a>.</li>
+            <li>Google actualiza estos calendarios cada varias horas, no al instante. Para lo último, mirá la agenda de este panel.</li>
+          </ol>
+          <div><button class="btn link" id="feed-regenerar">Generar un link nuevo (el anterior deja de funcionar)</button></div>
+        </div>
+        <div><button class="btn ghost" id="feed-crear" hidden>Crear mi link</button></div>
+      </div>
+      <div class="card">
+        <h2>Mis horarios alquilados</h2>
+        <div class="lista" id="mis-alquileres"></div>
+      </div>
+      <div class="card">
+        <h2>Ausencias</h2>
+        <p class="muted small">Vacaciones o días sin atención: esos horarios dejan de ofrecerse online.</p>
+        <form id="aus-form" class="grid2">
+          <div class="field"><label for="aus-desde">Desde</label><input id="aus-desde" type="date" required></div>
+          <div class="field"><label for="aus-hasta">Hasta (inclusive)</label><input id="aus-hasta" type="date" required></div>
+          <div class="field"><label for="aus-motivo">Motivo (opcional)</label><input id="aus-motivo" maxlength="80"></div>
+          <div class="field"><span>&nbsp;</span><button class="btn" type="submit">Agregar</button></div>
+        </form>
+        <div id="aus-estado"></div>
+        <div class="lista" id="ausencias"></div>
+      </div>
+    </section>
+
+    <!-- Administración -->
+    <section data-panel="reservas" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <h2>Reservas por consultorio</h2>
+        <p class="muted small">Tocá una celda para asignar ese consultorio y ese día a un profesional.</p>
+        <div class="row small"><label class="field" style="display:flex;gap:.5rem;align-items:center"><span>Ver al</span><input type="date" id="oc-fecha" style="width:auto"></label></div>
+        <div class="ocupacion" id="ocupacion"></div>
+      </div>
+      <div class="card">
+        <h2 id="alq-titulo">Asignar alquiler</h2>
+        <form id="alq-form" class="stack">
+          <div class="grid2">
+            <div class="field"><label for="alq-pro">Profesional</label><select id="alq-pro" required></select></div>
+            <div class="field"><label for="alq-box">Consultorio</label><select id="alq-box" required></select></div>
+            <div class="field"><label for="alq-ini">Desde la hora</label><input id="alq-ini" type="time" step="900" required value="09:00"></div>
+            <div class="field"><label for="alq-fin">Hasta la hora</label><input id="alq-fin" type="time" step="900" required value="13:00"></div>
+            <div class="field"><label for="alq-vd">Vigente desde</label><input id="alq-vd" type="date" required></div>
+            <div class="field"><label for="alq-vh">Vigente hasta</label><input id="alq-vh" type="date" required></div>
+            <div class="field"><label for="alq-nota">Nota (opcional)</label><input id="alq-nota" maxlength="120" placeholder="ej. abonado hasta fin de mes"></div>
+          </div>
+          <fieldset class="dias-check">
+            <legend>Días de la semana</legend>
+            <div class="row" id="alq-dias"></div>
+          </fieldset>
+          <div id="alq-estado"></div>
+          <div><button class="btn" type="submit">Guardar alquiler</button></div>
+        </form>
+        <h3>Alquileres cargados</h3>
+        <label class="check small"><input type="checkbox" id="alq-pasados"> Mostrar alquileres vencidos</label>
+        <div class="lista" id="alquileres"></div>
+      </div>
+    </section>
+
+    <section data-panel="profesionales" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <h2>Profesionales</h2>
+        <p class="muted small">Para sumar a alguien: en Supabase, <em>Authentication → Users → Invite user</em> con su email. Aparece acá solo.</p>
+        <div id="pros-estado"></div>
+        <div class="lista" id="profesionales"></div>
+      </div>
+    </section>
+
+    <section data-panel="consultorios" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <h2>Consultorios</h2>
+        <form id="box-form" class="row">
+          <div class="field" style="flex:1;min-width:12rem"><label for="box-nombre" class="sr">Nombre</label><input id="box-nombre" maxlength="60" placeholder="ej. Box 3" required></div>
+          <button class="btn" type="submit" style="align-self:end">Agregar</button>
+        </form>
+        <div id="box-estado"></div>
+        <div class="lista" id="consultorios"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<dialog id="dlg-turno">
+  <form id="turno-form" method="dialog" novalidate>
+    <h2>Nuevo turno</h2>
+    <div class="grid2">
+      <div class="field"><label for="t-fecha">Fecha</label><input id="t-fecha" type="date" required></div>
+      <div class="field"><label for="t-hora">Hora</label><input id="t-hora" type="time" step="300" required></div>
+      <div class="field"><label for="t-dur">Duración (min)</label><input id="t-dur" type="number" min="5" max="480" step="5" required></div>
+    </div>
+    <div class="field"><label for="t-nombre">Paciente</label><input id="t-nombre" maxlength="120" required></div>
+    <div class="grid2">
+      <div class="field"><label for="t-tel">Teléfono</label><input id="t-tel" type="tel" maxlength="30" required></div>
+      <div class="field"><label for="t-email">Email (opcional)</label><input id="t-email" type="email" maxlength="200"></div>
+    </div>
+    <div class="field"><label for="t-nota">Nota interna (opcional)</label><input id="t-nota" maxlength="200"><small>Solo administrativa. No cargues datos clínicos acá.</small></div>
+    <div id="turno-estado"></div>
+    <div class="row"><button class="btn" type="submit" value="ok">Guardar</button><button class="btn link" type="button" id="t-cerrar">Cerrar</button></div>
+  </form>
+</dialog>
+
+<script type="module" src="panel.js"></script>
+</body>
+</html>
