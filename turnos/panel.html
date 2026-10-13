@@ -17,7 +17,7 @@
 <header class="top">
   <div class="wrap">
     <a class="wordmark" href="panel.html" aria-label="Panel, inicio"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
-    <div class="row" id="sesion" hidden><span class="small muted" id="quien"></span><button class="btn ghost sm" id="salir">Salir</button></div>
+    <div class="row" id="sesion" hidden><span class="small muted" id="quien"></span><span class="badge" id="modo-badge" hidden>Admin</span><button class="btn link" id="cambiar-vista" hidden></button><button class="btn ghost sm" id="salir">Salir</button></div>
   </div>
 </header>
 
@@ -38,14 +38,16 @@
   <!-- App -->
   <div id="app" hidden>
     <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="agenda" aria-selected="true">Agenda</button>
-      <button role="tab" data-tab="calendario" aria-selected="false">Calendario</button>
-      <button role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
-      <button role="tab" data-tab="admin" aria-selected="false" id="tab-admin" hidden>Administración</button>
+      <button role="tab" data-tab="agenda" data-vistas="pro" aria-selected="false">Agenda</button>
+      <button role="tab" data-tab="calendario" data-vistas="pro admin" aria-selected="false">Calendario</button>
+      <button role="tab" data-tab="perfil" data-vistas="pro" aria-selected="false">Mi perfil</button>
+      <button role="tab" data-tab="reservas" data-vistas="admin" aria-selected="false">Reservas</button>
+      <button role="tab" data-tab="profesionales" data-vistas="admin" aria-selected="false">Profesionales</button>
+      <button role="tab" data-tab="consultorios" data-vistas="admin" aria-selected="false">Consultorios</button>
     </nav>
 
     <!-- Agenda -->
-    <section data-panel="agenda" class="stack" style="margin-top:1rem">
+    <section data-panel="agenda" class="stack" style="margin-top:1rem" hidden>
       <div class="card">
         <div class="row between">
           <h2>Mi agenda</h2>
@@ -87,7 +89,7 @@
         <div class="cal-leyenda" id="cal-leyenda"></div>
         <div id="cal-estado"></div>
         <div class="cal-scroll"><div class="cal-grilla" id="cal-grilla"></div></div>
-        <p class="small muted">Franjas de color: horarios alquilados. Tus turnos llevan el nombre del paciente; los de colegas se ven como ocupados. Tocá un día para verlo solo.</p>
+        <p class="small muted" id="cal-ayuda">Franjas de color: horarios alquilados. Tus turnos llevan el nombre del paciente; los de colegas se ven como ocupados. Tocá un día para verlo solo.</p>
       </div>
     </section>
 
@@ -148,8 +150,8 @@
       </div>
     </section>
 
-    <!-- Admin -->
-    <section data-panel="admin" class="stack" style="margin-top:1rem" hidden>
+    <!-- Administración -->
+    <section data-panel="reservas" class="stack" style="margin-top:1rem" hidden>
       <div class="card">
         <h2>Reservas por consultorio</h2>
         <p class="muted small">Tocá una celda para asignar ese consultorio y ese día a un profesional.</p>
@@ -179,12 +181,18 @@
         <label class="check small"><input type="checkbox" id="alq-pasados"> Mostrar alquileres vencidos</label>
         <div class="lista" id="alquileres"></div>
       </div>
+    </section>
+
+    <section data-panel="profesionales" class="stack" style="margin-top:1rem" hidden>
       <div class="card">
         <h2>Profesionales</h2>
         <p class="muted small">Para sumar a alguien: en Supabase, <em>Authentication → Users → Invite user</em> con su email. Aparece acá solo.</p>
         <div id="pros-estado"></div>
         <div class="lista" id="profesionales"></div>
       </div>
+    </section>
+
+    <section data-panel="consultorios" class="stack" style="margin-top:1rem" hidden>
       <div class="card">
         <h2>Consultorios</h2>
         <form id="box-form" class="row">

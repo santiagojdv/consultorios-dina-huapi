@@ -44,12 +44,36 @@ async function entrar(sesion) {
   aviso($('#estado'), '');
   $('#login').hidden = true; $('#app').hidden = false; $('#sesion').hidden = false;
   $('#quien').textContent = yo.nombre || yo.email;
-  $('#tab-admin').hidden = !yo.es_admin;
-  if (!yo.nombre) {
-    aviso($('#estado'), 'Primer ingreso: completá tus datos en "Mi perfil" para poder recibir turnos online.', 'info');
+  // Un admin ve la vista de administración; si además atiende (tiene alquileres), puede alternar.
+  st.atiende = !yo.es_admin;
+  if (yo.es_admin) {
+    const { count } = await sb.from('alquileres').select('id', { count: 'exact', head: true }).eq('profesional_id', yo.id);
+    st.atiende = Boolean(count) || yo.publico;
   }
-  cargarSemana(lunesDe(hoy()));
+  let preferida = null;
+  try { preferida = localStorage.getItem(`vista-${yo.id}`); } catch { /* sin almacenamiento */ }
+  aplicarVista(yo.es_admin && !(st.atiende && preferida === 'pro') ? 'admin' : 'pro');
 }
+
+/** Muestra las pestañas de una vista ("pro" o "admin") y abre la primera. */
+function aplicarVista(vista) {
+  st.vista = vista;
+  try { localStorage.setItem(`vista-${st.yo.id}`, vista); } catch { /* sin almacenamiento */ }
+  const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
+  tabs.forEach((t) => { t.hidden = !t.dataset.vistas.split(' ').includes(vista); });
+  $('#modo-badge').hidden = vista !== 'admin';
+  const cambiar = $('#cambiar-vista');
+  cambiar.hidden = !(st.yo.es_admin && st.atiende);
+  cambiar.textContent = vista === 'admin' ? 'Ver mi agenda' : 'Ir a administración';
+  $('#cal-ayuda').textContent = vista === 'admin'
+    ? 'Franjas de color: horarios alquilados por cada profesional. Los turnos se ven como ocupados: los datos de pacientes quedan solo para cada profesional. Tocá un día para verlo solo.'
+    : 'Franjas de color: horarios alquilados. Tus turnos llevan el nombre del paciente; los de colegas se ven como ocupados. Tocá un día para verlo solo.';
+  aviso($('#estado'), vista === 'pro' && !st.yo.nombre
+    ? 'Primer ingreso: completá tus datos en "Mi perfil" para poder recibir turnos online.' : '', 'info');
+  tabs.find((t) => !t.hidden).click();
+}
+
+$('#cambiar-vista').addEventListener('click', () => aplicarVista(st.vista === 'admin' ? 'pro' : 'admin'));
 
 $('#login-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -80,10 +104,10 @@ $('#salir').addEventListener('click', () => sb.auth.signOut());
 document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => tab.addEventListener('click', () => {
   document.querySelectorAll('.tabs [role="tab"]').forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
   document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
-  if (tab.dataset.tab === 'agenda') cargarSemana(st.semana);
+  if (tab.dataset.tab === 'agenda') cargarSemana(st.semana || lunesDe(hoy()));
   if (tab.dataset.tab === 'calendario') cargarCalendario(st.cal.desde);
   if (tab.dataset.tab === 'perfil') cargarPerfil();
-  if (tab.dataset.tab === 'admin') cargarAdmin();
+  if (['reservas', 'profesionales', 'consultorios'].includes(tab.dataset.tab)) cargarAdmin();
 }));
 
 // ───────────────────────── Agenda ─────────────────────────
