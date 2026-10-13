@@ -3,7 +3,7 @@ import {
   hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp, URL_FEED,
 } from './comun.js';
 
-const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [], cal: { semana: null, dia: null, datos: [] } };
+const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [], cal: { desde: null, dias: null, box: null, datos: [] } };
 const hoy = () => fechaLocal(new Date());
 const ddmm = (iso) => iso.split('-').reverse().slice(0, 2).join('/');
 const ddmmaa = (iso) => iso.split('-').reverse().join('/');
@@ -81,7 +81,7 @@ document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => tab.addEventLis
   document.querySelectorAll('.tabs [role="tab"]').forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
   document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
   if (tab.dataset.tab === 'agenda') cargarSemana(st.semana);
-  if (tab.dataset.tab === 'calendario') cargarCalendario(st.cal.semana || lunesDe(hoy()), st.cal.dia);
+  if (tab.dataset.tab === 'calendario') cargarCalendario(st.cal.desde);
   if (tab.dataset.tab === 'perfil') cargarPerfil();
   if (tab.dataset.tab === 'admin') cargarAdmin();
 }));
@@ -213,99 +213,160 @@ $('#turno-form').addEventListener('submit', async (ev) => {
 });
 
 // ───────────────────────── Calendario consolidado ─────────────────────────
-// Vista por día: una columna por consultorio, alquileres como franjas y turnos encima.
+// Vista tipo agenda: una columna por día. Los alquileres que se superponen en el tiempo (distintos
+// consultorios) se reparten el ancho; los que no, usan la columna entera. Cada turno va dentro de su alquiler.
 
-const PX_MIN = 1.1; // alto de un minuto en la grilla
+const PX_MIN = 1; // alto de un minuto en la grilla
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const DIAS_CORTOS = ['', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
 const minDelDia = (iso) => { const [a, b] = hora(iso).split(':').map(Number); return a * 60 + b; };
+const dowDe = (f) => new Date(`${f}T12:00:00Z`).getUTCDay() || 7;
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
 
-async function cargarCalendario(lunes, dia) {
-  st.cal.semana = lunes;
-  if (dia) st.cal.dia = dia;
-  const domingo = sumarDias(lunes, 6);
-  $('#cal-titulo').textContent = `${diaDeFecha(lunes)} – ${diaDeFecha(domingo)}`;
+function vistaInicial() {
+  try { const v = Number(localStorage.getItem('cal-vista')); if ([1, 3, 7].includes(v)) return v; } catch { /* sin almacenamiento */ }
+  return window.matchMedia('(min-width: 760px)').matches ? 7 : 3;
+}
+
+function inicioPara(fecha, dias) { return dias === 7 ? lunesDe(fecha) : fecha; }
+
+async function cargarCalendario(desde) {
+  const c = st.cal;
+  if (!c.dias) { c.dias = vistaInicial(); $('#cal-vista').value = String(c.dias); }
+  if (c.box == null) c.box = 'todos';
+  c.desde = inicioPara(desde || c.desde || hoy(), c.dias);
+  const hasta = sumarDias(c.desde, c.dias - 1);
+  const pedido = `${c.desde}|${c.dias}`;
+  c.pedido = pedido;
   aviso($('#cal-estado'), 'Cargando…', 'info');
   const [oc, bx] = await Promise.all([
-    sb.rpc('ocupacion', { p_desde: lunes, p_hasta: domingo }),
+    sb.rpc('ocupacion', { p_desde: c.desde, p_hasta: hasta }),
     sb.from('consultorios').select('*').eq('activo', true).order('id'),
   ]);
-  if (st.cal.semana !== lunes) return;
+  if (c.pedido !== pedido) return; // el usuario ya cambió de rango
   const error = oc.error || bx.error;
   if (error) return aviso($('#cal-estado'), mensajeError(error));
   aviso($('#cal-estado'), '');
-  st.cal.datos = oc.data;
+  c.datos = oc.data;
   st.consultorios = bx.data;
-  // El día elegido puede haber cambiado mientras cargaba: se respeta el último.
-  const d = st.cal.dia;
-  st.cal.dia = d && d >= lunes && d <= domingo ? d : (hoy() >= lunes && hoy() <= domingo ? hoy() : lunes);
+  const sel = $('#cal-box');
+  sel.replaceChildren(h('option', { value: 'todos' }, 'Todos los consultorios'), ...bx.data.map((b) => h('option', { value: b.id }, b.nombre)));
+  if (c.box !== 'todos' && !bx.data.some((b) => String(b.id) === String(c.box))) c.box = 'todos';
+  sel.value = String(c.box);
   dibujarCalendario();
 }
 
+/** Reparte en columnas los bloques que se superponen, como un calendario: devuelve col y total por bloque. */
+function repartir(bloques) {
+  const orden = [...bloques].sort((a, b) => a.ini - b.ini || b.fin - a.fin);
+  let grupo = [], finGrupo = -1;
+  const cerrar = () => { const total = Math.max(...grupo.map((b) => b.col)) + 1; grupo.forEach((b) => { b.total = total; }); grupo = []; };
+  for (const b of orden) {
+    if (grupo.length && b.ini >= finGrupo) cerrar();
+    const ocupadas = grupo.filter((x) => x.fin > b.ini).map((x) => x.col);
+    b.col = 0;
+    while (ocupadas.includes(b.col)) b.col++;
+    grupo.push(b);
+    finGrupo = Math.max(finGrupo, b.fin);
+  }
+  if (grupo.length) cerrar();
+  return orden;
+}
+
+function tituloRango(desde, hasta) {
+  const [y1, m1] = desde.split('-').map(Number), [y2, m2] = hasta.split('-').map(Number);
+  if (y1 === y2 && m1 === m2) return `${cap(MESES[m1 - 1])} ${y1}`;
+  if (y1 === y2) return `${cap(MESES[m1 - 1].slice(0, 3))} – ${MESES[m2 - 1].slice(0, 3)} ${y1}`;
+  return `${cap(MESES[m1 - 1].slice(0, 3))} ${y1} – ${MESES[m2 - 1].slice(0, 3)} ${y2}`;
+}
+
 function dibujarCalendario() {
-  const { semana, dia, datos } = st.cal;
+  const c = st.cal;
+  const fechas = Array.from({ length: c.dias }, (_, i) => sumarDias(c.desde, i));
+  $('#cal-titulo').textContent = tituloRango(fechas[0], fechas.at(-1));
 
-  // Colores estables por profesional (orden alfabético)
-  const pros = [...new Map(datos.map((x) => [x.profesional_id, x.profesional])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  const boxes = st.consultorios.filter((b) => c.box === 'todos' || String(b.id) === String(c.box));
+  const visibles = new Set(boxes.map((b) => b.id));
+  const datos = c.datos.filter((x) => visibles.has(x.consultorio_id));
+  const corto = (nombre) => (nombre || '').replace(/^box\s*/i, 'B');
+
+  // Colores estables por profesional (orden alfabético, sobre todo lo cargado)
+  const pros = [...new Map(c.datos.map((x) => [x.profesional_id, x.profesional])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
   const color = new Map(pros.map(([id], i) => [id, `var(--p${(i % 6) + 1})`]));
-
-  // Tira de días con cantidad de turnos
-  $('#cal-dias').replaceChildren(...[0, 1, 2, 3, 4, 5, 6].map((i) => {
-    const f = sumarDias(semana, i);
-    const n = datos.filter((x) => x.tipo === 'turno' && fechaLocal(x.inicio) === f).length;
-    const [nombre, num] = diaDeFecha(f).replace(',', '').split(' ');
-    return h('button', {
-      type: 'button', class: f === hoy() ? 'hoy' : null, 'aria-pressed': String(f === dia),
-      onclick: () => { st.cal.dia = f; dibujarCalendario(); },
-    }, nombre, h('strong', {}, num), h('span', {}, n ? `${n} turno${n === 1 ? '' : 's'}` : '—'));
-  }));
-
   $('#cal-leyenda').replaceChildren(...pros.map(([id, nombre]) => h('span', { style: `--c:${color.get(id)}` }, h('i'), id === st.yo.id ? `${nombre} (vos)` : nombre)));
 
-  const delDia = datos.filter((x) => fechaLocal(x.inicio) === dia);
-  const boxes = st.consultorios;
   const grilla = $('#cal-grilla');
   if (!boxes.length) { grilla.replaceChildren(); return aviso($('#cal-estado'), 'Todavía no hay consultorios cargados.', 'info'); }
 
-  // Rango horario: lo ocupado ese día, como mínimo 8 a 20
+  // Rango horario: lo ocupado en el período, como mínimo 8 a 20
   let desde = 8 * 60, hasta = 20 * 60;
-  for (const x of delDia) { desde = Math.min(desde, minDelDia(x.inicio)); hasta = Math.max(hasta, minDelDia(x.fin) || 24 * 60); }
+  for (const x of datos) { desde = Math.min(desde, minDelDia(x.inicio)); hasta = Math.max(hasta, minDelDia(x.fin) || 24 * 60); }
   desde = Math.floor(desde / 60) * 60; hasta = Math.ceil(hasta / 60) * 60;
   const y = (m) => `${(m - desde) * PX_MIN}px`;
-  grilla.style.setProperty('--cols', boxes.length);
+  grilla.style.setProperty('--dias', c.dias);
+  grilla.style.setProperty('--min-dia', c.dias === 7 ? '6.5rem' : '0px');
   grilla.style.setProperty('--alto', `${(hasta - desde) * PX_MIN}px`);
   grilla.style.setProperty('--hora', `${60 * PX_MIN}px`);
+
+  const lugar = (b, margen = 2) => `left:calc(${(b.col / b.total) * 100}% + ${margen}px);width:calc(${100 / b.total}% - ${margen + 2}px)`;
+  const cabeceras = fechas.map((f) => h('button', {
+    type: 'button', class: `cal-cab${f === hoy() ? ' hoy' : ''}`, title: 'Ver este día',
+    onclick: () => { c.dias = 1; $('#cal-vista').value = '1'; cargarCalendario(f); },
+  }, h('small', {}, DIAS_CORTOS[dowDe(f)]), h('strong', {}, String(Number(f.slice(8))))));
 
   const horas = h('div', { class: 'cal-horas' });
   for (let m = desde + 60; m < hasta; m += 60) horas.append(h('span', { style: `top:${y(m)}` }, `${String(m / 60).padStart(2, '0')}:00`));
 
-  const ahora = dia === hoy() ? minDelDia(new Date().toISOString()) : null;
-  const columnas = boxes.map((b) => {
-    const col = h('div', { class: 'cal-col' });
-    for (const x of delDia.filter((z) => z.consultorio_id === b.id).sort((p, q) => (p.tipo === q.tipo ? 0 : p.tipo === 'alquiler' ? -1 : 1))) {
-      const ini = minDelDia(x.inicio), fin = minDelDia(x.fin) || 24 * 60;
-      const pos = `top:${y(ini)};height:${(fin - ini) * PX_MIN - 2}px;--c:${color.get(x.profesional_id)}`;
-      const rango = `${hora(x.inicio)}–${hora(x.fin)}`;
-      if (x.tipo === 'alquiler') {
-        col.append(h('div', { class: 'cal-alq', style: pos, title: `${x.profesional} · ${rango}` }, h('b', {}, x.profesional), rango));
-      } else {
-        col.append(x.propio
-          ? h('div', { class: 'cal-tur propio', style: pos, title: `${rango} · ${x.paciente}` }, `${hora(x.inicio)} ${x.paciente}`)
-          : h('div', { class: 'cal-tur ajeno', style: pos, title: `${rango} · ocupado (${x.profesional})` }, `${hora(x.inicio)} · ${x.profesional}`));
-      }
+  const ahoraMin = minDelDia(new Date().toISOString());
+  const columnas = fechas.map((f) => {
+    const col = h('div', { class: `cal-col${f === hoy() ? ' hoy' : ''}` });
+    const delDia = datos.filter((x) => fechaLocal(x.inicio) === f);
+    const minutos = (x) => ({ ini: minDelDia(x.inicio), fin: minDelDia(x.fin) || 24 * 60 });
+    const alquileres = delDia.filter((z) => z.tipo === 'alquiler').map((x) => ({ x, ...minutos(x) }));
+    const turnos = delDia.filter((z) => z.tipo === 'turno').map((x) => ({ x, ...minutos(x) }));
+    // Cada turno va dentro de su alquiler; si no tiene (ej. alquiler ya terminado), ocupa su propio lugar.
+    for (const t of turnos) {
+      t.padre = alquileres.find((a) => a.x.consultorio_id === t.x.consultorio_id && a.x.profesional_id === t.x.profesional_id && a.ini <= t.ini && a.fin >= t.fin);
     }
-    if (ahora != null && ahora > desde && ahora < hasta) col.append(h('div', { class: 'cal-ahora', style: `top:${y(ahora)}`, title: 'Ahora' }));
+    repartir([...alquileres, ...turnos.filter((t) => !t.padre)]);
+
+    for (const a of alquileres) {
+      const x = a.x;
+      col.append(h('div', {
+        class: 'cal-alq', title: `${x.profesional} · ${x.consultorio} · ${hora(x.inicio)}–${hora(x.fin)}`,
+        style: `top:${y(a.ini)};height:${(a.fin - a.ini) * PX_MIN - 1}px;--c:${color.get(x.profesional_id)};${lugar(a)}`,
+      }, h('b', {}, x.profesional), h('span', {}, `${corto(x.consultorio)} · ${hora(x.inicio)}–${hora(x.fin)}`)));
+    }
+    for (const t of turnos) {
+      const x = t.x;
+      const alto = (t.fin - t.ini) * PX_MIN - 2;
+      const pos = `top:${y(t.ini)};height:${alto}px;--c:${color.get(x.profesional_id)};${t.padre ? lugar(t.padre, 7) : lugar(t)}`;
+      const rango = `${hora(x.inicio)}–${hora(x.fin)}`;
+      col.append(x.propio
+        ? h('div', { class: 'cal-tur propio', style: pos, title: `${x.paciente} · ${rango} · ${x.consultorio}` },
+          h('b', {}, x.paciente), alto > 26 ? h('span', {}, rango) : null)
+        : h('div', { class: 'cal-tur ajeno', style: pos, title: `Ocupado · ${x.profesional} · ${rango} · ${x.consultorio}` },
+          h('b', {}, 'Ocupado'), alto > 26 ? h('span', {}, rango) : null));
+    }
+    if (f === hoy() && ahoraMin > desde && ahoraMin < hasta) col.append(h('div', { class: 'cal-ahora', style: `top:${y(ahoraMin)}`, title: 'Ahora' }));
     return col;
   });
 
-  grilla.replaceChildren(
-    h('div', { class: 'cal-head' }), ...boxes.map((b) => h('div', { class: 'cal-head' }, b.nombre)),
-    horas, ...columnas,
-  );
-  if (!delDia.length) aviso($('#cal-estado'), `Sin alquileres ni turnos el ${diaLargo(instante(dia, '12:00'))}.`, 'info');
+  grilla.replaceChildren(h('div', { class: 'cal-esquina' }), ...cabeceras, horas, ...columnas);
+  if (!datos.length) aviso($('#cal-estado'), 'Sin alquileres ni turnos en estas fechas.', 'info');
+
 }
 
-$('#cal-ant').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.semana, -7), sumarDias(st.cal.dia, -7)));
-$('#cal-sig').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.semana, 7), sumarDias(st.cal.dia, 7)));
-$('#cal-hoy').addEventListener('click', () => cargarCalendario(lunesDe(hoy()), hoy()));
+$('#cal-ant').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.desde, -st.cal.dias)));
+$('#cal-sig').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.desde, st.cal.dias)));
+$('#cal-hoy').addEventListener('click', () => cargarCalendario(hoy()));
+$('#cal-vista').addEventListener('change', (e) => {
+  const centro = st.cal.dias === 7 && hoy() >= st.cal.desde && hoy() <= sumarDias(st.cal.desde, 6) ? hoy() : st.cal.desde;
+  st.cal.dias = Number(e.target.value);
+  try { localStorage.setItem('cal-vista', e.target.value); } catch { /* sin almacenamiento */ }
+  cargarCalendario(centro);
+});
+$('#cal-box').addEventListener('change', (e) => { st.cal.box = e.target.value; dibujarCalendario(); });
 
 // ───────────────────────── Perfil ─────────────────────────
 

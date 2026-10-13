@@ -65,21 +65,29 @@
 
     <!-- Calendario consolidado -->
     <section data-panel="calendario" class="stack" style="margin-top:1rem" hidden>
-      <div class="card">
-        <div class="row between">
-          <h2>Calendario de consultorios</h2>
-          <button class="btn link" id="cal-hoy">Ir a hoy</button>
+      <div class="card cal-card">
+        <div class="cal-barra">
+          <button class="btn ghost sm" id="cal-hoy">Hoy</button>
+          <div class="row" style="gap:.15rem">
+            <button class="cal-flecha" id="cal-ant" aria-label="Anterior">‹</button>
+            <button class="cal-flecha" id="cal-sig" aria-label="Siguiente">›</button>
+          </div>
+          <h2 id="cal-titulo" class="cal-titulo"></h2>
+          <div class="cal-controles">
+            <label class="sr" for="cal-box">Consultorio</label>
+            <select id="cal-box" class="cal-select"></select>
+            <label class="sr" for="cal-vista">Vista</label>
+            <select id="cal-vista" class="cal-select">
+              <option value="1">Día</option>
+              <option value="3">3 días</option>
+              <option value="7">Semana</option>
+            </select>
+          </div>
         </div>
-        <div class="semana-nav">
-          <button class="btn ghost sm" id="cal-ant" aria-label="Semana anterior">←</button>
-          <strong id="cal-titulo"></strong>
-          <button class="btn ghost sm" id="cal-sig" aria-label="Semana siguiente">→</button>
-        </div>
-        <div class="cal-dias" id="cal-dias" role="group" aria-label="Día de la semana"></div>
-        <div id="cal-estado"></div>
         <div class="cal-leyenda" id="cal-leyenda"></div>
+        <div id="cal-estado"></div>
         <div class="cal-scroll"><div class="cal-grilla" id="cal-grilla"></div></div>
-        <p class="small muted">Las franjas de color son los alquileres. Tus turnos aparecen con el nombre del paciente; los de colegas, solo como ocupados.</p>
+        <p class="small muted">Franjas de color: horarios alquilados. Tus turnos llevan el nombre del paciente; los de colegas se ven como ocupados. Tocá un día para verlo solo.</p>
       </div>
     </section>
 
