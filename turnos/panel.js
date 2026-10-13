@@ -256,16 +256,21 @@ async function cargarCalendario(desde) {
   dibujarCalendario();
 }
 
-/** Reparte en columnas los bloques que se superponen, como un calendario: devuelve col y total por bloque. */
+/**
+ * Reparte el ancho entre bloques que se superponen, como un calendario. Dentro de un grupo de bloques
+ * simultáneos, cada consultorio tiene su columna y siempre en el mismo orden (Box 1 a la izquierda).
+ * Un mismo consultorio nunca se superpone consigo mismo: la base lo impide.
+ */
 function repartir(bloques) {
   const orden = [...bloques].sort((a, b) => a.ini - b.ini || b.fin - a.fin);
   let grupo = [], finGrupo = -1;
-  const cerrar = () => { const total = Math.max(...grupo.map((b) => b.col)) + 1; grupo.forEach((b) => { b.total = total; }); grupo = []; };
+  const cerrar = () => {
+    const boxes = [...new Set(grupo.map((b) => b.x.consultorio_id))].sort((a, b) => a - b);
+    for (const b of grupo) { b.col = boxes.indexOf(b.x.consultorio_id); b.total = boxes.length; }
+    grupo = [];
+  };
   for (const b of orden) {
     if (grupo.length && b.ini >= finGrupo) cerrar();
-    const ocupadas = grupo.filter((x) => x.fin > b.ini).map((x) => x.col);
-    b.col = 0;
-    while (ocupadas.includes(b.col)) b.col++;
     grupo.push(b);
     finGrupo = Math.max(finGrupo, b.fin);
   }
