@@ -410,6 +410,121 @@ begin
       and (t.fin at time zone tz())::time <= a.hora_fin);
 end $$;
 
+-- ───────────────────────────── Calendario consolidado ─────────────────────────────
+-- Alquileres y turnos de todos los consultorios en un rango de fechas, para la vista de calendario.
+-- Cada profesional ve el nombre de SUS pacientes; de los demás solo "ocupado".
+create or replace function public.ocupacion(p_desde date, p_hasta date)
+returns table (
+  tipo text, consultorio_id smallint, consultorio text,
+  profesional_id uuid, profesional text,
+  inicio timestamptz, fin timestamptz,
+  propio boolean, paciente text, turno_id bigint
+)
+language plpgsql stable security definer set search_path = public as $$
+#variable_conflict use_column
+begin
+  if not soy_activo() then
+    raise exception 'Solo para profesionales habilitados';
+  end if;
+  if p_hasta < p_desde or p_hasta - p_desde > 31 then
+    raise exception 'Rango de fechas inválido (máximo 31 días)';
+  end if;
+
+  return query
+  select 'alquiler'::text, a.consultorio_id, c.nombre,
+         a.profesional_id, coalesce(nullif(p.nombre, ''), p.email),
+         (d.dia + a.hora_inicio) at time zone tz(), (d.dia + a.hora_fin) at time zone tz(),
+         a.profesional_id = auth.uid(), null::text, null::bigint
+  from (select g::date as dia from generate_series(p_desde, p_hasta, interval '1 day') g) d
+  join alquileres a on a.dia_semana = extract(isodow from d.dia)
+                   and d.dia between a.vigente_desde and a.vigente_hasta
+  join consultorios c on c.id = a.consultorio_id
+  join profesionales p on p.id = a.profesional_id
+  union all
+  select 'turno'::text, t.consultorio_id, c.nombre,
+         t.profesional_id, coalesce(nullif(p.nombre, ''), p.email),
+         t.inicio, t.fin,
+         t.profesional_id = auth.uid(),
+         case when t.profesional_id = auth.uid() then t.paciente_nombre end,
+         case when t.profesional_id = auth.uid() then t.id end
+  from turnos t
+  join consultorios c on c.id = t.consultorio_id
+  join profesionales p on p.id = t.profesional_id
+  where t.estado = 'confirmado'
+    and t.inicio >= (p_desde::timestamp) at time zone tz()
+    and t.inicio <  ((p_hasta + 1)::timestamp) at time zone tz();
+end $$;
+
+-- ───────────────────────────── Feed para Google Calendar ─────────────────────────────
+-- Cada profesional tiene un link secreto que devuelve sus turnos en formato iCalendar (.ics).
+-- El token vive en una tabla aparte para que los colegas no lo puedan leer.
+create table public.calendario_tokens (
+  profesional_id uuid primary key default auth.uid() references public.profesionales (id) on delete cascade,
+  token          uuid not null default gen_random_uuid() unique,
+  creado         timestamptz not null default now()
+);
+alter table public.calendario_tokens enable row level security;
+create policy calendario_token_propio on public.calendario_tokens for all to authenticated
+  using (soy_activo() and profesional_id = auth.uid())
+  with check (soy_activo() and profesional_id = auth.uid());
+revoke all on public.calendario_tokens from anon;
+
+create or replace function public.ics_texto(t text) returns text
+language sql immutable as $$
+  select replace(replace(replace(replace(coalesce(t, ''), '\', '\\'), ';', '\;'), ',', '\,'), E'\n', '\n')
+$$;
+
+create or replace function public.ics_fecha(t timestamptz) returns text
+language sql immutable as $$ select to_char(t at time zone 'UTC', 'YYYYMMDD"T"HH24MISS"Z"') $$;
+
+-- Turnos confirmados del profesional dueño del token: último mes y próximos 4 meses.
+create or replace function public.calendario_ics(p_token uuid) returns text
+language plpgsql stable security definer set search_path = public as $$
+declare
+  p   profesionales;
+  crlf constant text := E'\r\n';
+  out text;
+begin
+  select pr.* into p
+  from calendario_tokens k join profesionales pr on pr.id = k.profesional_id
+  where k.token = p_token and pr.activo;
+  if p.id is null then
+    return null;
+  end if;
+
+  out := 'BEGIN:VCALENDAR' || crlf
+      || 'VERSION:2.0' || crlf
+      || 'PRODID:-//Consultorios Dina Huapi//Turnos//ES' || crlf
+      || 'CALSCALE:GREGORIAN' || crlf
+      || 'METHOD:PUBLISH' || crlf
+      || 'X-WR-CALNAME:' || ics_texto('Turnos · ' || coalesce(nullif(p.nombre, ''), p.email)) || crlf
+      || 'X-WR-TIMEZONE:' || tz() || crlf
+      || 'REFRESH-INTERVAL;VALUE=DURATION:PT1H' || crlf
+      || 'X-PUBLISHED-TTL:PT1H' || crlf;
+
+  out := out || coalesce((
+    select string_agg(
+         'BEGIN:VEVENT' || crlf
+      || 'UID:turno-' || t.id || '@consultoriosdinahuapi' || crlf
+      || 'DTSTAMP:' || ics_fecha(t.creado) || crlf
+      || 'DTSTART:' || ics_fecha(t.inicio) || crlf
+      || 'DTEND:' || ics_fecha(t.fin) || crlf
+      || 'SUMMARY:' || ics_texto(t.paciente_nombre) || crlf
+      || 'LOCATION:' || ics_texto(coalesce(c.nombre || ' · ', '') || 'Consultorios Dina Huapi') || crlf
+      || 'DESCRIPTION:' || ics_texto('Tel: ' || t.paciente_telefono
+                                     || case when t.nota <> '' then E'\n' || t.nota else '' end
+                                     || case when t.origen = 'online' then E'\nReservado online' else '' end) || crlf
+      || 'END:VEVENT' || crlf, '' order by t.inicio)
+    from turnos t
+    left join consultorios c on c.id = t.consultorio_id
+    where t.profesional_id = p.id
+      and t.estado = 'confirmado'
+      and t.inicio > now() - interval '30 days'
+      and t.inicio < now() + interval '120 days'), '');
+
+  return out || 'END:VCALENDAR' || crlf;
+end $$;
+
 revoke execute on all functions in schema public from public, anon;
 grant execute on function
   public.profesionales_publicos(),
@@ -417,6 +532,8 @@ grant execute on function
   public.reservar_turno(uuid, timestamptz, text, text, text),
   public.turno_por_token(uuid),
   public.cancelar_turno(uuid),
+  public.calendario_ics(uuid),
   public.tz()
 to anon, authenticated;
-grant execute on function public.soy_activo(), public.soy_admin(), public.turnos_en_alquiler(bigint, date) to authenticated;
+grant execute on function public.soy_activo(), public.soy_admin(), public.turnos_en_alquiler(bigint, date),
+  public.ocupacion(date, date) to authenticated;

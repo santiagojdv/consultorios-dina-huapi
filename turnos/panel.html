@@ -39,6 +39,7 @@
   <div id="app" hidden>
     <nav class="tabs" role="tablist">
       <button role="tab" data-tab="agenda" aria-selected="true">Agenda</button>
+      <button role="tab" data-tab="calendario" aria-selected="false">Calendario</button>
       <button role="tab" data-tab="perfil" aria-selected="false">Mi perfil</button>
       <button role="tab" data-tab="admin" aria-selected="false" id="tab-admin" hidden>Administración</button>
     </nav>
@@ -59,6 +60,26 @@
           <label class="check"><input type="checkbox" id="ag-libres" checked> Mostrar horarios libres</label></div>
         <div id="ag-estado"></div>
         <div class="dias" id="ag-dias"></div>
+      </div>
+    </section>
+
+    <!-- Calendario consolidado -->
+    <section data-panel="calendario" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <div class="row between">
+          <h2>Calendario de consultorios</h2>
+          <button class="btn link" id="cal-hoy">Ir a hoy</button>
+        </div>
+        <div class="semana-nav">
+          <button class="btn ghost sm" id="cal-ant" aria-label="Semana anterior">←</button>
+          <strong id="cal-titulo"></strong>
+          <button class="btn ghost sm" id="cal-sig" aria-label="Semana siguiente">→</button>
+        </div>
+        <div class="cal-dias" id="cal-dias" role="group" aria-label="Día de la semana"></div>
+        <div id="cal-estado"></div>
+        <div class="cal-leyenda" id="cal-leyenda"></div>
+        <div class="cal-scroll"><div class="cal-grilla" id="cal-grilla"></div></div>
+        <p class="small muted">Las franjas de color son los alquileres. Tus turnos aparecen con el nombre del paciente; los de colegas, solo como ocupados.</p>
       </div>
     </section>
 
@@ -85,6 +106,21 @@
         <h2>Mi link para pacientes</h2>
         <p class="muted small">Compartilo por WhatsApp o en redes: abre la reserva directamente con vos.</p>
         <div class="row"><code id="mi-link" class="small" style="overflow-wrap:anywhere"></code><button class="btn ghost sm" id="copiar-link">Copiar</button></div>
+      </div>
+      <div class="card">
+        <h2>Ver mis turnos en Google Calendar</h2>
+        <p class="muted small">Un link privado que Google Calendar (o el calendario del iPhone) consulta solo. Muestra tus turnos con nombre y teléfono del paciente: no lo compartas.</p>
+        <div id="feed-estado"></div>
+        <div class="stack" id="feed-caja" hidden>
+          <div class="row"><code id="feed-link" class="small" style="overflow-wrap:anywhere"></code><button class="btn ghost sm" id="feed-copiar">Copiar</button></div>
+          <ol class="small muted" style="margin:0;padding-left:1.2rem">
+            <li>En la compu, abrí Google Calendar → <em>Otros calendarios</em> → <strong>+</strong> → <em>Desde URL</em>, pegá el link y guardá. Después aparece también en la app del celular.</li>
+            <li>En iPhone: <a id="feed-webcal" href="#">tocá acá para suscribirte</a>.</li>
+            <li>Google actualiza estos calendarios cada varias horas, no al instante. Para lo último, mirá la agenda de este panel.</li>
+          </ol>
+          <div><button class="btn link" id="feed-regenerar">Generar un link nuevo (el anterior deja de funcionar)</button></div>
+        </div>
+        <div><button class="btn ghost" id="feed-crear" hidden>Crear mi link</button></div>
       </div>
       <div class="card">
         <h2>Mis horarios alquilados</h2>

@@ -1,9 +1,9 @@
 import {
   sb, configurado, faltaConfig, $, h, aviso, mensajeError, DIAS,
-  hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp,
+  hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp, URL_FEED,
 } from './comun.js';
 
-const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [] };
+const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [], cal: { semana: null, dia: null, datos: [] } };
 const hoy = () => fechaLocal(new Date());
 const ddmm = (iso) => iso.split('-').reverse().slice(0, 2).join('/');
 const ddmmaa = (iso) => iso.split('-').reverse().join('/');
@@ -77,10 +77,11 @@ $('#salir').addEventListener('click', () => sb.auth.signOut());
 
 // ───────────────────────── Pestañas ─────────────────────────
 
-document.querySelectorAll('[role="tab"]').forEach((tab) => tab.addEventListener('click', () => {
-  document.querySelectorAll('[role="tab"]').forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => tab.addEventListener('click', () => {
+  document.querySelectorAll('.tabs [role="tab"]').forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
   document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
   if (tab.dataset.tab === 'agenda') cargarSemana(st.semana);
+  if (tab.dataset.tab === 'calendario') cargarCalendario(st.cal.semana || lunesDe(hoy()), st.cal.dia);
   if (tab.dataset.tab === 'perfil') cargarPerfil();
   if (tab.dataset.tab === 'admin') cargarAdmin();
 }));
@@ -211,6 +212,101 @@ $('#turno-form').addEventListener('submit', async (ev) => {
   cargarSemana(lunesDe(fecha));
 });
 
+// ───────────────────────── Calendario consolidado ─────────────────────────
+// Vista por día: una columna por consultorio, alquileres como franjas y turnos encima.
+
+const PX_MIN = 1.1; // alto de un minuto en la grilla
+const minDelDia = (iso) => { const [a, b] = hora(iso).split(':').map(Number); return a * 60 + b; };
+
+async function cargarCalendario(lunes, dia) {
+  st.cal.semana = lunes;
+  if (dia) st.cal.dia = dia;
+  const domingo = sumarDias(lunes, 6);
+  $('#cal-titulo').textContent = `${diaDeFecha(lunes)} – ${diaDeFecha(domingo)}`;
+  aviso($('#cal-estado'), 'Cargando…', 'info');
+  const [oc, bx] = await Promise.all([
+    sb.rpc('ocupacion', { p_desde: lunes, p_hasta: domingo }),
+    sb.from('consultorios').select('*').eq('activo', true).order('id'),
+  ]);
+  if (st.cal.semana !== lunes) return;
+  const error = oc.error || bx.error;
+  if (error) return aviso($('#cal-estado'), mensajeError(error));
+  aviso($('#cal-estado'), '');
+  st.cal.datos = oc.data;
+  st.consultorios = bx.data;
+  // El día elegido puede haber cambiado mientras cargaba: se respeta el último.
+  const d = st.cal.dia;
+  st.cal.dia = d && d >= lunes && d <= domingo ? d : (hoy() >= lunes && hoy() <= domingo ? hoy() : lunes);
+  dibujarCalendario();
+}
+
+function dibujarCalendario() {
+  const { semana, dia, datos } = st.cal;
+
+  // Colores estables por profesional (orden alfabético)
+  const pros = [...new Map(datos.map((x) => [x.profesional_id, x.profesional])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  const color = new Map(pros.map(([id], i) => [id, `var(--p${(i % 6) + 1})`]));
+
+  // Tira de días con cantidad de turnos
+  $('#cal-dias').replaceChildren(...[0, 1, 2, 3, 4, 5, 6].map((i) => {
+    const f = sumarDias(semana, i);
+    const n = datos.filter((x) => x.tipo === 'turno' && fechaLocal(x.inicio) === f).length;
+    const [nombre, num] = diaDeFecha(f).replace(',', '').split(' ');
+    return h('button', {
+      type: 'button', class: f === hoy() ? 'hoy' : null, 'aria-pressed': String(f === dia),
+      onclick: () => { st.cal.dia = f; dibujarCalendario(); },
+    }, nombre, h('strong', {}, num), h('span', {}, n ? `${n} turno${n === 1 ? '' : 's'}` : '—'));
+  }));
+
+  $('#cal-leyenda').replaceChildren(...pros.map(([id, nombre]) => h('span', { style: `--c:${color.get(id)}` }, h('i'), id === st.yo.id ? `${nombre} (vos)` : nombre)));
+
+  const delDia = datos.filter((x) => fechaLocal(x.inicio) === dia);
+  const boxes = st.consultorios;
+  const grilla = $('#cal-grilla');
+  if (!boxes.length) { grilla.replaceChildren(); return aviso($('#cal-estado'), 'Todavía no hay consultorios cargados.', 'info'); }
+
+  // Rango horario: lo ocupado ese día, como mínimo 8 a 20
+  let desde = 8 * 60, hasta = 20 * 60;
+  for (const x of delDia) { desde = Math.min(desde, minDelDia(x.inicio)); hasta = Math.max(hasta, minDelDia(x.fin) || 24 * 60); }
+  desde = Math.floor(desde / 60) * 60; hasta = Math.ceil(hasta / 60) * 60;
+  const y = (m) => `${(m - desde) * PX_MIN}px`;
+  grilla.style.setProperty('--cols', boxes.length);
+  grilla.style.setProperty('--alto', `${(hasta - desde) * PX_MIN}px`);
+  grilla.style.setProperty('--hora', `${60 * PX_MIN}px`);
+
+  const horas = h('div', { class: 'cal-horas' });
+  for (let m = desde + 60; m < hasta; m += 60) horas.append(h('span', { style: `top:${y(m)}` }, `${String(m / 60).padStart(2, '0')}:00`));
+
+  const ahora = dia === hoy() ? minDelDia(new Date().toISOString()) : null;
+  const columnas = boxes.map((b) => {
+    const col = h('div', { class: 'cal-col' });
+    for (const x of delDia.filter((z) => z.consultorio_id === b.id).sort((p, q) => (p.tipo === q.tipo ? 0 : p.tipo === 'alquiler' ? -1 : 1))) {
+      const ini = minDelDia(x.inicio), fin = minDelDia(x.fin) || 24 * 60;
+      const pos = `top:${y(ini)};height:${(fin - ini) * PX_MIN - 2}px;--c:${color.get(x.profesional_id)}`;
+      const rango = `${hora(x.inicio)}–${hora(x.fin)}`;
+      if (x.tipo === 'alquiler') {
+        col.append(h('div', { class: 'cal-alq', style: pos, title: `${x.profesional} · ${rango}` }, h('b', {}, x.profesional), rango));
+      } else {
+        col.append(x.propio
+          ? h('div', { class: 'cal-tur propio', style: pos, title: `${rango} · ${x.paciente}` }, `${hora(x.inicio)} ${x.paciente}`)
+          : h('div', { class: 'cal-tur ajeno', style: pos, title: `${rango} · ocupado (${x.profesional})` }, `${hora(x.inicio)} · ${x.profesional}`));
+      }
+    }
+    if (ahora != null && ahora > desde && ahora < hasta) col.append(h('div', { class: 'cal-ahora', style: `top:${y(ahora)}`, title: 'Ahora' }));
+    return col;
+  });
+
+  grilla.replaceChildren(
+    h('div', { class: 'cal-head' }), ...boxes.map((b) => h('div', { class: 'cal-head' }, b.nombre)),
+    horas, ...columnas,
+  );
+  if (!delDia.length) aviso($('#cal-estado'), `Sin alquileres ni turnos el ${diaLargo(instante(dia, '12:00'))}.`, 'info');
+}
+
+$('#cal-ant').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.semana, -7), sumarDias(st.cal.dia, -7)));
+$('#cal-sig').addEventListener('click', () => cargarCalendario(sumarDias(st.cal.semana, 7), sumarDias(st.cal.dia, 7)));
+$('#cal-hoy').addEventListener('click', () => cargarCalendario(lunesDe(hoy()), hoy()));
+
 // ───────────────────────── Perfil ─────────────────────────
 
 const CAMPOS = { nombre: 'pf-nombre', especialidad: 'pf-esp', telefono: 'pf-tel', duracion_turno: 'pf-dur',
@@ -221,6 +317,7 @@ async function cargarPerfil() {
   for (const [k, id] of Object.entries(CAMPOS)) $(`#${id}`).value = yo[k] ?? '';
   $('#pf-pub').checked = yo.publico;
   $('#mi-link').textContent = new URL(`index.html?p=${yo.id}`, location.href).href;
+  cargarFeed();
 
   const [alq, aus] = await Promise.all([
     sb.from('alquileres').select('*, consultorios(nombre)').eq('profesional_id', yo.id)
@@ -244,6 +341,42 @@ async function cargarPerfil() {
       cargarPerfil();
     } }, 'Quitar'))));
 }
+
+// ── Link de calendario (.ics) ──
+
+async function cargarFeed() {
+  const est = $('#feed-estado');
+  if (!URL_FEED) return aviso(est, 'Falta configurar el sistema.');
+  const { data, error } = await sb.from('calendario_tokens').select('token').eq('profesional_id', st.yo.id).maybeSingle();
+  if (error) return aviso(est, mensajeError(error));
+  aviso(est, '');
+  $('#feed-crear').hidden = Boolean(data);
+  $('#feed-caja').hidden = !data;
+  if (data) {
+    const url = `${URL_FEED}?t=${data.token}`;
+    $('#feed-link').textContent = url;
+    $('#feed-webcal').href = url.replace(/^https?:/, 'webcal:');
+  }
+}
+
+$('#feed-crear').addEventListener('click', async () => {
+  const { error } = await sb.from('calendario_tokens').insert({ profesional_id: st.yo.id });
+  if (error) return aviso($('#feed-estado'), mensajeError(error));
+  cargarFeed();
+});
+
+$('#feed-regenerar').addEventListener('click', async () => {
+  if (!confirm('El link actual va a dejar de funcionar y vas a tener que volver a agregarlo en Google Calendar. ¿Seguir?')) return;
+  const { error } = await sb.from('calendario_tokens').update({ token: crypto.randomUUID() }).eq('profesional_id', st.yo.id);
+  if (error) return aviso($('#feed-estado'), mensajeError(error));
+  cargarFeed();
+  aviso($('#feed-estado'), 'Link nuevo generado. Reemplazalo en Google Calendar.', 'ok');
+});
+
+$('#feed-copiar').addEventListener('click', async (e) => {
+  try { await navigator.clipboard.writeText($('#feed-link').textContent); e.target.textContent = 'Copiado ✓'; }
+  catch { prompt('Copiá el link:', $('#feed-link').textContent); }
+});
 
 $('#perfil-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();

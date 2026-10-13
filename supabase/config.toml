@@ -1,0 +1,4 @@
+# Solo se usa si desplegás con la CLI de Supabase (supabase functions deploy calendario).
+# Google Calendar no manda credenciales: la función tiene que aceptar pedidos sin JWT.
+[functions.calendario]
+verify_jwt = false

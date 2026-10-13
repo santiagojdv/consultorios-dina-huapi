@@ -4,6 +4,8 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 export const TZ = 'America/Argentina/Buenos_Aires';
 export const configurado = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 export const sb = configurado ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+/** Servicio que entrega el calendario .ics de cada profesional (supabase/functions/calendario). */
+export const URL_FEED = configurado ? `${SUPABASE_URL}/functions/v1/calendario` : '';
 
 export const DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
