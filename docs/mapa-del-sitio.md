@@ -1,97 +1,83 @@
 # Mapa del sitio
 
-Copia versionada del diagrama editable en FigJam: https://www.figma.com/board/aByZhh0xM4F626XPdWcg7Y
+Copia versionada del diagrama editable en FigJam: https://www.figma.com/board/aByZhh0xM4F626XPdWcg7Y (el v2 está al lado del original).
 GitHub muestra este diagrama renderizado. Si cambia la estructura, actualizar los dos.
 
-Verde: existe. Amarillo: nuevo, a definir. Naranja: decisión o corrección pendiente.
+Portada: la clínica (pacientes). Desde ahí salen el alquiler para profesionales, la tienda de insumos y los turnos.
+Amarillo: insumos, nuevo. Verde: turnos, ya existía. Gris: sitio de Nati, se arma en otro hilo.
+
+| Ruta | Página |
+|---|---|
+| `/` | Portada de la clínica para pacientes |
+| `/profesionales/` | Alquiler de consultorio |
+| `/insumos/` | Catálogo y pedido de insumos (por WhatsApp) |
+| `/turnos/` | Reserva de pacientes, panel de profesionales y admin |
+| `/nati/` | Sitio de Nati (ruta reservada, otro hilo) |
 
 ```mermaid
 flowchart LR
-    dominio(["Dominio del consultorio"])
+    dominio(["Consultorios Dina Huapi (inicio)"])
 
-    subgraph s1 ["1. Consultorio para profesionales (existe)"]
-        p1Home["Inicio: alquiler de consultorio"]
-        p1Equip["Equipamiento y servicios"]
-        p1Planes["Alquiler mensual (hoy dice paquetes de horas)"]
-        p1Faq["Preguntas frecuentes"]
-        p1Contacto["Contacto"]
+    subgraph s1 ["1. Pacientes: portada de la clínica"]
+        c1Trat["Tratamientos"]
+        c1Equipo["Equipo"]
+        c1Lugar["El consultorio y bioseguridad"]
+        c1Ubic["Ubicación, horarios y obras sociales"]
+        c1Faq["Preguntas frecuentes"]
     end
 
-    subgraph s4 ["4. Consultorio para pacientes (nuevo)"]
-        c4Home["Inicio pacientes"]
-        c4Pros["Profesionales y especialidades"]
-        c4Ubic["Ubicación y horarios"]
-        c4Cta["Sacar turno"]
+    subgraph s2 ["2. Para profesionales: alquiler"]
+        p2Mod["Modalidades: prueba, medio día, día completo"]
+        p2Incl["Qué incluye y equipamiento"]
+        p2Comp["Comparativa propio o compartido"]
+        p2Visita["Pedir visita"]
     end
 
-    subgraph s3 ["3. Sitio de Nati (nuevo)"]
-        n3Home["Inicio Nati"]
-        n3Trat["Tratamientos"]
-        n3Sobre["Sobre mí y matrícula"]
-        n3Cta["Sacar turno con Nati"]
+    subgraph s3 ["3. Insumos: venta a profesionales"]
+        i3Cat["Catálogo por categoría y búsqueda"]
+        i3Pedido["Pedido: cantidades, variantes, matrícula"]
+        i3Entrega{"¿Retiro o envío?"}
     end
 
-    subgraph s2 ["2. Sistema de turnos (existe)"]
-        t2Reserva["Reserva online de pacientes (sin login)"]
-        t2Cancel["Ver o cancelar turno"]
-        t2Login["Login profesionales (link al mail)"]
-        decRol{"¿Es admin?"}
-        vistaPro["Vista profesional: Agenda, Calendario, Mi perfil"]
-        vistaAdmin["Vista admin: Calendario, Reservas, Profesionales, Consultorios"]
+    subgraph s4 ["4. Sistema de turnos"]
+        t4Reserva["Reserva online de pacientes (sin login)"]
+        t4Cancel["Ver o cancelar turno"]
+        t4Login["Login profesionales (link al mail)"]
+        t4Agenda["Agenda, calendario y perfil"]
     end
 
-    pendLogin>"A definir: login de pacientes"]
+    subgraph s5 ["5. Sitio de Nati (otro hilo)"]
+        n5Home["Inicio Nati"]
+    end
+
+    wa[/"WhatsApp de la clínica"/]
     db[("Supabase: base y login")]
     gcal[/"Google Calendar"/]
-    wa[/"WhatsApp"/]
 
-    dominio --> p1Home
-    dominio --> c4Home
-    p1Home --> p1Equip & p1Planes & p1Faq & p1Contacto
-    p1Contacto -.->|"Consulta"| wa
-    p1Home -->|"Acceso profesionales"| t2Login
+    dominio --> c1Trat & c1Equipo & c1Lugar & c1Ubic & c1Faq
+    dominio -->|"Pedir turno"| t4Reserva
+    dominio -->|"Trabajá con nosotros"| p2Mod
+    dominio -->|"Trabajá con nosotros"| i3Cat
+    c1Equipo -->|"Ficha de Nati"| n5Home
+    n5Home -->|"Link directo con Nati"| t4Reserva
 
-    c4Home --> c4Pros & c4Ubic & c4Cta
-    c4Pros -->|"Ficha de Nati"| n3Home
-    c4Cta --> t2Reserva
+    p2Mod --> p2Incl --> p2Comp --> p2Visita
+    p2Visita -.->|"Mensaje armado"| wa
+    p2Incl -->|"Descartables"| i3Cat
+    p2Mod -->|"Agenda incluida"| t4Login
 
-    n3Home --> n3Trat & n3Sobre & n3Cta
-    n3Cta -->|"Link directo con Nati"| t2Reserva
+    i3Cat --> i3Pedido --> i3Entrega
+    i3Entrega -.->|"Pedido armado"| wa
 
-    t2Reserva -->|"Link personal"| t2Cancel
-    t2Login --> decRol
-    decRol -->|"No"| vistaPro
-    decRol -->|"Sí"| vistaAdmin
-    pendLogin -.-> t2Reserva
+    t4Reserva -->|"Link personal"| t4Cancel
+    t4Login --> t4Agenda
+    t4Reserva --> db
+    t4Agenda --> db
+    t4Agenda -.->|"Feed de turnos"| gcal
 
-    t2Reserva --> db
-    vistaPro --> db
-    vistaAdmin --> db
-    vistaPro -.->|"Feed de turnos"| gcal
-    vistaPro -.->|"Avisos a pacientes"| wa
-
-    style s1 fill:#CDF4D3,stroke:#66D575
-    style s2 fill:#CDF4D3,stroke:#66D575
+    style s1 fill:#E8F1F3,stroke:#127285
+    style s2 fill:#E8F1F3,stroke:#127285
     style s3 fill:#FFECBD,stroke:#FFC943
-    style s4 fill:#FFECBD,stroke:#FFC943
-    style pendLogin fill:#FFE0C2,stroke:#FF9E42
-    style p1Planes fill:#FFE0C2,stroke:#FF9E42
+    style s4 fill:#CDF4D3,stroke:#66D575
+    style s5 fill:#F4F7F8,stroke:#D5DDE2
 ```
-
-## Estado por sección
-
-| # | Sección | Público | Estado | Dónde está |
-|---|---|---|---|---|
-| 1 | Consultorio para profesionales | Profesionales que alquilan | Existe (borrador con datos a completar) | `index.html` |
-| 2 | Sistema de turnos | Pacientes y profesionales | Existe, falta configurar Supabase | `turnos/`, `supabase/` |
-| 3 | Sitio de Nati | Pacientes de Nati | Nuevo | — |
-| 4 | Consultorio para pacientes | Pacientes en general | Nuevo | — |
-
-## Decisiones pendientes antes de producción
-
-1. **Dominio y URLs.** ¿Un dominio con secciones (`/profesionales`, `/pacientes`, `/nati`) o dominios separados? Nati con dominio propio es más fuerte como marca personal, pero cuesta más mantenerlo.
-2. **Puerta de entrada.** Hoy la home (`index.html`) les habla a profesionales. Con un sitio para pacientes, la raíz del dominio tiene que decidir a quién le habla primero, o ser una portada con dos caminos.
-3. **Login de pacientes.** Hoy los pacientes reservan sin cuenta (menos fricción). Con login ganan historial y gestión de sus turnos, a cambio de fricción y más datos personales para resguardar.
-4. **Modelo comercial en la sección 1.** El sitio dice "paquetes de horas"; el modelo real es de alquileres mensuales.
-5. **Contenido del sitio de Nati.** Tratamientos, foto, matrícula, obras sociales, ubicación y reseñas. Las reseñas deberían ser reales y verificables.
-6. **Datos personales.** Política de privacidad y registro de la base ante la AAIP (Ley 25.326) antes de abrir la reserva a pacientes.

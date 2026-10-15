@@ -179,3 +179,45 @@ footer.pie { padding-block: 1.5rem 3rem; color: var(--muted); font-size: .82rem;
 .cal-tur.ajeno { background: repeating-linear-gradient(135deg, var(--soft) 0 6px, var(--line) 6px 8px); color: var(--fg); border: 1px solid var(--line); border-left: 3px solid var(--c); }
 .cal-ahora { position: absolute; left: 0; right: 0; height: 2px; background: #D93025; z-index: 2; }
 .cal-ahora::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: #D93025; }
+
+/* ── Sistema visual del manual de marca v3 (igual que el sitio): marino + petróleo, Cormorant Garamond + Poppins ── */
+:root {
+  --p1: #127285; --p2: #2B3B5A; --p3: #A0662B; --p4: #7A4E9C; --p5: #B04A5A; --p6: #4F7A1F;
+  --bg: #F4F7F8;
+  --soft: #F4F7F8;
+  --fg: #2B3B5A;
+  --muted: #6B7585;
+  --line: #D5DDE2;
+  --brand: #127285;
+  --brand-hover: #0E5C6B;
+  --sky: #9CCBD4;
+  --mint: #E3EEF1;
+  --info-bg: #E3EEF1; --info-fg: #0E5C6B;
+  --font: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --shadow: 0 1px 2px rgba(43,59,90,.04), 0 18px 40px -28px rgba(43,59,90,.35);
+  --r: 18px;
+}
+body { font-weight: 300; color: #4B5668; -webkit-font-smoothing: antialiased; }
+strong, b { font-weight: 500; }
+h1 { font-family: var(--serif); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; color: #2B3B5A; font-size: clamp(2.1rem, 6vw, 3rem); line-height: 1.05; font-variant-numeric: lining-nums; }
+h2 { font-weight: 500; color: #2B3B5A; font-size: 1.12rem; }
+h3 { font-weight: 500; color: #2B3B5A; }
+.label { font-weight: 500; letter-spacing: .26em; color: #127285; }
+header.top { background: rgba(255,255,255,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom-color: #D5DDE2; }
+header.top .wrap { padding-block: .85rem; }
+.wordmark .wm span:first-child { font-weight: 300; color: #4B5668; }
+.wordmark .wm span:last-child { color: #2F5D8A; }
+.card { border-color: #D5DDE2; }
+.btn { font-weight: 500; letter-spacing: .01em; }
+.btn.ghost { box-shadow: inset 0 0 0 1px #D5DDE2; color: #2B3B5A; }
+.btn.ghost:hover { box-shadow: inset 0 0 0 1px #2B3B5A; background: transparent; }
+.field input, .field select, .field textarea { border-radius: 12px; font-weight: 300; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #127285; box-shadow: 0 0 0 4px rgba(18,114,133,.12); }
+.field label, .field > span { color: #2B3B5A; }
+.pro { border-radius: 16px; }
+.pro strong { font-weight: 500; color: #2B3B5A; }
+.slot { border-radius: 10px; font-weight: 500; }
+.cal-titulo { font-family: var(--serif); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; color: #2B3B5A; }
+.cal-cab strong { font-weight: 300; }
+footer.pie a { color: inherit; }
