@@ -318,6 +318,10 @@ document.querySelectorAll('[data-plan]').forEach((a) => a.addEventListener('clic
   for (const o of sel.options) if (o.text === a.dataset.plan) sel.value = o.text;
   armar();
 }));
+// Desde la portada se llega con ?plan=prueba|medio|completo#visita
+const PLANES = { prueba: 'Jornada de prueba', medio: 'Medio día semanal', completo: 'Día completo semanal' };
+const pedido = PLANES[new URLSearchParams(location.search).get('plan')];
+if (pedido) { $('v-plan').value = pedido; armar(); }
 </script>
 </body>
 </html>

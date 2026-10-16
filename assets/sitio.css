@@ -322,3 +322,27 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .director-points strong { color: #fff; font-weight: 500; }
 .director-points span { font-size: .95rem; }
 .director-mp { font-size: .85rem; color: rgba(255,255,255,.65); }
+
+/* ── Para profesionales en la portada (alquiler de consultorio) ── */
+.rent { background: var(--soft); }
+.rent-top { display: grid; gap: 2.5rem; align-items: center; }
+@media (min-width: 960px) { .rent-top { grid-template-columns: 1fr 1fr; gap: 4.5rem; } }
+.rent-media { position: relative; }
+.rent-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 24px; }
+.rent-badge { position: absolute; left: 1.1rem; bottom: 1.1rem; right: 1.1rem; max-width: 20rem; display: grid; gap: .15rem; background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border-radius: 14px; padding: .8rem 1rem; font-size: .85rem; }
+.rent-badge strong { color: var(--navy); font-weight: 500; }
+.rent-copy { display: grid; gap: 1.2rem; }
+.rent-plans { display: grid; gap: 1rem; margin-top: 3rem; }
+@media (min-width: 860px) { .rent-plans { grid-template-columns: repeat(3, 1fr); } }
+.rent-plan { position: relative; display: grid; gap: .6rem; align-content: start; padding: 1.7rem; border-radius: 22px; background: var(--white); border: 1px solid var(--mist); text-decoration: none; color: var(--graphite); transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease); }
+.rent-plan:hover { transform: translateY(-3px); border-color: var(--petrol); box-shadow: 0 18px 40px -24px rgba(43,59,90,.45); }
+.rent-plan h3 { font-family: var(--serif); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; font-size: 1.6rem; line-height: 1.05; color: var(--navy); }
+.rent-plan p { font-size: .93rem; }
+.rent-plan .go { display: inline-flex; align-items: center; gap: .5rem; font-weight: 500; color: var(--petrol); margin-top: .5rem; }
+.rent-plan.feat { background: var(--navy); border-color: var(--navy); color: rgba(255,255,255,.82); }
+.rent-plan.feat h3 { color: var(--white); }
+.rent-plan.feat .eyebrow, .rent-plan.feat .go { color: #8FD0DC; }
+.rent-plan .flag { position: absolute; top: 1.3rem; right: 1.3rem; font-size: .64rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; background: #8FD0DC; color: var(--navy); border-radius: 999px; padding: .22rem .65rem; }
+.rent-foot { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; margin-top: 2rem; }
+.hero .pro-link { font-size: .88rem; color: var(--graphite); text-decoration: none; border-bottom: 1px solid var(--mist); justify-self: start; }
+.hero .pro-link strong { color: var(--petrol); font-weight: 500; }
