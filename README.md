@@ -8,10 +8,11 @@ Sitio de Consultorios Dina Huapi: portada de la clínica para pacientes, alquile
 |---|---|
 | `index.html` | Portada de la clínica: tratamientos, equipo, consultorio, ubicación, preguntas, CTA a turnos |
 | `profesionales/` | Alquiler: modalidades, qué incluye, agenda online, comparativa, pedido de visita |
-| `insumos/` | Catálogo de insumos con carrito; el pedido se envía armado por WhatsApp |
+| `insumos/` | **Offline por ahora** (sin links desde el sitio y con `noindex`). Catálogo con carrito; el pedido se envía armado por WhatsApp. Para activarlo, volver a enlazarlo desde el menú y quitar el `noindex` |
 | `turnos/` | Reserva de pacientes y panel de profesionales (ver abajo) |
 | `assets/sitio.css`, `assets/sitio.js` | Sistema visual compartido (manual de marca v3) y comportamiento común |
 | `img/` | Imágenes. Las actuales son **ilustrativas**: reemplazarlas por fotos reales con el mismo nombre |
+| `nati/` | Sitio de la Dra. Natalia Cárdenas |
 | `docs/mapa-del-sitio.md` | Mapa del sitio (copia del FigJam) |
 
 ## Cómo editarlo

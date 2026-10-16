@@ -4,13 +4,13 @@ Copia versionada del diagrama editable en FigJam: https://www.figma.com/board/aB
 GitHub muestra este diagrama renderizado. Si cambia la estructura, actualizar los dos.
 
 Portada: la clínica (pacientes). Desde ahí salen el alquiler para profesionales, la tienda de insumos y los turnos.
-Amarillo: insumos, nuevo. Verde: turnos, ya existía. Celeste: páginas nuevas con la marca v3, incluido el sitio de Nati.
+Verde: va online en el lanzamiento. Gris punteado: insumos, offline por ahora (el código queda en `insumos/`, sin links).
 
 | Ruta | Página |
 |---|---|
 | `/` | Portada de la clínica para pacientes |
 | `/profesionales/` | Alquiler de consultorio |
-| `/insumos/` | Catálogo y pedido de insumos (por WhatsApp) |
+| `/insumos/` | Catálogo y pedido de insumos (offline por ahora) |
 | `/turnos/` | Reserva de pacientes, panel de profesionales y admin |
 | `/nati/` | Sitio de Nati |
 
@@ -33,7 +33,7 @@ flowchart LR
         p2Visita["Pedir visita"]
     end
 
-    subgraph s3 ["3. Insumos: venta a profesionales"]
+    subgraph s3 ["3. Insumos: OFFLINE por ahora"]
         i3Cat["Catálogo por categoría y búsqueda"]
         i3Pedido["Pedido: cantidades, variantes, matrícula"]
         i3Entrega{"¿Retiro o envío?"}
@@ -61,7 +61,7 @@ flowchart LR
     dominio --> c1Trat & c1Equipo & c1Lugar & c1Ubic & c1Faq
     dominio -->|"Pedir turno"| t4Reserva
     dominio -->|"Trabajá con nosotros"| p2Mod
-    dominio -->|"Trabajá con nosotros"| i3Cat
+    dominio -->|"Agenda online"| t4Login
     c1Equipo -->|"Ficha de Nati"| n5Home
     n5Home --> n5Trat & n5Sobre & n5Cta
     n5Cta -->|"Reserva online"| t4Reserva
@@ -70,7 +70,6 @@ flowchart LR
 
     p2Mod --> p2Incl --> p2Comp --> p2Visita
     p2Visita -.->|"Mensaje armado"| wa
-    p2Incl -->|"Descartables"| i3Cat
     p2Mod -->|"Agenda incluida"| t4Login
 
     i3Cat --> i3Pedido --> i3Entrega
@@ -82,9 +81,9 @@ flowchart LR
     t4Agenda --> db
     t4Agenda -.->|"Feed de turnos"| gcal
 
-    style s1 fill:#E8F1F3,stroke:#127285
-    style s2 fill:#E8F1F3,stroke:#127285
-    style s3 fill:#FFECBD,stroke:#FFC943
+    style s1 fill:#CDF4D3,stroke:#66D575
+    style s2 fill:#CDF4D3,stroke:#66D575
+    style s3 fill:#EEEEEE,stroke:#B5B5B5,stroke-dasharray: 5 5
     style s4 fill:#CDF4D3,stroke:#66D575
-    style s5 fill:#E8F1F3,stroke:#127285
+    style s5 fill:#CDF4D3,stroke:#66D575
 ```
