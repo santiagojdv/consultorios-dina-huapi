@@ -18,7 +18,9 @@ Verde: va online en el lanzamiento. Gris punteado: insumos, offline por ahora (e
 flowchart LR
     dominio(["Consultorios Dina Huapi (inicio)"])
 
-    subgraph s1 ["1. Pacientes: portada de la clínica"]
+    subgraph s1 ["1. Portada de la clínica"]
+        c1Nati["Dra. Natalia Cárdenas: directora (sección destacada)"]
+        c1Pro["Para profesionales: reservá tu consultorio"]
         c1Trat["Tratamientos"]
         c1Equipo["Equipo"]
         c1Lugar["El consultorio y bioseguridad"]
@@ -26,11 +28,11 @@ flowchart LR
         c1Faq["Preguntas frecuentes"]
     end
 
-    subgraph s2 ["2. Para profesionales: alquiler"]
+    subgraph s2 ["2. Reserva de consultorio"]
         p2Mod["Modalidades: prueba, medio día, día completo"]
         p2Incl["Qué incluye y equipamiento"]
         p2Comp["Comparativa propio o compartido"]
-        p2Visita["Pedir visita"]
+        p2Visita["Pedido de visita (modalidad ya elegida)"]
     end
 
     subgraph s3 ["3. Insumos: OFFLINE por ahora"]
@@ -65,7 +67,11 @@ flowchart LR
 
     dominio --> c1Trat & c1Equipo & c1Lugar & c1Ubic & c1Faq
     dominio -->|"Pedir turno"| t4Reserva
-    dominio -->|"Trabajá con nosotros"| p2Mod
+    dominio --> c1Nati & c1Pro
+    c1Nati -->|"Conocer su consultorio"| n5Home
+    c1Nati -->|"Sacar turno con Natalia"| t4Reserva
+    c1Pro -->|"Elegís modalidad"| p2Visita
+    c1Pro -->|"Ver modalidades"| p2Mod
     dominio -->|"Agenda online"| t4Login
     c1Equipo -->|"Ficha de Nati"| n5Home
     c1Equipo -->|"Una ficha por profesional"| o6Ficha
