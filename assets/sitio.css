@@ -102,7 +102,7 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .drawer .foot { display: grid; gap: .6rem; }
 
 /* ── Secciones ── */
-.section { padding-block: clamp(4.5rem, 10vw, 8.5rem); }
+.section { padding-block: clamp(4rem, 8vw, 7rem); }
 .section.tight { padding-block: clamp(3.5rem, 7vw, 6rem); }
 .section.soft { background: var(--soft); }
 .section.navy { background: var(--navy); color: rgba(255,255,255,.82); }
@@ -182,7 +182,7 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 
 /* ── Galería ── */
 .mosaic { display: grid; gap: .75rem; grid-template-columns: 1fr 1fr; }
-@media (min-width: 860px) { .mosaic { grid-template-columns: 1.3fr 1fr 1fr; grid-template-rows: 1fr 1fr; height: 40rem; gap: 1rem; } .mosaic figure:first-child { grid-row: span 2; } }
+@media (min-width: 860px) { .mosaic { grid-template-columns: 1.6fr 1fr 1fr; height: 28rem; gap: 1rem; } }
 .mosaic figure { position: relative; margin: 0; border-radius: 20px; overflow: hidden; background: var(--soft); min-height: 12rem; }
 .mosaic figure:first-child { grid-column: span 2; aspect-ratio: 16 / 10; }
 @media (min-width: 860px) { .mosaic figure:first-child { grid-column: auto; aspect-ratio: auto; } }
