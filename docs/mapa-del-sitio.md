@@ -1,10 +1,10 @@
 # Mapa del sitio
 
-Copia versionada del diagrama editable en FigJam: https://www.figma.com/board/aByZhh0xM4F626XPdWcg7Y (el v2 está al lado del original).
+Copia versionada del diagrama editable en FigJam: https://www.figma.com/board/aByZhh0xM4F626XPdWcg7Y (la versión más nueva es la de más a la derecha).
 GitHub muestra este diagrama renderizado. Si cambia la estructura, actualizar los dos.
 
 Portada: la clínica (pacientes). Desde ahí salen el alquiler para profesionales, la tienda de insumos y los turnos.
-Amarillo: insumos, nuevo. Verde: turnos, ya existía. Gris: sitio de Nati, se arma en otro hilo.
+Amarillo: insumos, nuevo. Verde: turnos, ya existía. Celeste: páginas nuevas con la marca v3, incluido el sitio de Nati.
 
 | Ruta | Página |
 |---|---|
@@ -12,7 +12,7 @@ Amarillo: insumos, nuevo. Verde: turnos, ya existía. Gris: sitio de Nati, se ar
 | `/profesionales/` | Alquiler de consultorio |
 | `/insumos/` | Catálogo y pedido de insumos (por WhatsApp) |
 | `/turnos/` | Reserva de pacientes, panel de profesionales y admin |
-| `/nati/` | Sitio de Nati (ruta reservada, otro hilo) |
+| `/nati/` | Sitio de Nati |
 
 ```mermaid
 flowchart LR
@@ -46,8 +46,11 @@ flowchart LR
         t4Agenda["Agenda, calendario y perfil"]
     end
 
-    subgraph s5 ["5. Sitio de Nati (otro hilo)"]
+    subgraph s5 ["5. Sitio de Nati (/nati/)"]
         n5Home["Inicio Nati"]
+        n5Trat["Tratamientos, alineadores y estética facial"]
+        n5Sobre["Primera consulta y sobre Natalia"]
+        n5Cta["Pedir turno con Nati"]
     end
 
     wa[/"WhatsApp de la clínica"/]
@@ -59,7 +62,10 @@ flowchart LR
     dominio -->|"Trabajá con nosotros"| p2Mod
     dominio -->|"Trabajá con nosotros"| i3Cat
     c1Equipo -->|"Ficha de Nati"| n5Home
-    n5Home -->|"Link directo con Nati"| t4Reserva
+    n5Home --> n5Trat & n5Sobre & n5Cta
+    n5Cta -->|"Reserva online"| t4Reserva
+    n5Cta -.->|"WhatsApp de Nati"| wa
+    n5Home -.->|"Volver a la clínica"| dominio
 
     p2Mod --> p2Incl --> p2Comp --> p2Visita
     p2Visita -.->|"Mensaje armado"| wa
@@ -79,5 +85,5 @@ flowchart LR
     style s2 fill:#E8F1F3,stroke:#127285
     style s3 fill:#FFECBD,stroke:#FFC943
     style s4 fill:#CDF4D3,stroke:#66D575
-    style s5 fill:#F4F7F8,stroke:#D5DDE2
+    style s5 fill:#E8F1F3,stroke:#127285
 ```
