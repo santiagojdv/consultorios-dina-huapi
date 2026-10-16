@@ -54,6 +54,7 @@ flowchart LR
     end
 
     wa[/"WhatsApp de la clínica"/]
+    waNati[/"WhatsApp de Nati"/]
     db[("Supabase: base y login")]
     gcal[/"Google Calendar"/]
 
@@ -64,7 +65,7 @@ flowchart LR
     c1Equipo -->|"Ficha de Nati"| n5Home
     n5Home --> n5Trat & n5Sobre & n5Cta
     n5Cta -->|"Reserva online"| t4Reserva
-    n5Cta -.->|"WhatsApp de Nati"| wa
+    n5Cta -.->|"Consulta"| waNati
     n5Home -.->|"Volver a la clínica"| dominio
 
     p2Mod --> p2Incl --> p2Comp --> p2Visita
