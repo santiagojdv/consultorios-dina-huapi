@@ -301,3 +301,24 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 
 /* Dato a completar sobre fondos oscuros */
 .section.navy .ph, .plan.feat .ph, .cta .ph { color: #CFEAF0; background: none; border-bottom-color: #8FD0DC; }
+
+/* ── La directora (Dra. Natalia Cárdenas) ── */
+.director { position: relative; overflow: hidden; }
+.director::after { content: ""; position: absolute; right: -8rem; top: -6rem; width: 30rem; height: 30rem; border-radius: 50%; border: 1px solid rgba(255,255,255,.08); pointer-events: none; }
+.director-grid { display: grid; gap: 3rem; align-items: center; }
+@media (min-width: 960px) { .director-grid { grid-template-columns: .95fr 1.05fr; gap: 5rem; } }
+.director-media { position: relative; padding-bottom: 3rem; max-width: 34rem; }
+.director-media .main { width: 86%; margin-left: 14%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 26px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.5); }
+.director-media .inset { position: absolute; left: 0; bottom: 0; width: 38%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 20px; border: 6px solid var(--navy); }
+.director-copy { display: grid; gap: 1.3rem; justify-items: start; }
+.director-logo { display: block; width: 9.5rem; aspect-ratio: 567 / 326; background: #fff; -webkit-mask: url(../nati/marca/logo.svg) left center / contain no-repeat; mask: url(../nati/marca/logo.svg) left center / contain no-repeat; opacity: .95; }
+.director h2 { font-size: clamp(2.3rem, 4.6vw, 3.6rem); }
+.director h2 em { color: #8FD0DC; font-style: normal; }
+.director .lead { color: rgba(255,255,255,.86); }
+.director .key { color: #fff; font-weight: 500; }
+.director-points { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; width: 100%; border-top: 1px solid rgba(255,255,255,.14); }
+.director-points li { display: grid; gap: .15rem; padding: .9rem 0; border-bottom: 1px solid rgba(255,255,255,.14); }
+@media (min-width: 640px) { .director-points li { grid-template-columns: 14rem 1fr; gap: 1rem; align-items: baseline; } }
+.director-points strong { color: #fff; font-weight: 500; }
+.director-points span { font-size: .95rem; }
+.director-mp { font-size: .85rem; color: rgba(255,255,255,.65); }
