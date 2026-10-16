@@ -19,6 +19,7 @@ Sitio de Consultorios Dina Huapi: portada de la clínica para pacientes, alquile
 
 - **Número de WhatsApp**: `assets/sitio.js`, constante `WHATSAPP` (formato `5492944xxxxxx`, sin `+` ni espacios). Todos los botones de consulta, visitas y pedidos de insumos lo usan.
 - **Datos a completar**: lo subrayado en punteado (`class="ph"`) son datos pendientes (horarios, obras sociales, precios, matrícula). Buscá `ph"` para encontrarlos.
+- **Equipo de la portada**: se arma solo con los profesionales que aceptan turnos online. Cada uno completa en el panel, en *Mi perfil*, su nombre, especialidad, presentación, sitio web y foto, y la ficha lleva a su agenda (`turnos/index.html?p=…`) y a su sitio. Si el sistema de turnos no está configurado, se ve la ficha fija de Nati que está en `index.html`.
 - **Insumos**: todo sale de `insumos/catalogo.json`. Cada producto es una línea: `precio` en pesos sin puntos (o `null` para mostrar "Precio a confirmar"), `stock` true/false, `destacado` para la etiqueta "Más pedido", `variantes` para talles o colores, `matricula` si exige matrícula. La foto sale de `img/insumos/` por categoría o por el campo `foto`.
 - **Colores y tipografías**: bloque `:root` al principio de `assets/sitio.css`. Navy `#2B3B5A`, petróleo `#127285`, grafito `#4B5668`; Cormorant Garamond para títulos y Poppins para texto.
 - Desde cualquier dispositivo: abrí el archivo en github.com y tocá el lápiz (Edit). Para cambios grandes, apretá `.` en el repo y se abre un editor completo en el navegador.

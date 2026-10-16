@@ -148,7 +148,7 @@
           <div class="body" style="align-content:center;height:100%">
             <span class="role">Próximamente</span>
             <h3>Más especialistas</h3>
-            <p>Estamos sumando profesionales de otras especialidades. Cuando se incorporen, vas a poder reservar con ellos desde la misma agenda.</p>
+            <p>Cada profesional que atiende en el consultorio aparece acá con su ficha y su agenda online, para que reserves directo con quien te atiende.</p>
             <div class="actions"><a class="link-arrow" href="profesionales/">¿Sos odontólogo? Atendé acá <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></a></div>
           </div>
         </article>
@@ -286,6 +286,7 @@
 
 <script type="module">
 import './assets/sitio.js';
+import('./assets/equipo.js').catch(() => {}); // si falla, queda la ficha fija
 // El mapa de Google se carga recién cuando la persona lo pide (más rápido y sin cookies de terceros al entrar).
 document.getElementById('ver-mapa').addEventListener('click', () => {
   const f = document.createElement('iframe');

@@ -46,6 +46,11 @@ flowchart LR
         t4Agenda["Agenda, calendario y perfil"]
     end
 
+    subgraph s6 ["6. Otros profesionales del equipo"]
+        o6Ficha["Ficha en Equipo (sale de su perfil en la agenda)"]
+        o6Web["Su sitio web (opcional)"]
+    end
+
     subgraph s5 ["5. Sitio de Nati (/nati/)"]
         n5Home["Inicio Nati"]
         n5Trat["Tratamientos, alineadores y estética facial"]
@@ -63,6 +68,10 @@ flowchart LR
     dominio -->|"Trabajá con nosotros"| p2Mod
     dominio -->|"Agenda online"| t4Login
     c1Equipo -->|"Ficha de Nati"| n5Home
+    c1Equipo -->|"Una ficha por profesional"| o6Ficha
+    o6Ficha -->|"Sacar turno"| t4Reserva
+    o6Ficha -.->|"Conocer su trabajo"| o6Web
+    t4Agenda -.->|"Mi perfil"| o6Ficha
     n5Home --> n5Trat & n5Sobre & n5Cta
     n5Cta -->|"Reserva online"| t4Reserva
     n5Cta -.->|"Consulta"| waNati
@@ -86,4 +95,5 @@ flowchart LR
     style s3 fill:#EEEEEE,stroke:#B5B5B5,stroke-dasharray: 5 5
     style s4 fill:#CDF4D3,stroke:#66D575
     style s5 fill:#CDF4D3,stroke:#66D575
+    style s6 fill:#CDF4D3,stroke:#66D575
 ```

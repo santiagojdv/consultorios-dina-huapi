@@ -174,6 +174,11 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .chip { font-size: .78rem; border: 1px solid var(--mist); border-radius: 999px; padding: .25rem .7rem; color: var(--graphite); }
 .member .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .4rem; }
 .member.join { background: var(--soft); border-style: dashed; }
+/* Varios profesionales (la arma assets/equipo.js con los datos de turnos) */
+.team.many { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+.team.many .member { grid-template-rows: auto 1fr; }
+.team.many .member .ph-photo { min-height: 14rem; }
+.team.many .member.join .body { align-content: center; }
 
 /* ── Galería ── */
 .mosaic { display: grid; gap: .75rem; grid-template-columns: 1fr 1fr; }
