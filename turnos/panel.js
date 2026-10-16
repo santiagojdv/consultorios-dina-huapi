@@ -399,7 +399,8 @@ $('#cal-box').addEventListener('change', (e) => { st.cal.box = e.target.value; d
 
 // ───────────────────────── Perfil ─────────────────────────
 
-const CAMPOS = { nombre: 'pf-nombre', especialidad: 'pf-esp', telefono: 'pf-tel', duracion_turno: 'pf-dur',
+const CAMPOS = { nombre: 'pf-nombre', especialidad: 'pf-esp', bio: 'pf-bio', web: 'pf-web', foto: 'pf-foto',
+  telefono: 'pf-tel', duracion_turno: 'pf-dur',
   anticipacion_horas: 'pf-ant', ventana_dias: 'pf-ven', aviso_cancelacion_horas: 'pf-canc' };
 
 async function cargarPerfil() {
@@ -477,6 +478,8 @@ $('#perfil-form').addEventListener('submit', async (ev) => {
   }));
   cambios.publico = $('#pf-pub').checked;
   if (cambios.publico && !cambios.nombre) return aviso(msg, 'Para aceptar turnos online completá tu nombre.');
+  if (cambios.web && !/^(https:\/\/\S+|[a-z0-9_-]+\/)$/.test(cambios.web)) return aviso(msg, 'El sitio web tiene que empezar con https://');
+  if (cambios.foto && !/^(https:\/\/\S+|img\/[\w./-]+)$/.test(cambios.foto)) return aviso(msg, 'El link de la foto tiene que empezar con https://');
   const { data, error } = await sb.from('profesionales').update(cambios).eq('id', st.yo.id).select().single();
   if (error) return aviso(msg, mensajeError(error));
   st.yo = data;

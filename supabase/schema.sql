@@ -32,6 +32,10 @@ create table public.profesionales (
   nombre                  text not null default '',
   especialidad            text not null default '',
   telefono                text not null default '',
+  -- Ficha pública en la web de la clínica (sección Equipo)
+  bio                     text not null default '' check (length(bio) <= 400),
+  web                     text not null default '' check (web = '' or web ~ '^(https://[^\s"<>]+|[a-z0-9_-]+/)$'),
+  foto                    text not null default '' check (foto = '' or foto ~ '^(https://[^\s"<>]+|img/[A-Za-z0-9_./-]+)$'),
   duracion_turno          smallint not null default 30  check (duracion_turno between 10 and 240),
   anticipacion_horas      smallint not null default 2   check (anticipacion_horas between 0 and 168),
   ventana_dias            smallint not null default 30  check (ventana_dias between 1 and 120),
@@ -236,10 +240,12 @@ revoke delete on public.turnos from authenticated;
 -- Son la única puerta de entrada pública. Corren con permisos del dueño y devuelven
 -- solo lo necesario: nunca datos de otros pacientes.
 
+-- Alimenta la página de turnos y la sección Equipo de la web de la clínica.
+drop function if exists public.profesionales_publicos();
 create or replace function public.profesionales_publicos()
-returns table (id uuid, nombre text, especialidad text, duracion_turno smallint)
+returns table (id uuid, nombre text, especialidad text, duracion_turno smallint, bio text, web text, foto text)
 language sql stable security definer set search_path = public as $$
-  select p.id, p.nombre, p.especialidad, p.duracion_turno
+  select p.id, p.nombre, p.especialidad, p.duracion_turno, p.bio, p.web, p.foto
   from profesionales p
   where p.publico and p.activo and p.nombre <> ''
     and exists (select 1 from alquileres a where a.profesional_id = p.id and a.vigente_hasta >= current_date)

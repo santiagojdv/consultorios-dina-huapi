@@ -1,13 +1,28 @@
 # Consultorios Dina Huapi
 
-Sitio de una página para Consultorios Dina Huapi: consultorio odontológico equipado en alquiler por paquetes de horas para profesionales.
+Sitio de Consultorios Dina Huapi: portada de la clínica para pacientes, alquiler de consultorio para profesionales, tienda de insumos y sistema de turnos. HTML estático, sin build, publicado en GitHub Pages.
+
+## Estructura
+
+| Ruta | Qué es |
+|---|---|
+| `index.html` | Portada de la clínica: tratamientos, equipo, consultorio, ubicación, preguntas, CTA a turnos |
+| `profesionales/` | Alquiler: modalidades, qué incluye, agenda online, comparativa, pedido de visita |
+| `insumos/` | **Offline por ahora** (sin links desde el sitio y con `noindex`). Catálogo con carrito; el pedido se envía armado por WhatsApp. Para activarlo, volver a enlazarlo desde el menú y quitar el `noindex` |
+| `turnos/` | Reserva de pacientes y panel de profesionales (ver abajo) |
+| `assets/sitio.css`, `assets/sitio.js` | Sistema visual compartido (manual de marca v3) y comportamiento común |
+| `img/` | Imágenes. Las actuales son **ilustrativas**: reemplazarlas por fotos reales con el mismo nombre |
+| `nati/` | Sitio de la Dra. Natalia Cárdenas |
+| `docs/mapa-del-sitio.md` | Mapa del sitio (copia del FigJam) |
 
 ## Cómo editarlo
 
-- Todo el sitio está en `index.html` (HTML y CSS en un solo archivo, sin dependencias).
+- **Número de WhatsApp**: `assets/sitio.js`, constante `WHATSAPP` (formato `5492944xxxxxx`, sin `+` ni espacios). Todos los botones de consulta, visitas y pedidos de insumos lo usan.
+- **Datos a completar**: lo subrayado en punteado (`class="ph"`) son datos pendientes (horarios, obras sociales, precios, matrícula). Buscá `ph"` para encontrarlos.
+- **Equipo de la portada**: se arma solo con los profesionales que aceptan turnos online. Cada uno completa en el panel, en *Mi perfil*, su nombre, especialidad, presentación, sitio web y foto, y la ficha lleva a su agenda (`turnos/index.html?p=…`) y a su sitio. Si el sistema de turnos no está configurado, se ve la ficha fija de Nati que está en `index.html`.
+- **Insumos**: todo sale de `insumos/catalogo.json`. Cada producto es una línea: `precio` en pesos sin puntos (o `null` para mostrar "Precio a confirmar"), `stock` true/false, `destacado` para la etiqueta "Más pedido", `variantes` para talles o colores, `matricula` si exige matrícula. La foto sale de `img/insumos/` por categoría o por el campo `foto`.
+- **Colores y tipografías**: bloque `:root` al principio de `assets/sitio.css`. Navy `#2B3B5A`, petróleo `#127285`, grafito `#4B5668`; Cormorant Garamond para títulos y Poppins para texto.
 - Desde cualquier dispositivo: abrí el archivo en github.com y tocá el lápiz (Edit). Para cambios grandes, apretá `.` en el repo y se abre un editor completo en el navegador.
-- Lo resaltado en violeta (`class="ph"`) son datos a completar. Buscá `ph"` para encontrarlos todos.
-- Los colores están al principio del `<style>`, en el bloque `:root`.
 
 ## Publicarlo
 

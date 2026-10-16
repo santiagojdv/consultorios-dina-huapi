@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Natalia Cárdenas · Ortodoncia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Ortodoncia, alineadores invisibles y estética facial en Dina Huapi. Atención directa con la Od. Natalia F. Cárdenas, turnos con poca antelación y presupuesto claro desde la primera consulta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+/* Layout: editorial, aireado; un solo diente grande por sección como recurso gráfico; bandas azul marino solo para cerrar y para la línea de estética facial. Marca solo clara, por manual. */
+:root{
+  --navy:#2B3B5A;      /* azul marino, 25% */
+  --petrol:#127285;    /* azul petróleo, 15% (texto ok: 5,6:1) */
+  --white:#FFFFFF;     /* 55% */
+  --soft:#F4F7F8;      /* fondo suave */
+  --mist:#D5DDE2;      /* gris niebla: líneas */
+  --graphite:#4B5668;  /* gris grafito: texto secundario */
+  --ink:#24324D;       /* texto corrido, azul marino un punto más oscuro */
+  --sky:#9FD0DA;       /* celeste para destacar sobre azul marino (8,1:1) */
+  --display:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  --sans:"Poppins","Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --wrap:1200px;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gutr:max(16px, env(safe-area-inset-right, 0px));
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--white);color:var(--ink);font:300 16px/1.7 var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--white)}
+img{max-width:100%;display:block}
+a{color:inherit}
+::selection{background:var(--petrol);color:var(--white)}
+:focus-visible{outline:2px solid var(--petrol);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(24px,var(--gut));padding-right:max(24px,var(--gutr))}
+@media (max-width:560px){.wrap{padding-left:var(--gut);padding-right:var(--gutr)}}
+
+/* Tipo */
+.eyebrow{font:500 11.5px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--petrol);display:flex;align-items:center;gap:14px;margin:0}
+.eyebrow::before{content:"";width:28px;height:1px;background:currentColor}
+.h-display{font-family:var(--display);font-weight:500;text-transform:uppercase;letter-spacing:.02em;line-height:.98;margin:0;text-wrap:balance;color:var(--navy)}
+.h2{font-size:clamp(36px,4.6vw,60px)}
+.h3{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(22px,2vw,26px);line-height:1.1;margin:0;color:var(--navy)}
+.lead{font-size:clamp(16.5px,1.35vw,18.5px);line-height:1.75;color:var(--graphite);max-width:34em;margin:0}
+.lead b,.hl b,p b{font-weight:600;color:var(--petrol)}
+.muted{color:var(--graphite)}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;gap:12px;font:500 13px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:18px 26px;border:1px solid transparent;transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-primary{background:var(--navy);color:var(--white)}
+.btn-primary:hover{background:var(--petrol)}
+.btn-ghost{border-color:var(--navy);color:var(--navy)}
+.btn-ghost:hover{background:var(--navy);color:var(--white)}
+.btn-light{background:var(--white);color:var(--navy)}
+.btn-light:hover{background:var(--sky)}
+.link-arrow{display:inline-flex;align-items:center;gap:10px;font:500 13px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--navy);padding-block:6px;border-bottom:1px solid var(--mist);transition:border-color .3s,gap .3s var(--ease)}
+.link-arrow:hover{border-color:var(--navy);gap:16px}
+
+/* Barra superior + nav */
+.topbar{background:var(--navy);color:#C9D2DE;font:400 12.5px/1 var(--sans);letter-spacing:.04em}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:11px}
+.topbar a{text-decoration:none;color:var(--white)}
+.topbar .sep{opacity:.4;margin-inline:10px}
+@media (max-width:720px){.topbar .hide-sm{display:none}}
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+header.nav.scrolled{border-color:var(--mist);box-shadow:0 6px 30px -18px rgba(43,59,90,.35)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;height:76px}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--navy)}
+.brand svg{height:46px;width:45px;flex:none}
+.brand .who{display:flex;flex-direction:column;line-height:1.25}
+.brand .who small{font:500 10.5px/1.3 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--graphite)}
+.brand .who span{font:600 13px/1.3 var(--sans);letter-spacing:.06em;color:var(--navy)}
+.menu{display:flex;align-items:center;gap:clamp(18px,2vw,30px);list-style:none;margin:0;padding:0}
+.menu a{white-space:nowrap;font:400 12.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--navy);position:relative;padding-block:8px}
+.menu a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--petrol);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease)}
+.menu a:hover::after,.menu a.active::after{transform:scaleX(1)}
+.nav .btn{padding:14px 20px;white-space:nowrap}
+@media (max-width:1240px) and (min-width:1021px){.brand .who{display:none}}
+.burger{display:none;background:none;border:0;padding:10px;margin-right:-10px;cursor:pointer;color:var(--navy)}
+.burger span{display:block;width:24px;height:1.5px;background:currentColor;margin:6px 0;transition:transform .3s var(--ease),opacity .2s}
+.nav.open .burger span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.nav.open .burger span:nth-child(2){opacity:0}
+.nav.open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+@media (max-width:1020px){
+  .menu-wrap{position:absolute;left:0;right:0;top:100%;background:var(--white);border-bottom:1px solid var(--mist);padding:8px max(16px,var(--gutr)) 28px max(16px,var(--gut));display:none}
+  .nav.open .menu-wrap{display:block}
+  .menu{flex-direction:column;align-items:flex-start;gap:0}
+  .menu li{width:100%;border-bottom:1px solid var(--soft)}
+  .menu a{display:block;padding-block:18px;font-size:14px}
+  .burger{display:block}
+  .nav .btn.cta-top{display:none}
+}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding-block:clamp(48px,7vw,104px) clamp(56px,7vw,110px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(32px,6vw,96px);align-items:center;position:relative;z-index:1}
+.hero h1{font-size:clamp(46px,6.6vw,96px);font-weight:500;letter-spacing:.005em}
+.hero h1 em{font-style:normal;color:var(--petrol);font-weight:600}
+.hero .copy{display:flex;flex-direction:column;gap:30px;min-width:0}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--mist);margin-top:14px}
+.facts div{padding:22px 18px 0 0;display:flex;flex-direction:column;gap:6px}
+.facts div+div{padding-left:22px;border-left:1px solid var(--mist)}
+.facts strong{font:500 clamp(34px,3.4vw,46px)/1 var(--display);color:var(--navy);font-variant-numeric:lining-nums}
+.facts span{font:400 12.5px/1.45 var(--sans);color:var(--graphite)}
+.arch{position:relative;justify-self:end;width:100%;max-width:460px}
+.arch figure{margin:0;aspect-ratio:4/5.2;max-width:100%;overflow:hidden;border-radius:999px 999px 6px 6px / 46% 46% 6px 6px;background:var(--soft)}
+.arch img{width:100%;height:100%;object-fit:cover;object-position:30% 50%;transform:scale(1.04);animation:settle 1.8s var(--ease) both}
+.arch .tag{position:absolute;left:-36px;bottom:42px;background:var(--white);padding:18px 22px;display:flex;gap:14px;align-items:center;box-shadow:0 22px 50px -24px rgba(43,59,90,.45);max-width:270px}
+.arch .tag i{width:10px;height:10px;border-radius:50%;background:var(--petrol);box-shadow:0 0 0 6px rgba(18,114,133,.14);flex:none}
+.arch .tag p{margin:0;font:400 13px/1.45 var(--sans);color:var(--navy)}
+.arch .tag p b{color:var(--navy)}
+.bg-tooth{aspect-ratio:210/215;height:auto}
+.hero .bg-tooth{position:absolute;right:-180px;top:-120px;width:min(900px,80vw);color:var(--petrol);opacity:.06;pointer-events:none}
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr}
+  .arch{justify-self:start;max-width:520px}
+  .arch figure{aspect-ratio:4/4.4}
+  .arch .tag{left:16px;bottom:16px}
+  .hero .bg-tooth{right:-40%;top:auto;bottom:-10%;width:120vw}
+}
+@media (max-width:480px){.facts div{padding-right:10px}.facts div+div{padding-left:12px}}
+
+/* Load sequence */
+.rise{animation:rise .9s var(--ease) both}
+.d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.28s}.d4{animation-delay:.38s}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes settle{from{transform:scale(1.12)}to{transform:scale(1.04)}}
+
+/* Franja de valores */
+.values{background:var(--soft);border-block:1px solid #E6ECEF}
+.values ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.values li{padding:30px 26px;display:flex;gap:16px;align-items:flex-start;min-width:0}
+.values li+li{border-left:1px solid var(--mist)}
+.values svg{width:26px;height:26px;flex:none;color:var(--petrol);margin-top:2px}
+.values h3{font:500 14.5px/1.35 var(--sans);color:var(--navy);margin:0 0 4px}
+.values p{font-size:13.5px;line-height:1.55;color:var(--graphite);margin:0}
+@media (max-width:980px){.values ul{grid-template-columns:repeat(2,minmax(0,1fr))}.values li:nth-child(3){border-left:0}.values li:nth-child(n+3){border-top:1px solid var(--mist)}}
+@media (max-width:560px){.values ul{grid-template-columns:1fr}.values li+li{border-left:0;border-top:1px solid var(--mist)}.values li{padding-inline:0}}
+
+/* Secciones */
+section{position:relative}
+.sec{padding-block:clamp(72px,10vw,140px)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);align-items:end;margin-bottom:clamp(40px,6vw,72px)}
+.sec-head .h-display{margin-top:20px}
+@media (max-width:860px){.sec-head{grid-template-columns:1fr}}
+
+/* Tratamientos */
+.groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px)}
+.group{display:flex;flex-direction:column;min-width:0}
+.group>h3{font:500 11.5px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--graphite);margin:0;padding-bottom:16px;border-bottom:1px solid var(--navy)}
+.tx{list-style:none;margin:0;padding:0}
+.tx li{border-bottom:1px solid var(--mist)}
+.tx a{display:grid;grid-template-columns:1fr auto;gap:6px 16px;padding:24px 0;text-decoration:none;transition:padding .4s var(--ease)}
+.tx a:hover{padding-left:10px}
+.tx strong{font:600 clamp(21px,1.8vw,24px)/1.15 var(--display);letter-spacing:.04em;text-transform:uppercase;color:var(--navy)}
+.tx p{grid-column:1/-1;margin:0;font-size:14.5px;line-height:1.6;color:var(--graphite);max-width:32em}
+.tx .go{align-self:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--mist);display:grid;place-items:center;color:var(--navy);transition:background .3s,border-color .3s,color .3s,transform .4s var(--ease)}
+.tx .go svg{width:12px;height:12px}
+.tx a:hover .go{background:var(--navy);border-color:var(--navy);color:var(--white);transform:rotate(-45deg)}
+@media (max-width:980px){.groups{grid-template-columns:1fr}}
+
+/* Estética facial (banda) */
+.facial{background:var(--navy);color:#DCE3EC;overflow:hidden}
+.facial .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center;position:relative;z-index:1}
+.facial .eyebrow{color:var(--sky)}
+.facial .h-display{color:var(--white);font-size:clamp(40px,5.4vw,76px)}
+.facial .h-display em{font-style:normal;color:var(--sky)}
+.facial p{margin:0;font-size:16.5px;line-height:1.8;max-width:30em}
+.facial p b{color:var(--white);font-weight:500}
+.facial .side{display:flex;flex-direction:column;gap:28px}
+.facial ul{list-style:none;margin:0;padding:0;border-top:1px solid rgba(255,255,255,.18)}
+.facial li{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.18);font-size:15px}
+.facial li span{font:500 12px/1.9 var(--sans);letter-spacing:.16em;color:var(--sky);min-width:96px;text-transform:uppercase}
+.facial .bg-tooth{position:absolute;left:-12%;bottom:-38%;width:min(760px,90vw);color:var(--white);opacity:.05;pointer-events:none}
+@media (max-width:860px){.facial .wrap{grid-template-columns:1fr}}
+
+/* Alineadores */
+.aligners .wrap{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(32px,6vw,100px);align-items:center}
+.photo{margin:0;position:relative;overflow:hidden;background:var(--soft);max-width:100%}
+.photo img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.photo:hover img{transform:scale(1.03)}
+.aligners .photo{aspect-ratio:4/5}
+.aligners .photo img{object-position:50% 40%}
+.photo figcaption{position:absolute;left:0;bottom:0;background:var(--white);padding:14px 20px;font:500 11px/1.4 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--navy)}
+.aligners .copy{display:flex;flex-direction:column;gap:28px;min-width:0}
+.spec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--mist)}
+.spec div{padding:22px 22px 22px 0;border-bottom:1px solid var(--mist);min-width:0}
+.spec div:nth-child(even){padding-left:22px;border-left:1px solid var(--mist)}
+.spec h4{font:500 14.5px/1.4 var(--sans);color:var(--navy);margin:0 0 4px}
+.spec p{margin:0;font-size:14px;line-height:1.6;color:var(--graphite)}
+@media (max-width:860px){.aligners .wrap{grid-template-columns:1fr}.aligners .photo{aspect-ratio:4/3.6}}
+@media (max-width:520px){.spec{grid-template-columns:1fr}.spec div:nth-child(even){padding-left:0;border-left:0}}
+
+/* Primera consulta */
+.process{background:var(--soft)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));counter-reset:s;position:relative}
+.steps::before{content:"";position:absolute;left:0;right:0;top:34px;height:1px;background:var(--mist)}
+.steps li{counter-increment:s;position:relative;padding-right:28px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.steps li::before{content:counter(s,decimal-leading-zero);font:500 46px/1 var(--display);color:var(--petrol);background:var(--soft);padding-right:16px;align-self:flex-start;position:relative;font-variant-numeric:lining-nums}
+.steps h3{font:500 16px/1.4 var(--sans);color:var(--navy);margin:8px 0 0}
+.steps p{margin:0;font-size:14.5px;line-height:1.65;color:var(--graphite)}
+@media (max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:48px}.steps::before{display:none}}
+@media (max-width:520px){.steps{grid-template-columns:1fr;row-gap:36px}}
+.quote{margin:clamp(56px,7vw,96px) 0 0;padding-top:clamp(40px,5vw,64px);border-top:1px solid var(--mist);display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:start}
+.quote svg{width:clamp(56px,7vw,92px);aspect-ratio:210/215;height:auto;color:var(--petrol)}
+.quote blockquote{margin:0;font:300 clamp(26px,3.3vw,44px)/1.25 var(--sans);color:var(--navy);letter-spacing:-.01em;max-width:22em;text-wrap:balance}
+.quote blockquote b{font-weight:600;color:var(--petrol)}
+@media (max-width:560px){.quote{grid-template-columns:1fr}}
+
+/* Natalia */
+.about .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,6vw,100px);align-items:start}
+.about .photo{aspect-ratio:4/5;position:sticky;top:110px}
+.about .photo img{object-position:50% 35%}
+.about .copy{display:flex;flex-direction:column;gap:28px;min-width:0;padding-top:12px}
+.sign{display:flex;align-items:center;gap:18px;padding-top:4px}
+.sign svg{height:56px;width:55px;flex:none;color:var(--navy)}
+.sign div{font:400 13px/1.5 var(--sans);color:var(--graphite)}
+.sign strong{display:block;font:600 14.5px/1.4 var(--sans);color:var(--navy)}
+.pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--navy);margin-top:8px}
+.pillars div{padding:24px 24px 24px 0;border-bottom:1px solid var(--mist);min-width:0}
+.pillars div:nth-child(even){padding-left:24px;border-left:1px solid var(--mist)}
+.pillars h4{font:600 20px/1.2 var(--display);letter-spacing:.05em;text-transform:uppercase;color:var(--navy);margin:0 0 8px}
+.pillars p{margin:0;font-size:14.5px;line-height:1.6;color:var(--graphite)}
+@media (max-width:860px){.about .wrap{grid-template-columns:1fr}.about .photo{position:relative;top:0;aspect-ratio:4/3.8}}
+@media (max-width:520px){.pillars{grid-template-columns:1fr}.pillars div:nth-child(even){padding-left:0;border-left:0}}
+
+/* Cobertura */
+.cover{padding-block:clamp(56px,7vw,96px);border-top:1px solid var(--mist)}
+.cover .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(28px,5vw,80px);align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{font:400 14px/1 var(--sans);padding:14px 20px;border:1px solid var(--mist);color:var(--navy);display:inline-flex;gap:10px;align-items:center}
+.chips span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--petrol)}
+@media (max-width:860px){.cover .wrap{grid-template-columns:1fr}}
+
+/* Consultorio: galería */
+.space{padding-bottom:clamp(72px,10vw,140px)}
+.gallery{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:clamp(10px,1.4vw,18px)}
+.gallery .photo{aspect-ratio:auto;height:clamp(300px,36vw,520px)}
+.gallery .photo:first-child img{object-position:20% 50%}
+@media (max-width:860px){.gallery{grid-template-columns:1fr 1fr}.gallery .photo{height:clamp(220px,52vw,420px)}.gallery .photo:first-child{grid-column:1/-1}}
+.space .note{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end;margin-top:28px}
+
+/* FAQ */
+.faq .wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,6vw,100px)}
+.faq .intro{display:flex;flex-direction:column;gap:24px;align-self:start;position:sticky;top:120px}
+details{border-bottom:1px solid var(--mist)}
+details:first-child{border-top:1px solid var(--navy)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:24px;align-items:center;padding:26px 0;font:400 17px/1.45 var(--sans);color:var(--navy)}
+summary::-webkit-details-marker{display:none}
+summary i{width:16px;height:16px;position:relative;flex:none}
+summary i::before,summary i::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.5px;background:var(--petrol);transition:transform .35s var(--ease)}
+summary i::after{transform:rotate(90deg)}
+details[open] summary i::after{transform:rotate(0)}
+summary:hover{color:var(--petrol)}
+details .ans{padding:0 48px 28px 0;color:var(--graphite);font-size:15.5px;line-height:1.75;max-width:40em}
+details .ans p{margin:0}
+@media (max-width:860px){.faq .wrap{grid-template-columns:1fr}.faq .intro{position:static}details .ans{padding-right:0}}
+
+/* Turnos / contacto */
+.contact{background:var(--navy);color:#DCE3EC;position:relative;overflow:hidden}
+.wave{display:block;width:100%;height:clamp(40px,6vw,90px);color:var(--navy);background:var(--white)}
+.contact .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(36px,6vw,100px);padding-block:clamp(40px,6vw,80px) clamp(64px,8vw,110px);position:relative;z-index:1}
+.contact .eyebrow{color:var(--sky)}
+.contact .h-display{color:var(--white);font-size:clamp(44px,6vw,88px);margin-top:20px}
+.contact .h-display em{font-style:normal;color:var(--sky)}
+.contact .copy{display:flex;flex-direction:column;gap:28px;min-width:0}
+.contact .copy>p{margin:0;font-size:17px;line-height:1.75;max-width:30em}
+.contact .copy>p b{color:var(--white);font-weight:500}
+.card{background:var(--white);color:var(--ink);padding:clamp(28px,3.4vw,44px);display:flex;flex-direction:column;gap:0;align-self:start;min-width:0}
+.card .row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:18px 0;border-bottom:1px solid var(--mist);align-items:baseline}
+.card .row:first-of-type{padding-top:0}
+.card .row span{font:500 11px/1.6 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--graphite)}
+.card .row div{font:400 15.5px/1.55 var(--sans);color:var(--navy);overflow-wrap:anywhere}
+.card .row a{text-decoration:none;border-bottom:1px solid var(--mist)}
+.card .row a:hover{border-color:var(--petrol);color:var(--petrol)}
+.card .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.copybtn{background:none;border:1px solid var(--mist);font:500 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--navy);padding:9px 12px;cursor:pointer;margin-left:10px;vertical-align:middle}
+.copybtn:hover{border-color:var(--navy)}
+.contact .bg-tooth{position:absolute;right:-8%;top:-6%;width:min(620px,70vw);color:var(--white);opacity:.045;pointer-events:none}
+@media (max-width:900px){.contact .wrap{grid-template-columns:1fr}}
+@media (max-width:420px){.card .row{grid-template-columns:1fr;gap:4px}}
+
+/* Footer */
+footer{background:#233150;color:#AEB9C9;font-size:13.5px}
+footer .wrap{display:grid;grid-template-columns:auto 1fr auto;gap:40px;align-items:center;padding-block:48px calc(48px + env(safe-area-inset-bottom,0px))}
+footer .logo{color:var(--white);width:210px;height:121px;display:block}
+footer nav{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:center}
+footer nav a{text-decoration:none;letter-spacing:.1em;text-transform:uppercase;font-size:12px}
+footer nav a:hover{color:var(--white)}
+footer .legal{text-align:right;line-height:1.7}
+footer .legal a{color:var(--white);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.25)}
+@media (max-width:900px){footer .wrap{grid-template-columns:1fr;justify-items:start}footer nav{justify-content:flex-start}footer .legal{text-align:left}}
+
+/* WhatsApp flotante + barra móvil */
+.fab{position:fixed;right:calc(24px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:40;width:58px;height:58px;border-radius:50%;background:var(--petrol);color:var(--white);display:grid;place-items:center;box-shadow:0 14px 34px -12px rgba(18,114,133,.7);transition:transform .3s var(--ease),background .3s}
+.fab:hover{transform:translateY(-3px);background:var(--navy)}
+.fab svg{width:26px;height:26px}
+.mbar{display:none}
+@media (max-width:720px){
+  .fab{display:none}
+  .mbar{display:grid;grid-template-columns:1fr 1fr;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--white);border-top:1px solid var(--mist);padding:10px max(12px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));gap:10px;transform:translateY(110%);transition:transform .4s var(--ease)}
+  .mbar.show{transform:none}
+  .mbar .btn{justify-content:center;padding:15px 10px;font-size:12px}
+  footer .wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo" viewBox="444 249 567 326"><g fill="currentColor"><path d="M 715.97 261.88 C 716.03 262.30 715.46 262.09 715.21 262.05 C 712.97 261.70 710.52 260.77 708.25 260.30 C 687.09 255.93 664.26 257.62 649.79 275.42 C 631.08 298.41 639.06 332.00 645.46 358.13 C 650.10 377.09 655.52 396.24 661.21 414.92 C 662.60 419.5 665.63 432.02 669.35 434.56 C 672.5 436.71 675.28 433.72 677.03 431.28 C 670.86 422.42 666.38 412.30 664.66 401.57 C 656.46 350.31 704.43 299.99 756.38 316.26 L 760.97 318.38 C 756.80 317.47 752.62 316.43 748.36 316.03 C 723.80 313.73 700.36 326.44 687.60 347.12 C 674.41 368.52 671.33 397.60 683.58 420.09 L 684.84 417.82 C 691.73 402.32 696.01 385.82 701.60 369.82 C 703.88 363.28 709.64 346.37 715.49 342.98 C 723.90 338.10 729.12 350.16 731.79 356.13 C 737.91 369.75 742.09 384.75 747.30 398.79 C 749.17 403.85 755.00 420.15 759.09 422.79 C 762.60 425.07 764.94 418.49 765.92 415.98 C 770.33 404.54 772.68 390.19 775.87 378.14 C 779.48 364.48 784.46 340.55 799.55 335.41 C 810.80 331.56 820.80 338.71 827.63 347 L 827.51 347.34 C 818.33 339.5 805.35 333.11 795.12 343.22 C 783.32 354.90 778.86 386.69 774.99 402.91 C 773.25 410.17 771.12 418.90 767.69 425.51 C 759.01 442.21 749.93 428.16 744.44 418.37 C 737.33 405.72 731.60 390.16 726.80 376.42 C 724.49 369.80 722.58 361.45 719.71 355.26 C 718.94 353.60 717.80 351.07 715.56 351.99 C 713.22 352.96 709.60 361.77 708.56 364.30 C 700.53 383.74 695.58 404.55 685.40 423.08 C 694.69 439.21 712.21 449.40 730.49 451.84 C 757.78 455.50 785.88 443.77 803.36 422.92 C 802.88 424.26 801.83 425.60 800.97 426.76 C 776.48 459.71 723.51 470.21 690.08 444.67 C 685.87 441.46 681.79 437.56 678.75 433.28 C 678.28 432.94 677.28 434.65 676.98 434.92 C 671.23 440.27 667.88 437.70 665.11 431.87 C 663.46 428.39 661.91 424.21 660.39 420.63 C 649.53 395.12 637.66 367.05 630.53 340.33 C 622.83 311.51 622.94 275.64 652.21 259.01 C 671.84 247.85 696.88 251.30 715.97 261.88 "/>
+<path d="M 794.65 328.51 L 794.52 327.79 C 797.34 320.04 800.16 312.21 801.65 304.07 C 804.39 289.12 803.29 272.25 789.35 263.28 C 775.37 254.29 758.44 259.30 744.18 264.76 C 730.32 270.07 716.98 276.98 704.07 284.24 L 703.96 283.78 C 708.06 280.86 711.99 277.71 716.18 274.91 C 737.28 260.85 776.11 241.26 797.25 265.05 C 812.87 282.62 803.88 310.01 794.65 328.51 "/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 170.68 722.62 L 174.43 722.62 L 174.43 722.82 C 173.86 722.84 173.46 722.96 173.25 723.18 C 173.02 723.41 172.91 723.88 172.91 724.60 L 172.91 742.25 L 157.45 725.78 L 157.45 740.12 C 157.45 740.58 157.48 740.91 157.55 741.13 C 157.62 741.35 157.73 741.50 157.85 741.58 C 157.99 741.66 158.32 741.74 158.84 741.82 L 158.84 742.01 L 155.12 742.01 L 155.12 741.82 C 155.78 741.82 156.20 741.70 156.36 741.46 C 156.52 741.23 156.60 740.66 156.60 739.77 L 156.60 726.65 C 156.60 725.50 156.44 724.56 156.12 723.84 C 155.80 723.11 155.06 722.77 153.91 722.82 L 153.91 722.62 L 157.55 722.62 L 172.08 738.10 L 172.08 724.41 C 172.08 723.68 171.95 723.23 171.69 723.06 C 171.43 722.90 171.09 722.82 170.68 722.82 Z M 170.68 722.62 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 180.46 732.55 L 185.70 732.55 L 183.08 725.94 Z M 185.96 733.09 L 180.27 733.09 L 177.34 740.41 C 177.14 740.93 177.03 741.26 177.03 741.38 C 177.03 741.67 177.25 741.82 177.68 741.82 L 177.68 742.01 L 174.80 742.01 L 174.80 741.82 C 175.18 741.82 175.51 741.72 175.77 741.53 C 176.03 741.35 176.32 740.85 176.64 740.06 L 183.67 722.33 L 184.01 722.33 L 190.93 739.46 C 190.93 739.55 191.10 739.96 191.46 740.70 C 191.82 741.44 192.36 741.82 193.08 741.82 L 193.08 742.01 L 188.55 742.01 L 188.55 741.82 C 188.96 741.82 189.17 741.66 189.17 741.33 C 189.17 741.11 189.07 740.76 188.87 740.28 C 188.84 740.24 188.80 740.18 188.78 740.10 C 188.76 740.02 188.74 739.97 188.74 739.97 Z M 185.96 733.09 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 207.15 721.95 L 206.23 724.30 L 206.03 724.30 C 206.07 724.16 206.08 723.97 206.08 723.73 C 206.08 723.53 206.02 723.40 205.87 723.34 C 205.72 723.28 205.49 723.26 205.18 723.26 L 200.12 723.26 L 200.12 739.84 C 200.12 740.53 200.18 740.99 200.29 741.25 C 200.40 741.50 200.54 741.65 200.73 741.72 C 200.92 741.78 201.23 741.82 201.65 741.82 L 201.65 742.01 L 196.40 742.01 L 196.40 741.82 C 197.06 741.77 197.47 741.65 197.64 741.44 C 197.80 741.23 197.89 740.79 197.89 740.12 L 197.89 723.26 L 193.04 723.26 C 192.55 723.26 192.23 723.28 192.08 723.34 C 191.93 723.40 191.86 723.54 191.86 723.77 C 191.86 723.89 191.89 724.06 191.96 724.30 L 191.77 724.30 L 190.84 721.95 L 191.04 721.95 C 191.20 722.27 191.35 722.46 191.51 722.53 C 191.66 722.59 191.99 722.62 192.50 722.62 L 205.37 722.62 C 205.87 722.62 206.24 722.59 206.46 722.53 C 206.69 722.46 206.85 722.27 206.96 721.95 Z M 207.15 721.95 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 210.71 732.55 L 215.95 732.55 L 213.33 725.94 Z M 216.21 733.09 L 210.52 733.09 L 207.58 740.41 C 207.39 740.93 207.28 741.26 207.28 741.38 C 207.28 741.67 207.50 741.82 207.93 741.82 L 207.93 742.01 L 205.05 742.01 L 205.05 741.82 C 205.43 741.82 205.76 741.72 206.02 741.53 C 206.28 741.35 206.57 740.85 206.89 740.06 L 213.92 722.33 L 214.26 722.33 L 221.18 739.46 C 221.18 739.55 221.35 739.96 221.71 740.70 C 222.06 741.44 222.60 741.82 223.33 741.82 L 223.33 742.01 L 218.80 742.01 L 218.80 741.82 C 219.21 741.82 219.42 741.66 219.42 741.33 C 219.42 741.11 219.32 740.76 219.12 740.28 C 219.08 740.24 219.05 740.18 219.03 740.10 C 219.01 740.02 219.00 739.97 218.99 739.97 Z M 216.21 733.09 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 223.79 742.01 L 223.79 741.82 C 224.40 741.82 224.79 741.70 224.97 741.47 C 225.15 741.25 225.24 740.85 225.24 740.30 L 225.24 724.44 C 225.24 723.88 225.17 723.47 225.03 723.22 C 224.88 722.97 224.47 722.84 223.76 722.82 L 223.76 722.62 L 228.96 722.62 L 228.96 722.82 C 228.48 722.82 228.14 722.88 227.95 723.01 C 227.76 723.13 227.63 723.27 227.57 723.44 C 227.51 723.61 227.48 723.98 227.48 724.57 L 227.48 738.18 C 227.48 739.35 227.76 740.17 228.32 740.65 C 228.88 741.13 229.84 741.37 231.20 741.37 L 233.56 741.37 C 234.70 741.37 235.54 741.09 236.07 740.53 C 236.60 739.96 236.89 738.91 236.95 737.35 L 237.15 737.35 L 237.15 742.01 Z M 223.79 742.01 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 244.17 722.62 L 244.17 722.82 C 243.91 722.80 243.63 722.84 243.32 722.94 C 243.01 723.05 242.82 723.20 242.76 723.40 C 242.71 723.60 242.68 724.08 242.68 724.84 L 242.68 739.71 C 242.68 740.52 242.71 741.01 242.78 741.19 C 242.84 741.37 242.97 741.52 243.16 741.64 C 243.35 741.76 243.69 741.82 244.17 741.82 L 244.17 742.01 L 239.00 742.01 L 239.00 741.82 C 239.64 741.82 240.05 741.69 240.21 741.44 C 240.36 741.19 240.44 740.62 240.44 739.74 L 240.44 725.01 C 240.44 724.08 240.35 723.48 240.18 723.20 C 240.00 722.91 239.61 722.79 239.00 722.82 L 239.00 722.62 Z M 244.17 722.62 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 250.87 732.55 L 256.11 732.55 L 253.49 725.94 Z M 256.37 733.09 L 250.68 733.09 L 247.75 740.41 C 247.55 740.93 247.44 741.26 247.44 741.38 C 247.44 741.67 247.66 741.82 248.09 741.82 L 248.09 742.01 L 245.21 742.01 L 245.21 741.82 C 245.59 741.82 245.92 741.72 246.18 741.53 C 246.44 741.35 246.73 740.85 247.05 740.06 L 254.08 722.33 L 254.43 722.33 L 261.34 739.46 C 261.34 739.55 261.52 739.96 261.87 740.70 C 262.23 741.44 262.76 741.82 263.49 741.82 L 263.49 742.01 L 258.96 742.01 L 258.96 741.82 C 259.37 741.82 259.58 741.66 259.58 741.33 C 259.58 741.11 259.48 740.76 259.28 740.28 C 259.24 740.24 259.21 740.18 259.19 740.10 C 259.17 740.02 259.15 739.97 259.15 739.97 Z M 256.37 733.09 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 289.21 723.60 L 289.94 725.65 L 289.74 725.65 C 287.87 723.78 285.66 722.85 283.11 722.85 C 280.47 722.85 278.34 723.63 276.71 725.21 C 275.09 726.78 274.27 728.68 274.27 730.90 C 274.27 732.28 274.63 733.87 275.36 735.66 C 276.08 737.45 277.23 738.92 278.79 740.07 C 280.35 741.23 282.24 741.80 284.46 741.80 C 285.92 741.80 287.35 741.57 288.75 741.10 C 290.14 740.63 291.19 740.00 291.87 739.21 L 292.04 739.26 L 290.69 741.34 C 288.49 741.82 287.07 742.10 286.42 742.19 C 285.76 742.27 284.89 742.31 283.79 742.31 C 279.73 742.31 276.82 741.38 275.07 739.50 C 273.32 737.61 272.44 735.36 272.44 732.73 C 272.44 730.96 272.89 729.26 273.79 727.62 C 274.69 725.98 275.99 724.69 277.68 723.75 C 279.37 722.81 281.31 722.33 283.49 722.33 C 284.57 722.33 285.51 722.43 286.31 722.63 C 287.10 722.83 287.76 723.03 288.29 723.24 L 289.16 723.57 C 289.19 723.58 289.20 723.59 289.21 723.60 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 301.68 717.21 L 304.05 717.21 L 300.06 721.28 L 299.44 721.28 Z M 298.05 732.55 L 303.29 732.55 L 300.67 725.94 Z M 303.55 733.09 L 297.86 733.09 L 294.93 740.41 C 294.72 740.93 294.62 741.26 294.62 741.38 C 294.62 741.67 294.83 741.82 295.27 741.82 L 295.27 742.01 L 292.38 742.01 L 292.38 741.82 C 292.77 741.82 293.09 741.72 293.36 741.53 C 293.62 741.35 293.91 740.85 294.23 740.06 L 301.25 722.33 L 301.60 722.33 L 308.51 739.46 C 308.51 739.55 308.69 739.96 309.05 740.70 C 309.40 741.44 309.94 741.82 310.67 741.82 L 310.67 742.01 L 306.14 742.01 L 306.14 741.82 C 306.55 741.82 306.76 741.66 306.76 741.33 C 306.76 741.11 306.66 740.76 306.46 740.28 C 306.42 740.24 306.39 740.18 306.36 740.10 C 306.35 740.02 306.33 739.98 306.32 739.98 Z M 303.55 733.09 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 315.49 723.14 L 315.49 732.23 L 317.51 732.23 C 319.12 732.23 320.30 731.85 321.08 731.10 C 321.85 730.35 322.24 729.36 322.24 728.13 C 322.24 726.93 321.86 725.80 321.10 724.74 C 320.34 723.67 319.00 723.14 317.08 723.14 Z M 311.85 722.82 L 311.85 722.62 L 317.35 722.62 C 318.75 722.62 319.76 722.65 320.38 722.72 C 321.00 722.78 321.64 722.98 322.30 723.33 C 322.95 723.68 323.44 724.15 323.78 724.74 C 324.11 725.33 324.28 726.06 324.28 726.92 C 324.28 727.90 323.98 728.84 323.39 729.73 C 322.80 730.62 321.96 731.37 320.88 731.99 L 322.25 734.10 C 322.55 734.62 323.34 735.78 324.63 737.55 C 325.91 739.33 326.91 740.42 327.61 740.81 C 328.31 741.20 328.99 741.40 329.65 741.40 C 330.30 741.40 331.05 741.14 331.89 740.64 L 331.96 740.91 C 330.91 741.77 329.55 742.20 327.86 742.20 C 326.74 742.20 325.78 741.87 324.97 741.20 C 324.16 740.54 322.76 738.71 320.76 735.73 C 320.74 735.71 320.73 735.70 320.73 735.68 L 318.78 732.68 L 317.05 732.73 L 315.49 732.73 L 315.49 740.15 C 315.49 740.74 315.56 741.17 315.72 741.43 C 315.88 741.69 316.25 741.82 316.85 741.82 L 316.85 742.01 L 311.85 742.01 L 311.85 741.82 C 312.48 741.79 312.86 741.66 313.02 741.42 C 313.17 741.19 313.25 740.70 313.25 739.98 L 313.25 724.57 C 313.25 724.07 313.18 723.66 313.05 723.33 C 312.92 723.00 312.52 722.83 311.85 722.82 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 339.78 723.03 L 336.81 723.03 L 336.81 738.08 C 336.81 739.03 336.97 739.73 337.29 740.19 C 337.61 740.65 338.16 740.98 338.93 741.19 C 339.70 741.40 340.74 741.50 342.05 741.50 C 345.68 741.50 348.23 740.57 349.70 738.70 C 351.18 736.84 351.91 734.80 351.91 732.60 C 351.91 730.01 350.90 727.77 348.89 725.88 C 346.87 723.98 343.84 723.03 339.78 723.03 M 333.18 722.82 L 333.18 722.62 L 342.07 722.62 C 344.34 722.62 346.13 722.80 347.44 723.16 C 348.75 723.52 349.89 724.07 350.87 724.84 C 351.84 725.60 352.61 726.58 353.18 727.76 C 353.76 728.95 354.04 730.28 354.04 731.74 C 354.04 733.16 353.75 734.55 353.15 735.91 C 352.56 737.28 351.75 738.45 350.74 739.44 C 349.72 740.43 348.65 741.10 347.52 741.47 C 346.39 741.83 344.65 742.01 342.28 742.01 L 333.18 742.01 L 333.18 741.82 L 333.41 741.82 C 333.89 741.82 334.20 741.63 334.35 741.25 C 334.50 740.86 334.57 740.17 334.57 739.17 L 334.57 725.06 C 334.57 724.01 334.48 723.37 334.30 723.15 C 334.12 722.93 333.75 722.82 333.18 722.82 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 355.96 722.85 L 355.96 722.62 L 368.15 722.62 L 368.15 725.30 L 367.95 725.30 C 367.69 724.30 367.47 723.72 367.29 723.54 C 367.11 723.37 366.67 723.28 365.97 723.28 L 359.57 723.28 L 359.57 731.98 L 365.51 731.98 C 366.09 731.98 366.47 731.93 366.62 731.82 C 366.78 731.71 366.87 731.55 366.87 731.34 L 367.07 731.34 L 367.07 733.17 L 366.87 733.17 C 366.83 732.91 366.73 732.74 366.57 732.66 C 366.40 732.57 366.10 732.52 365.66 732.52 L 359.57 732.52 L 359.57 738.51 C 359.57 739.42 359.65 740.07 359.82 740.47 C 359.99 740.87 360.25 741.12 360.61 741.22 C 360.97 741.32 361.53 741.37 362.26 741.37 L 365.68 741.37 C 366.77 741.37 367.46 741.33 367.76 741.26 C 368.07 741.18 368.32 741.03 368.53 740.81 C 368.75 740.59 368.91 740.10 369.02 739.35 L 369.22 739.35 L 369.22 742.01 L 355.96 742.01 L 355.96 741.82 C 356.41 741.79 356.75 741.71 356.98 741.56 C 357.21 741.42 357.33 741.04 357.33 740.44 L 357.33 724.78 C 357.33 724.07 357.27 723.57 357.15 723.28 C 357.02 722.99 356.63 722.85 355.96 722.85 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 386.48 722.62 L 390.22 722.62 L 390.22 722.82 C 389.66 722.84 389.26 722.96 389.04 723.18 C 388.82 723.41 388.71 723.88 388.71 724.60 L 388.71 742.25 L 373.24 725.78 L 373.24 740.12 C 373.24 740.58 373.28 740.91 373.35 741.13 C 373.42 741.35 373.52 741.50 373.66 741.58 C 373.78 741.66 374.12 741.74 374.64 741.82 L 374.64 742.01 L 370.92 742.01 L 370.92 741.82 C 371.58 741.82 372.00 741.70 372.16 741.46 C 372.32 741.23 372.40 740.66 372.40 739.77 L 372.40 726.65 C 372.40 725.50 372.24 724.56 371.92 723.84 C 371.60 723.11 370.86 722.77 369.71 722.82 L 369.71 722.62 L 373.35 722.62 L 387.88 738.10 L 387.88 724.41 C 387.88 723.68 387.75 723.23 387.49 723.06 C 387.23 722.90 386.89 722.82 386.48 722.82 Z M 386.48 722.62 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 396.26 732.55 L 401.50 732.55 L 398.88 725.94 Z M 401.76 733.09 L 396.07 733.09 L 393.14 740.41 C 392.93 740.93 392.83 741.26 392.83 741.38 C 392.83 741.67 393.05 741.82 393.48 741.82 L 393.48 742.01 L 390.59 742.01 L 390.59 741.82 C 390.98 741.82 391.30 741.72 391.57 741.53 C 391.83 741.35 392.12 740.85 392.44 740.06 L 399.46 722.33 L 399.81 722.33 L 406.73 739.46 C 406.73 739.55 406.90 739.96 407.26 740.70 C 407.61 741.44 408.15 741.82 408.88 741.82 L 408.88 742.01 L 404.35 742.01 L 404.35 741.82 C 404.77 741.82 404.97 741.66 404.97 741.33 C 404.97 741.11 404.87 740.76 404.67 740.28 C 404.63 740.24 404.60 740.18 404.57 740.10 C 404.56 740.02 404.54 739.97 404.53 739.97 Z M 401.76 733.09 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<path stroke-width="0.45" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 419.36 722.87 L 420.28 725.30 L 420.12 725.32 C 420.12 725.32 419.88 725.05 419.39 724.54 C 418.90 724.04 418.35 723.64 417.72 723.37 C 417.09 723.09 416.38 722.95 415.59 722.95 C 414.27 722.95 413.22 723.33 412.44 724.09 C 411.66 724.85 411.27 725.76 411.27 726.84 C 411.27 727.55 411.46 728.17 411.82 728.70 C 412.18 729.23 412.94 729.73 414.11 730.19 C 416.09 730.85 417.46 731.36 418.19 731.70 C 418.92 732.03 419.63 732.61 420.31 733.41 C 420.99 734.22 421.33 735.25 421.33 736.52 C 421.33 737.04 421.27 737.55 421.15 738.02 C 421.02 738.50 420.83 738.96 420.55 739.41 C 420.28 739.85 419.96 740.25 419.57 740.61 C 419.19 740.98 418.80 741.25 418.41 741.44 C 418.01 741.63 417.39 741.77 416.54 741.87 C 415.69 741.96 415.13 742.01 414.86 742.01 L 409.68 742.01 L 409.68 736.38 L 409.88 736.38 C 409.90 738.25 410.33 739.55 411.19 740.29 C 412.05 741.03 413.39 741.39 415.21 741.39 C 416.86 741.39 418.11 741.00 418.97 740.22 C 419.82 739.44 420.25 738.50 420.25 737.41 C 420.25 736.74 420.10 736.17 419.80 735.70 C 419.51 735.23 419.09 734.82 418.55 734.46 C 418.02 734.11 417.01 733.68 415.51 733.16 C 414.03 732.64 412.99 732.19 412.39 731.80 C 411.79 731.41 411.28 730.82 410.88 730.03 C 410.48 729.25 410.27 728.45 410.27 727.64 C 410.27 726.14 410.79 724.88 411.82 723.86 C 412.85 722.84 414.21 722.33 415.88 722.33 C 416.53 722.33 417.23 722.41 417.99 722.56 C 418.74 722.71 419.16 722.80 419.25 722.85 C 419.29 722.87 419.32 722.87 419.36 722.87 " transform="matrix(2.09, 0, 0, 2.09, 123.86, -1026.60)"/>
+<g clip-path="url(#clip-0)">
+<path fill="none" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="10" d="M 0.00 -0.00 L 63.99 -0.55 " transform="matrix(1.48, 0, 0, -1.48, 449.80, 566.28)"/>
+</g>
+<g clip-path="url(#clip-1)">
+<path fill="none" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="10" d="M 0.00 -0.00 L 60.96 -0.52 " transform="matrix(1.48, 0, 0, -1.48, 914.78, 566.71)"/>
+</g>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.07 -6.51 C 1.07 -2.73 4.00 0.21 7.57 0.21 C 11.15 0.21 14.07 -2.73 14.07 -6.51 C 14.07 -10.20 11.15 -13.07 7.57 -13.07 C 4.00 -13.07 1.07 -10.20 1.07 -6.51 Z M 1.90 -6.51 C 1.90 -9.79 4.43 -12.31 7.57 -12.31 C 10.71 -12.31 13.24 -9.79 13.24 -6.51 C 13.24 -3.14 10.71 -0.53 7.57 -0.53 C 4.43 -0.53 1.90 -3.14 1.90 -6.51 Z M 1.90 -6.51 " transform="matrix(1.48, 0, 0, 1.48, 556.41, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.60 -0.00 L 2.39 -0.00 L 2.39 -3.96 C 2.39 -4.57 2.45 -5.24 2.65 -5.89 C 3.06 -7.24 3.96 -8.46 5.38 -8.46 C 5.59 -8.46 5.81 -8.42 5.81 -8.42 L 5.81 -9.20 C 5.81 -9.20 5.56 -9.25 5.28 -9.25 C 3.84 -9.25 2.81 -8.09 2.34 -6.68 L 2.31 -6.68 C 2.31 -6.68 2.39 -7.01 2.39 -7.43 L 2.39 -9.18 L 1.60 -9.18 Z M 1.60 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 578.93, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.90 -3.32 C 1.90 -0.28 3.87 0.07 4.82 0.07 C 5.10 0.07 5.28 0.03 5.28 0.03 L 5.28 -0.67 C 5.28 -0.67 5.12 -0.63 4.85 -0.63 C 4.12 -0.63 2.68 -0.95 2.68 -3.37 L 2.68 -8.42 L 5.07 -8.42 L 5.07 -9.12 L 2.68 -9.12 L 2.68 -11.73 L 1.90 -11.73 L 1.90 -9.12 L 0.70 -9.12 L 0.70 -8.42 L 1.90 -8.42 Z M 1.90 -3.32 " transform="matrix(1.48, 0, 0, 1.48, 588.15, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.93 -4.64 C 0.93 -1.90 3.06 0.21 5.68 0.21 C 8.31 0.21 10.45 -1.90 10.45 -4.64 C 10.45 -7.32 8.31 -9.40 5.68 -9.40 C 3.06 -9.40 0.93 -7.32 0.93 -4.64 Z M 1.74 -4.64 C 1.74 -6.92 3.49 -8.63 5.68 -8.63 C 7.87 -8.63 9.63 -6.92 9.63 -4.64 C 9.63 -2.31 7.87 -0.53 5.68 -0.53 C 3.49 -0.53 1.74 -2.31 1.74 -4.64 Z M 1.74 -4.64 " transform="matrix(1.48, 0, 0, 1.48, 596.71, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.01 -4.59 C 1.01 -1.75 2.51 0.21 4.96 0.21 C 7.51 0.21 8.29 -1.85 8.29 -1.85 L 8.32 -1.85 C 8.32 -1.85 8.26 -1.57 8.26 -1.15 L 8.26 -0.00 L 9.03 -0.00 L 9.03 -12.85 L 8.26 -12.85 L 8.26 -8.07 C 8.26 -7.65 8.32 -7.32 8.32 -7.32 L 8.29 -7.32 C 8.29 -7.32 7.43 -9.40 5.12 -9.40 C 2.71 -9.40 1.01 -7.51 1.01 -4.59 Z M 1.81 -4.59 C 1.81 -7.15 3.28 -8.63 5.07 -8.63 C 7.23 -8.63 8.28 -6.64 8.28 -4.60 C 8.28 -1.71 6.70 -0.53 5.01 -0.53 C 3.14 -0.53 1.81 -2.10 1.81 -4.59 Z M 1.81 -4.59 " transform="matrix(1.48, 0, 0, 1.48, 613.62, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.93 -4.64 C 0.93 -1.90 3.06 0.21 5.68 0.21 C 8.31 0.21 10.45 -1.90 10.45 -4.64 C 10.45 -7.32 8.31 -9.40 5.68 -9.40 C 3.06 -9.40 0.93 -7.32 0.93 -4.64 Z M 1.74 -4.64 C 1.74 -6.92 3.50 -8.63 5.68 -8.63 C 7.87 -8.63 9.64 -6.92 9.64 -4.64 C 9.64 -2.31 7.87 -0.53 5.68 -0.53 C 3.50 -0.53 1.74 -2.31 1.74 -4.64 Z M 1.74 -4.64 " transform="matrix(1.48, 0, 0, 1.48, 629.44, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.60 -0.00 L 2.39 -0.00 L 2.39 -4.48 C 2.39 -4.92 2.42 -5.34 2.53 -5.73 C 3.00 -7.43 4.51 -8.63 6.24 -8.63 C 8.29 -8.63 8.49 -7.14 8.49 -5.54 L 8.49 -0.00 L 9.26 -0.00 L 9.26 -5.81 C 9.26 -7.98 8.62 -9.40 6.24 -9.40 C 3.95 -9.40 2.65 -7.67 2.34 -6.81 L 2.31 -6.81 C 2.31 -6.81 2.39 -7.14 2.39 -7.56 L 2.39 -9.18 L 1.60 -9.18 Z M 1.60 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 646.34, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.97 -4.57 C 0.97 -1.65 3.12 0.21 5.70 0.21 C 7.98 0.21 9.18 -1.21 9.18 -1.21 L 8.78 -1.85 C 8.78 -1.85 7.73 -0.53 5.70 -0.53 C 3.56 -0.53 1.78 -2.12 1.78 -4.57 C 1.78 -7.04 3.56 -8.63 5.70 -8.63 C 7.46 -8.63 8.51 -7.46 8.51 -7.46 L 8.99 -8.09 C 8.99 -8.09 7.88 -9.40 5.70 -9.40 C 3.15 -9.40 0.97 -7.48 0.97 -4.57 Z M 0.97 -4.57 " transform="matrix(1.48, 0, 0, 1.48, 662.32, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.54 -11.51 L 2.45 -11.51 L 2.45 -12.85 L 1.54 -12.85 Z M 1.61 -0.00 L 2.38 -0.00 L 2.38 -9.18 L 1.61 -9.18 Z M 1.61 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 677.35, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.85 -2.43 C 0.85 -0.60 2.50 0.21 3.98 0.21 C 6.37 0.21 7.21 -2.03 7.20 -2.03 L 7.23 -2.03 C 7.23 -2.03 7.15 -1.70 7.15 -1.21 L 7.15 -0.00 L 7.93 -0.00 L 7.93 -5.93 C 7.93 -8.21 6.79 -9.40 4.68 -9.40 C 2.68 -9.40 1.57 -8.38 1.57 -8.38 L 2.01 -7.76 C 2.01 -7.76 3.04 -8.63 4.64 -8.63 C 6.11 -8.63 7.15 -7.95 7.15 -5.90 L 7.15 -5.59 L 6.54 -5.59 C 4.92 -5.59 0.85 -5.56 0.85 -2.43 Z M 1.67 -2.50 C 1.67 -4.89 5.01 -4.89 6.57 -4.89 L 7.15 -4.89 L 7.15 -4.39 C 7.15 -2.57 6.01 -0.50 4.01 -0.50 C 2.45 -0.50 1.67 -1.53 1.67 -2.50 Z M 1.67 -2.50 " transform="matrix(1.48, 0, 0, 1.48, 683.29, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.18 -3.50 C 1.18 -1.37 2.93 0.21 5.42 0.21 C 7.85 0.21 9.51 -1.25 9.51 -4.51 L 9.51 -6.57 L 11.29 -6.57 L 11.29 -7.31 L 9.51 -7.31 L 9.51 -9.18 L 8.71 -9.18 L 8.71 -7.31 L 5.73 -7.31 C 2.93 -7.31 2.59 -8.98 2.59 -9.88 C 2.59 -11.40 3.84 -12.34 5.45 -12.34 C 5.93 -12.34 6.60 -12.18 6.60 -12.18 L 6.85 -12.89 C 6.85 -12.89 6.06 -13.07 5.51 -13.07 C 3.12 -13.07 1.76 -11.71 1.76 -9.87 C 1.76 -7.53 3.61 -6.99 3.61 -6.99 L 3.61 -6.95 C 2.03 -6.51 1.18 -5.01 1.18 -3.50 Z M 2.01 -3.54 C 2.01 -5.32 3.18 -6.57 5.76 -6.57 L 8.71 -6.57 L 8.71 -4.51 C 8.71 -1.64 7.37 -0.54 5.42 -0.54 C 3.26 -0.54 2.01 -1.89 2.01 -3.54 Z M 2.01 -3.54 " transform="matrix(1.48, 0, 0, 1.48, 704.84, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.98 -0.00 L 9.35 -0.00 L 9.35 -0.73 L 2.76 -0.73 L 2.76 -6.10 L 7.89 -6.10 L 7.89 -6.84 L 2.76 -6.84 L 2.76 -12.12 L 9.01 -12.12 L 9.01 -12.85 L 1.98 -12.85 Z M 1.98 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 730.55, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.82 -1.10 C 0.82 -1.10 1.92 0.21 4.15 0.21 C 5.84 0.21 7.09 -0.79 7.09 -2.26 C 7.09 -5.31 2.03 -4.59 2.03 -6.98 C 2.03 -8.17 3.06 -8.63 4.11 -8.63 C 5.67 -8.63 6.42 -7.78 6.42 -7.78 L 6.89 -8.40 C 6.89 -8.40 6.04 -9.40 4.17 -9.40 C 2.61 -9.40 1.23 -8.56 1.23 -6.92 C 1.23 -3.92 6.28 -4.59 6.28 -2.26 C 6.28 -1.12 5.28 -0.53 4.17 -0.53 C 2.34 -0.53 1.32 -1.68 1.32 -1.68 Z M 0.82 -1.10 " transform="matrix(1.48, 0, 0, 1.48, 746.12, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.90 -3.32 C 1.90 -0.28 3.87 0.07 4.82 0.07 C 5.11 0.07 5.28 0.03 5.28 0.03 L 5.28 -0.67 C 5.28 -0.67 5.12 -0.63 4.86 -0.63 C 4.12 -0.63 2.68 -0.95 2.68 -3.37 L 2.68 -8.42 L 5.07 -8.42 L 5.07 -9.12 L 2.68 -9.12 L 2.68 -11.73 L 1.90 -11.73 L 1.90 -9.12 L 0.70 -9.12 L 0.70 -8.42 L 1.90 -8.42 Z M 1.90 -3.32 " transform="matrix(1.48, 0, 0, 1.48, 758.01, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.96 -4.57 C 0.96 -1.65 3.12 0.21 5.70 0.21 C 7.68 0.21 8.98 -1.04 8.98 -1.04 L 8.56 -1.68 C 8.56 -1.68 7.46 -0.53 5.70 -0.53 C 3.57 -0.53 1.78 -2.06 1.78 -4.71 L 9.14 -4.71 C 9.14 -4.71 9.18 -5.01 9.18 -5.21 C 9.18 -7.43 7.93 -9.40 5.43 -9.40 C 3.07 -9.40 0.96 -7.67 0.96 -4.57 Z M 1.84 -5.43 C 2.17 -7.57 3.73 -8.68 5.42 -8.68 C 6.93 -8.68 8.28 -7.67 8.37 -5.43 Z M 5.04 -10.81 L 5.86 -10.81 L 7.31 -12.85 L 6.28 -12.85 Z M 5.04 -10.81 " transform="matrix(1.48, 0, 0, 1.48, 766.58, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.90 -3.32 C 1.90 -0.28 3.87 0.07 4.82 0.07 C 5.10 0.07 5.28 0.03 5.28 0.03 L 5.28 -0.67 C 5.28 -0.67 5.12 -0.63 4.85 -0.63 C 4.12 -0.63 2.68 -0.95 2.68 -3.37 L 2.68 -8.42 L 5.07 -8.42 L 5.07 -9.12 L 2.68 -9.12 L 2.68 -11.73 L 1.90 -11.73 L 1.90 -9.12 L 0.70 -9.12 L 0.70 -8.42 L 1.90 -8.42 Z M 1.90 -3.32 " transform="matrix(1.48, 0, 0, 1.48, 781.66, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.54 -11.51 L 2.45 -11.51 L 2.45 -12.85 L 1.54 -12.85 Z M 1.61 -0.00 L 2.39 -0.00 L 2.39 -9.18 L 1.61 -9.18 Z M 1.61 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 790.22, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.96 -4.57 C 0.96 -1.65 3.12 0.21 5.70 0.21 C 7.98 0.21 9.18 -1.21 9.18 -1.21 L 8.78 -1.85 C 8.78 -1.85 7.73 -0.53 5.70 -0.53 C 3.56 -0.53 1.78 -2.12 1.78 -4.57 C 1.78 -7.04 3.56 -8.63 5.70 -8.63 C 7.46 -8.63 8.51 -7.46 8.51 -7.46 L 9.00 -8.09 C 9.00 -8.09 7.89 -9.40 5.70 -9.40 C 3.15 -9.40 0.96 -7.48 0.96 -4.57 Z M 0.96 -4.57 " transform="matrix(1.48, 0, 0, 1.48, 796.16, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.85 -2.43 C 0.85 -0.60 2.50 0.21 3.98 0.21 C 6.37 0.21 7.21 -2.03 7.20 -2.03 L 7.23 -2.03 C 7.23 -2.03 7.15 -1.70 7.15 -1.21 L 7.15 -0.00 L 7.93 -0.00 L 7.93 -5.93 C 7.93 -8.21 6.79 -9.40 4.68 -9.40 C 2.68 -9.40 1.57 -8.38 1.57 -8.38 L 2.01 -7.76 C 2.01 -7.76 3.04 -8.63 4.63 -8.63 C 6.10 -8.63 7.15 -7.95 7.15 -5.90 L 7.15 -5.59 L 6.54 -5.59 C 4.92 -5.59 0.85 -5.56 0.85 -2.43 Z M 1.67 -2.50 C 1.67 -4.89 5.01 -4.89 6.57 -4.89 L 7.15 -4.89 L 7.15 -4.39 C 7.15 -2.57 6.01 -0.50 4.01 -0.50 C 2.45 -0.50 1.67 -1.53 1.67 -2.50 Z M 1.67 -2.50 " transform="matrix(1.48, 0, 0, 1.48, 811.19, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.98 -0.00 L 2.76 -0.00 L 2.76 -6.01 L 7.68 -6.01 L 7.68 -6.74 L 2.76 -6.74 L 2.76 -12.12 L 8.46 -12.12 L 8.46 -12.85 L 1.98 -12.85 Z M 1.98 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 832.73, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.85 -2.43 C 0.85 -0.60 2.49 0.21 3.98 0.21 C 6.37 0.21 7.21 -2.03 7.20 -2.03 L 7.23 -2.03 C 7.23 -2.03 7.15 -1.70 7.15 -1.21 L 7.15 -0.00 L 7.93 -0.00 L 7.93 -5.93 C 7.93 -8.21 6.79 -9.40 4.68 -9.40 C 2.68 -9.40 1.57 -8.38 1.57 -8.38 L 2.01 -7.76 C 2.01 -7.76 3.04 -8.63 4.64 -8.63 C 6.10 -8.63 7.15 -7.95 7.15 -5.90 L 7.15 -5.59 L 6.54 -5.59 C 4.92 -5.59 0.85 -5.56 0.85 -2.43 Z M 1.67 -2.50 C 1.67 -4.89 5.01 -4.89 6.57 -4.89 L 7.15 -4.89 L 7.15 -4.39 C 7.15 -2.57 6.01 -0.50 4.01 -0.50 C 2.45 -0.50 1.67 -1.53 1.67 -2.50 Z M 1.67 -2.50 " transform="matrix(1.48, 0, 0, 1.48, 845.90, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.96 -4.57 C 0.96 -1.65 3.12 0.21 5.70 0.21 C 7.98 0.21 9.18 -1.21 9.18 -1.21 L 8.78 -1.85 C 8.78 -1.85 7.73 -0.53 5.70 -0.53 C 3.56 -0.53 1.78 -2.12 1.78 -4.57 C 1.78 -7.04 3.56 -8.63 5.70 -8.63 C 7.46 -8.63 8.51 -7.46 8.51 -7.46 L 8.99 -8.09 C 8.99 -8.09 7.89 -9.40 5.70 -9.40 C 3.15 -9.40 0.96 -7.48 0.96 -4.57 Z M 0.96 -4.57 " transform="matrix(1.48, 0, 0, 1.48, 859.89, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.54 -11.51 L 2.45 -11.51 L 2.45 -12.85 L 1.54 -12.85 Z M 1.61 -0.00 L 2.39 -0.00 L 2.39 -9.18 L 1.61 -9.18 Z M 1.61 -0.00 " transform="matrix(1.48, 0, 0, 1.48, 874.92, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 0.85 -2.43 C 0.85 -0.60 2.50 0.21 3.98 0.21 C 6.37 0.21 7.21 -2.03 7.20 -2.03 L 7.23 -2.03 C 7.23 -2.03 7.15 -1.70 7.15 -1.21 L 7.15 -0.00 L 7.93 -0.00 L 7.93 -5.93 C 7.93 -8.21 6.79 -9.40 4.68 -9.40 C 2.68 -9.40 1.57 -8.38 1.57 -8.38 L 2.01 -7.76 C 2.01 -7.76 3.04 -8.63 4.64 -8.63 C 6.10 -8.63 7.15 -7.95 7.15 -5.90 L 7.15 -5.59 L 6.54 -5.59 C 4.92 -5.59 0.85 -5.56 0.85 -2.43 Z M 1.67 -2.50 C 1.67 -4.89 5.01 -4.89 6.57 -4.89 L 7.15 -4.89 L 7.15 -4.39 C 7.15 -2.57 6.01 -0.50 4.01 -0.50 C 2.45 -0.50 1.67 -1.53 1.67 -2.50 Z M 1.67 -2.50 " transform="matrix(1.48, 0, 0, 1.48, 880.86, 571.34)"/>
+<path stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" stroke="currentColor" stroke-opacity="1" stroke-miterlimit="4" d="M 1.53 -1.85 C 1.53 -0.12 2.79 0.07 3.32 0.07 C 3.48 0.07 3.65 0.03 3.65 0.03 L 3.65 -0.67 C 3.65 -0.67 3.53 -0.65 3.37 -0.65 C 2.95 -0.65 2.29 -0.81 2.29 -2.09 L 2.29 -12.85 L 1.53 -12.85 Z M 1.53 -1.85 " transform="matrix(1.48, 0, 0, 1.48, 894.85, 571.34)"/></g></symbol>
+  <symbol id="iso" viewBox="622 248 210 215"><g fill="currentColor"><path d="M 715.97 261.88 C 716.03 262.30 715.46 262.09 715.21 262.05 C 712.97 261.70 710.52 260.77 708.25 260.30 C 687.09 255.93 664.26 257.62 649.79 275.42 C 631.08 298.41 639.06 332.00 645.46 358.13 C 650.10 377.09 655.52 396.24 661.21 414.92 C 662.60 419.5 665.63 432.02 669.35 434.56 C 672.5 436.71 675.28 433.72 677.03 431.28 C 670.86 422.42 666.38 412.30 664.66 401.57 C 656.46 350.31 704.43 299.99 756.38 316.26 L 760.97 318.38 C 756.80 317.47 752.62 316.43 748.36 316.03 C 723.80 313.73 700.36 326.44 687.60 347.12 C 674.41 368.52 671.33 397.60 683.58 420.09 L 684.84 417.82 C 691.73 402.32 696.01 385.82 701.60 369.82 C 703.88 363.28 709.64 346.37 715.49 342.98 C 723.90 338.10 729.12 350.16 731.79 356.13 C 737.91 369.75 742.09 384.75 747.30 398.79 C 749.17 403.85 755.00 420.15 759.09 422.79 C 762.60 425.07 764.94 418.49 765.92 415.98 C 770.33 404.54 772.68 390.19 775.87 378.14 C 779.48 364.48 784.46 340.55 799.55 335.41 C 810.80 331.56 820.80 338.71 827.63 347 L 827.51 347.34 C 818.33 339.5 805.35 333.11 795.12 343.22 C 783.32 354.90 778.86 386.69 774.99 402.91 C 773.25 410.17 771.12 418.90 767.69 425.51 C 759.01 442.21 749.93 428.16 744.44 418.37 C 737.33 405.72 731.60 390.16 726.80 376.42 C 724.49 369.80 722.58 361.45 719.71 355.26 C 718.94 353.60 717.80 351.07 715.56 351.99 C 713.22 352.96 709.60 361.77 708.56 364.30 C 700.53 383.74 695.58 404.55 685.40 423.08 C 694.69 439.21 712.21 449.40 730.49 451.84 C 757.78 455.50 785.88 443.77 803.36 422.92 C 802.88 424.26 801.83 425.60 800.97 426.76 C 776.48 459.71 723.51 470.21 690.08 444.67 C 685.87 441.46 681.79 437.56 678.75 433.28 C 678.28 432.94 677.28 434.65 676.98 434.92 C 671.23 440.27 667.88 437.70 665.11 431.87 C 663.46 428.39 661.91 424.21 660.39 420.63 C 649.53 395.12 637.66 367.05 630.53 340.33 C 622.83 311.51 622.94 275.64 652.21 259.01 C 671.84 247.85 696.88 251.30 715.97 261.88 "/>
+<path d="M 794.65 328.51 L 794.52 327.79 C 797.34 320.04 800.16 312.21 801.65 304.07 C 804.39 289.12 803.29 272.25 789.35 263.28 C 775.37 254.29 758.44 259.30 744.18 264.76 C 730.32 270.07 716.98 276.98 704.07 284.24 L 703.96 283.78 C 708.06 280.86 711.99 277.71 716.18 274.91 C 737.28 260.85 776.11 241.26 797.25 265.05 C 812.87 282.62 803.88 310.01 794.65 328.51 "/></g></symbol>
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.5 15l-1.4 5 5.1-1.3A9.9 9.9 0 1 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.2-1.15l-.3-.18-3.04.8.81-2.96-.2-.31a8.2 8.2 0 1 1 6.93 3.8Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.55.12-.16.25-.63.8-.78.97-.14.16-.29.18-.53.06a6.7 6.7 0 0 1-3.34-2.92c-.25-.43.25-.4.72-1.34.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47a.9.9 0 0 0-.65.3 2.74 2.74 0 0 0-.86 2.04 4.76 4.76 0 0 0 1 2.53 10.9 10.9 0 0 0 4.17 3.68c1.55.67 2.16.73 2.94.61.47-.07 1.46-.6 1.66-1.17.2-.58.2-1.07.14-1.17-.06-.1-.22-.17-.47-.29Z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.4" d="M2 8h11M9 4l4 4-4 4"/></symbol>
+</svg>
+
+<div class="topbar">
+  <div class="wrap">
+    <div>Dina Huapi<span class="sep">·</span>Estados Unidos 860, Oficina D</div>
+    <div class="hide-sm">Turnos por WhatsApp<span class="sep">·</span><a href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20pedir%20un%20turno." target="_blank" rel="noopener">+54 9 294 463-6977</a></div>
+  </div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#inicio" aria-label="Natalia Cárdenas, inicio">
+      <svg aria-hidden="true"><use href="#iso"/></svg>
+      <span class="who"><span>Od. Natalia F. Cárdenas</span><small>Ortodoncia &amp; Estética Facial</small></span>
+    </a>
+    <div class="menu-wrap">
+      <ul class="menu">
+        <li><a href="#tratamientos">Tratamientos</a></li>
+        <li><a href="#alineadores">Alineadores</a></li>
+        <li><a href="#consulta">Primera consulta</a></li>
+        <li><a href="#natalia">Natalia</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+      </ul>
+    </div>
+    <a class="btn btn-primary cta-top" href="#turnos">Pedir turno</a>
+    <button class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <svg class="bg-tooth" aria-hidden="true"><use href="#iso"/></svg>
+    <div class="wrap">
+      <div class="copy">
+        <p class="eyebrow rise">Ortodoncia &amp; Estética Facial · Dina Huapi</p>
+        <h1 class="h-display rise d1">Cuidamos cada <em>detalle</em> de tu sonrisa</h1>
+        <p class="lead rise d2">Ortodoncia, alineadores invisibles y estética en un consultorio nuevo, cerca de Bariloche. Te atiende siempre la profesional, con <b>turnos con poca antelación</b> y un presupuesto claro desde la primera consulta.</p>
+        <div class="ctas rise d3">
+          <a class="btn btn-primary" href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20pedir%20un%20turno." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Pedir turno</a>
+          <a class="btn btn-ghost" href="#tratamientos">Ver tratamientos</a>
+        </div>
+        <div class="facts rise d4">
+          <div><strong>2015</strong><span>Año de egreso</span></div>
+          <div><strong>10</strong><span>Años de ejercicio profesional</span></div>
+          <div><strong>1:1</strong><span>Atención directa, sin intermediarios</span></div>
+        </div>
+      </div>
+      <div class="arch rise d2">
+        <figure><img src="img/consultorio.jpg" alt="Recepción del consultorio con el logo de Natalia Cárdenas en la pared y el sillón odontológico" width="1120" height="1400" fetchpriority="high"></figure>
+        <div class="tag"><i></i><p><b>Turnos con poca antelación.</b> Escribinos y coordinamos el horario.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="values" aria-label="Por qué elegirnos">
+    <div class="wrap">
+      <ul>
+        <li><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M14 8v6l4 3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><div><h3>Turnos con poca antelación</h3><p>Disponibilidad ágil y corta espera.</p></div></li>
+        <li><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="10" r="4.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 24c1.4-5 5-7 9-7s7.6 2 9 7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><div><h3>Atención directa</h3><p>Con la profesional, sin intermediación administrativa.</p></div></li>
+        <li><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="6" y="4" width="16" height="20" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M10 10h8M10 14h8M10 18h5" stroke="currentColor" stroke-width="1.3"/></svg><div><h3>Presupuesto claro</h3><p>Sabés qué incluye y cuánto cuesta antes de empezar.</p></div></li>
+        <li><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M14 4l8 3v6c0 5.5-3.4 9.3-8 11-4.6-1.7-8-5.5-8-11V7l8-3Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="m10.5 14 2.5 2.5 4.5-5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><div><h3>Criterio clínico</h3><p>Solo indicamos lo que necesitás.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="tratamientos">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Tratamientos</p>
+          <h2 class="h-display h2">Lo que hacemos, explicado sin vueltas</h2>
+        </div>
+        <p class="lead">Cada tratamiento empieza con un diagnóstico. Te explicamos qué opciones tenés, cuánto duran y cuánto cuestan, y decidís con toda la información.</p>
+      </div>
+      <div class="groups">
+        <div class="group">
+          <h3>Ortodoncia y ortopedia</h3>
+          <ul class="tx">
+            <li><a href="#turnos"><strong>Ortodoncia</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Aparatología fija para alinear los dientes y corregir la mordida, en adolescentes y adultos.</p></a></li>
+            <li><a href="#alineadores"><strong>Alineadores invisibles</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Placas transparentes y removibles. La opción más discreta para adultos.</p></a></li>
+            <li><a href="#turnos"><strong>Ortopedia maxilar</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Guía el crecimiento de los maxilares durante el desarrollo para evitar tratamientos más complejos después.</p></a></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Estética</h3>
+          <ul class="tx">
+            <li><a href="#facial"><strong>Estética facial</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Tratamientos que acompañan la armonía de la sonrisa y del rostro.</p></a></li>
+            <li><a href="#turnos"><strong>Estética dental</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Mejoras de forma y color con un criterio conservador: cuidar el diente sano.</p></a></li>
+            <li><a href="#turnos"><strong>Blanqueamiento</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Aclarado del color con indicación y control profesional.</p></a></li>
+          </ul>
+        </div>
+        <div class="group">
+          <h3>Cuidado general</h3>
+          <ul class="tx">
+            <li><a href="#turnos"><strong>Odontología general</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Controles, limpiezas, arreglos y prevención para toda la familia.</p></a></li>
+            <li><a href="#turnos"><strong>Placas de bruxismo</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Protección a medida para quienes aprietan o rechinan los dientes.</p></a></li>
+            <li><a href="#turnos"><strong>Urgencias</strong><span class="go"><svg><use href="#arrow"/></svg></span><p>Dolor, una pieza rota o un aparato suelto. Escribinos y te damos el primer turno disponible.</p></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="facial sec" id="facial">
+    <svg class="bg-tooth" aria-hidden="true"><use href="#iso"/></svg>
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Estética facial</p>
+        <h2 class="h-display" style="margin-top:20px">La sonrisa también es <em>el rostro</em></h2>
+      </div>
+      <div class="side">
+        <p>Después de diez años en ortodoncia, el paso natural es mirar la sonrisa en el conjunto de la cara. Trabajamos la estética facial con <b>el mismo criterio clínico</b> que el resto de los tratamientos: primero evaluamos, después proponemos, y solo si suma.</p>
+        <ul>
+          <li><span>Evaluación</span>Análisis de la sonrisa, los labios y las proporciones del rostro.</li>
+          <li><span>Propuesta</span>Opciones posibles, con sus alcances y su costo por escrito.</li>
+          <li><span>Criterio</span>Resultados naturales. Nada de promesas exageradas.</li>
+        </ul>
+        <div><a class="btn btn-light" href="#turnos">Consultar por estética facial</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec aligners" id="alineadores">
+    <div class="wrap">
+      <figure class="photo"><img src="img/alineadores.jpg" alt="Manos sosteniendo un alineador transparente junto a su estuche con el logo de Natalia Cárdenas" width="933" height="1400" loading="lazy"><figcaption>Alineadores invisibles</figcaption></figure>
+      <div class="copy">
+        <p class="eyebrow">Ortodoncia invisible para adultos</p>
+        <h2 class="h-display h2">Alinear tus dientes sin que se note</h2>
+        <p class="lead">Muchos adultos postergan la ortodoncia por los brackets. Los alineadores son placas transparentes que se cambian cada pocas semanas y van moviendo los dientes de a poco. <b>Si son adecuados para tu caso, te lo decimos en la primera consulta.</b></p>
+        <div class="spec">
+          <div><h4>Casi imperceptibles</h4><p>Transparentes y a medida. Se usan en el trabajo, en reuniones, en fotos.</p></div>
+          <div><h4>Removibles</h4><p>Te los sacás para comer y para cepillarte. Sin restricciones de comida.</p></div>
+          <div><h4>Plan definido</h4><p>Sabés desde el inicio cuántas etapas tiene el tratamiento y su costo total.</p></div>
+          <div><h4>Controles cercanos</h4><p>Seguimiento con la profesional en Dina Huapi, sin viajar al centro.</p></div>
+        </div>
+        <div><a class="link-arrow" href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20consultar%20por%20alineadores%20invisibles." target="_blank" rel="noopener">Consultar por alineadores <svg width="16" height="16"><use href="#arrow"/></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec process" id="consulta">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="eyebrow">Primera consulta</p>
+          <h2 class="h-display h2">Cómo es empezar un tratamiento</h2>
+        </div>
+        <p class="lead">Si es tu primera vez o hace mucho que no vas al odontólogo, está bien. Vamos paso a paso y sin presión para decidir.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Pedís el turno</h3><p>Por WhatsApp. Coordinamos un horario que te quede cómodo, en general con poca espera.</p></li>
+        <li><h3>Diagnóstico</h3><p>Revisión completa y, si hace falta, fotos o estudios. Te mostramos lo que vemos.</p></li>
+        <li><h3>Plan y presupuesto</h3><p>Opciones de tratamiento, tiempos y costo por escrito, con alternativas de financiación.</p></li>
+        <li><h3>Tratamiento y seguimiento</h3><p>Controles con la misma profesional de principio a fin.</p></li>
+      </ol>
+      <div class="quote">
+        <svg aria-hidden="true"><use href="#iso"/></svg>
+        <blockquote>Una sonrisa sana empieza con un <b>buen diagnóstico.</b></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec about" id="natalia">
+    <div class="wrap">
+      <figure class="photo"><img src="img/ambo.jpg" alt="Ambo azul marino con el logo de Natalia Cárdenas bordado en el bolsillo" width="1120" height="1400" loading="lazy"></figure>
+      <div class="copy">
+        <p class="eyebrow">Quién te atiende</p>
+        <h2 class="h-display h2">Natalia F. Cárdenas</h2>
+        <p class="lead">Odontóloga, egresada en 2015 y especializada en ortodoncia y ortopedia, con foco en estética facial. Después de diez años de ejercicio abrió su consultorio en Dina Huapi para atender como le gusta: <b>con tiempo, de forma directa y explicando todo.</b></p>
+        <p class="muted" style="margin:0;max-width:34em">Atiende a adolescentes y adultos de Dina Huapi, Bariloche y la zona, con turnos flexibles para quienes tienen poco tiempo y un consultorio cómodo, fuera del centro.</p>
+        <div class="pillars">
+          <div><h4>Trato empático</h4><p>Atención centrada en vos. Si tenés miedo al odontólogo, lo hablamos y vamos a tu ritmo.</p></div>
+          <div><h4>Honestidad</h4><p>No indicamos ni vendemos un tratamiento que no necesitás.</p></div>
+          <div><h4>Transparencia</h4><p>Precios, financiación y cobertura claros desde la primera consulta.</p></div>
+          <div><h4>Actualización</h4><p>Formación continua y criterios clínicos actuales.</p></div>
+        </div>
+        <div class="sign">
+          <svg aria-hidden="true"><use href="#iso"/></svg>
+          <div><strong>Od. Natalia F. Cárdenas</strong>Ortodoncia &amp; Estética Facial · M.P. a confirmar</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cover" aria-label="Cobertura y formas de pago">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Cobertura y pagos</p>
+        <h2 class="h3" style="margin-top:16px;font-size:clamp(28px,3vw,38px)">Particulares, prepagas y obras sociales</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <p class="muted" style="margin:0;max-width:36em">Consultá por tu cobertura antes del turno y te decimos qué incluye y qué no. Los tratamientos largos se pueden financiar.</p>
+        <div class="chips"><span>Pacientes particulares</span><span>Prepagas</span><span>Obras sociales</span><span>Financiación</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="space" aria-label="El consultorio">
+    <div class="wrap">
+      <div class="gallery">
+        <figure class="photo"><img src="img/cartel.jpg" alt="Cartel exterior del consultorio en azul petróleo con el logo en blanco" width="1120" height="1400" loading="lazy"></figure>
+        <figure class="photo"><img src="img/consultorio.jpg" alt="Interior del consultorio con el logo y el sillón odontológico" width="1120" height="1400" loading="lazy" style="object-position:0% 50%"></figure>
+        <figure class="photo"><img src="img/tarjetas.jpg" alt="Tarjetas personales de Natalia Cárdenas en azul petróleo y blanco" width="1400" height="933" loading="lazy" style="object-position:62% 50%"></figure>
+      </div>
+      <div class="note">
+        <div style="max-width:34em">
+          <p class="eyebrow">El consultorio</p>
+          <p class="muted" style="margin:14px 0 0">Un espacio nuevo, luminoso y pensado en el detalle, en Estados Unidos 860, Oficina D, Dina Huapi. A pocos minutos de Bariloche y fuera del tránsito del centro.</p>
+        </div>
+        <a class="link-arrow" href="https://www.google.com/maps/search/?api=1&amp;query=Estados+Unidos+860%2C+Dina+Huapi%2C+R%C3%ADo+Negro" target="_blank" rel="noopener">Cómo llegar <svg width="16" height="16"><use href="#arrow"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec faq" id="preguntas" style="border-top:1px solid var(--mist)">
+    <div class="wrap">
+      <div class="intro">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 class="h-display h2">Lo que más nos consultan</h2>
+        <p class="muted" style="margin:0">¿No está tu pregunta? Escribinos y te respondemos.</p>
+        <div><a class="link-arrow" href="#turnos">Hacer una consulta <svg width="16" height="16"><use href="#arrow"/></svg></a></div>
+      </div>
+      <div>
+        <details open><summary>¿Cuánto cuesta un tratamiento?<i></i></summary><div class="ans"><p>Depende de cada caso, por eso no damos precios sin ver al paciente. En la primera consulta hacemos el diagnóstico y te damos un presupuesto por escrito, con lo que incluye, la duración estimada y las opciones de pago.</p></div></details>
+        <details><summary>¿Trabajan con obras sociales y prepagas?<i></i></summary><div class="ans"><p>Sí, atendemos pacientes particulares, de prepagas y de obras sociales. Escribinos con el nombre de tu cobertura y te confirmamos qué prestaciones cubre y si hay coseguro.</p></div></details>
+        <details><summary>¿Cuánto dura una ortodoncia?<i></i></summary><div class="ans"><p>Varía según la complejidad del caso y la edad. En general son entre uno y dos años, pero el tiempo real te lo damos después del diagnóstico, no antes.</p></div></details>
+        <details><summary>¿Los alineadores invisibles sirven para cualquier caso?<i></i></summary><div class="ans"><p>No siempre. Funcionan muy bien en muchos adultos, pero hay casos donde la ortodoncia fija da mejor resultado. Si no son la mejor opción para vos, te lo decimos.</p></div></details>
+        <details><summary>Tengo miedo al odontólogo. ¿Cómo lo manejamos?<i></i></summary><div class="ans"><p>Es más común de lo que parece. Te explicamos cada paso antes de hacerlo, vamos a tu ritmo y podés frenar cuando lo necesites. La primera consulta es solo para conocernos y revisar.</p></div></details>
+        <details><summary>¿Qué hago si tengo una urgencia?<i></i></summary><div class="ans"><p>Escribinos por WhatsApp contando qué te pasa (dolor, una pieza rota, un aparato suelto) y te damos el primer turno disponible.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 60C240 10 480 0 720 30s480 60 720 10V90H0Z"/></svg>
+  <section class="contact" id="turnos">
+    <svg class="bg-tooth" aria-hidden="true"><use href="#iso"/></svg>
+    <div class="wrap">
+      <div class="copy">
+        <p class="eyebrow">Turnos</p>
+        <h2 class="h-display">Pedí tu turno, <em>sin esperas</em></h2>
+        <p>Escribinos por WhatsApp con tu nombre y el motivo de la consulta. <b>Te respondemos con los horarios disponibles</b>.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:14px">
+          <a class="btn btn-light" href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20pedir%20un%20turno." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Escribir por WhatsApp</a>
+          <a class="btn" href="../turnos/index.html" style="border-color:rgba(255,255,255,.5);color:#fff">Reservar online</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="row"><span>WhatsApp</span><div><span id="phone">+54 9 294 463-6977</span><button class="copybtn" id="copy" type="button">Copiar</button></div></div>
+        <div class="row"><span>Dirección</span><div>Estados Unidos 860, Oficina D<br>Dina Huapi, Río Negro</div></div>
+        <div class="row"><span>Atención</span><div>Con turno previo. Urgencias por WhatsApp.</div></div>
+        <div class="row"><span>Pacientes</span><div>Particulares, prepagas y obras sociales</div></div>
+        <div class="actions">
+          <a class="link-arrow" href="https://www.google.com/maps/search/?api=1&amp;query=Estados+Unidos+860%2C+Dina+Huapi%2C+R%C3%ADo+Negro" target="_blank" rel="noopener">Ver en el mapa <svg width="16" height="16"><use href="#arrow"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <svg class="logo" role="img" aria-label="Natalia Cárdenas, Ortodoncia y Estética Facial"><use href="#logo"/></svg>
+    <nav aria-label="Pie">
+      <a href="#tratamientos">Tratamientos</a><a href="#alineadores">Alineadores</a><a href="#consulta">Primera consulta</a><a href="#natalia">Natalia</a><a href="#preguntas">Preguntas</a><a href="#turnos">Turnos</a>
+    </nav>
+    <div class="legal">Atiende en <a href="../">Consultorios Dina Huapi</a><br>© 2026 Natalia F. Cárdenas</div>
+  </div>
+</footer>
+
+<a class="fab" href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20pedir%20un%20turno." target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg aria-hidden="true"><use href="#wa"/></svg></a>
+<div class="mbar" id="mbar">
+  <a class="btn btn-ghost" href="#tratamientos">Tratamientos</a>
+  <a class="btn btn-primary" href="https://wa.me/5492944636977?text=Hola%20Natalia%2C%20quiero%20pedir%20un%20turno." target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#wa"/></svg>Pedir turno</a>
+</div>
+
+<script>
+(function(){
+  var nav=document.getElementById('nav'),burger=document.getElementById('burger'),mbar=document.getElementById('mbar');
+  function onScroll(){var y=window.scrollY;nav.classList.toggle('scrolled',y>8);mbar.classList.toggle('show',y>520);}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  burger.addEventListener('click',function(){var o=nav.classList.toggle('open');burger.setAttribute('aria-expanded',o);burger.setAttribute('aria-label',o?'Cerrar menú':'Abrir menú');});
+  nav.querySelectorAll('.menu a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');burger.setAttribute('aria-expanded','false');});});
+  var links=[].slice.call(nav.querySelectorAll('.menu a'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('active',l.getAttribute('href')==='#'+e.target.id);});}});},{rootMargin:'-45% 0px -50% 0px'});
+    links.forEach(function(l){var s=document.querySelector(l.getAttribute('href'));if(s)io.observe(s);});
+  }
+  var btn=document.getElementById('copy'),ph=document.getElementById('phone');
+  btn.addEventListener('click',function(){
+    var t='+5492944636977';
+    function done(){btn.textContent='Copiado';setTimeout(function(){btn.textContent='Copiar';},1800);}
+    function sel(){var r=document.createRange();r.selectNodeContents(ph);var s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='Seleccionado';}
+    try{navigator.clipboard.writeText(t).then(done,sel);}catch(e){sel();}
+  });
+})();
+</script>

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insumos odontológicos · Consultorios Dina Huapi</title>
+<meta name="description" content="Insumos odontológicos para profesionales en Dina Huapi: bioseguridad, descartables, esterilización, restauración, impresión y endodoncia. Pedido online, retiro en el consultorio.">
+<meta name="theme-color" content="#2B3B5A">
+<meta property="og:title" content="Insumos odontológicos · Consultorios Dina Huapi">
+<meta property="og:image" content="../img/insumos.jpg">
+<link rel="icon" href="../turnos/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="../assets/sitio.css">
+<style>
+.shop-hero { display: grid; gap: 2rem; padding-block: 2.5rem 3rem; align-items: center; }
+@media (min-width: 960px) { .shop-hero { grid-template-columns: 1fr 1.15fr; gap: 4rem; padding-block: 4rem; } }
+.shop-hero .media { border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 2; background: var(--soft); }
+.shop-hero .media img { width: 100%; height: 100%; object-fit: cover; }
+.perks { display: grid; gap: .9rem; margin-top: .5rem; }
+.perks div { display: grid; grid-template-columns: 2.5rem 1fr; gap: .9rem; align-items: start; }
+.perks .ic { width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--sky); color: var(--petrol); display: grid; place-items: center; }
+.perks strong { display: block; font-weight: 500; }
+.perks span { font-size: .9rem; }
+
+/* Barra de filtros */
+.toolbar { position: sticky; top: 76px; z-index: 20; background: rgba(255,255,255,.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-block: 1px solid var(--mist); }
+.toolbar .wrap { display: grid; gap: .75rem; padding-block: .85rem; }
+@media (min-width: 960px) { .toolbar .wrap { grid-template-columns: 20rem 1fr; align-items: center; gap: 1.5rem; } }
+.search { position: relative; }
+.search svg { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #6B7585; pointer-events: none; }
+.search input { width: 100%; min-height: 44px; padding: .6rem 1rem .6rem 2.75rem; border: 1px solid var(--mist); border-radius: 999px; background: var(--white); font-size: .95rem; font-weight: 300; }
+.search input:focus { outline: none; border-color: var(--petrol); box-shadow: 0 0 0 4px rgba(18,114,133,.12); }
+.cats { display: flex; gap: .4rem; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
+.cats::-webkit-scrollbar { display: none; }
+@media (min-width: 960px) { .cats { margin: 0; padding: 0; flex-wrap: wrap; } }
+.cats button { flex: none; min-height: 40px; padding: .45rem 1rem; border-radius: 999px; border: 1px solid var(--mist); background: var(--white); font-size: .85rem; color: var(--graphite); cursor: pointer; transition: all .2s var(--ease); }
+.cats button:hover { border-color: var(--navy); color: var(--navy); }
+.cats button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.cats button small { opacity: .6; margin-left: .3rem; font-size: .75rem; }
+
+/* Grilla de productos */
+.catalog { padding-block: 2.5rem 5rem; }
+.result { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1.25rem; font-size: .88rem; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); }
+.prod { display: grid; grid-template-rows: auto 1fr auto; border: 1px solid var(--mist); border-radius: 20px; background: var(--white); overflow: hidden; transition: border-color .2s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease); }
+.prod:hover { border-color: #BFCBD2; box-shadow: 0 20px 40px -30px rgba(43,59,90,.45); transform: translateY(-2px); }
+.prod .art { position: relative; aspect-ratio: 16 / 10; background: var(--soft); display: grid; place-items: center; color: var(--petrol); }
+.prod .art svg { width: 52px; height: 52px; stroke-width: 1.1; }
+.prod .art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+.prod:hover .art img { transform: scale(1.04); }
+.prod .art .badge { z-index: 1; }
+.prod .art .badge { position: absolute; top: .75rem; left: .75rem; font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 500; border-radius: 999px; padding: .2rem .6rem; background: var(--white); color: var(--navy); }
+.prod .art .badge.out { background: #F3E9E9; color: #8A3B3B; }
+.prod .info { padding: 1.1rem 1.2rem .4rem; display: grid; gap: .3rem; align-content: start; }
+.prod .cat { font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: var(--petrol); font-weight: 500; }
+.prod h3 { font-size: .98rem; font-weight: 500; color: var(--navy); line-height: 1.35; }
+.prod .pres { font-size: .85rem; }
+.prod .mat { font-size: .75rem; color: #6B7585; }
+.prod .buy { padding: .9rem 1.2rem 1.2rem; display: grid; gap: .7rem; }
+.prod .price { font-weight: 500; color: var(--navy); font-variant-numeric: tabular-nums; }
+.prod .price.ask { font-weight: 400; color: #6B7585; font-size: .88rem; }
+.prod select { width: 100%; min-height: 40px; border: 1px solid var(--mist); border-radius: 10px; padding: .4rem .7rem; background: var(--white); font-size: .88rem; }
+.prod .row { display: flex; gap: .5rem; align-items: center; }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--mist); border-radius: 999px; height: 40px; flex: none; }
+.qty button { width: 36px; height: 38px; border: 0; background: none; cursor: pointer; color: var(--navy); font-size: 1.1rem; border-radius: 999px; }
+.qty button:hover { background: var(--soft); }
+.qty span { min-width: 1.6rem; text-align: center; font-variant-numeric: tabular-nums; font-size: .9rem; }
+.prod .add { flex: 1; min-height: 40px; padding-inline: 1rem; }
+.prod .add.done { background: var(--navy); }
+.empty { padding: 3rem 1rem; text-align: center; border: 1px dashed var(--mist); border-radius: 20px; }
+
+/* Botón del pedido */
+.cart-fab { position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 35; transform: translate(-50%, 140%); transition: transform .35s var(--ease); box-shadow: 0 16px 36px -12px rgba(43,59,90,.55); min-height: 54px; padding-inline: 1.5rem; }
+.cart-fab:not(.show) { visibility: hidden; transition: transform .35s var(--ease), visibility 0s .35s; }
+.cart-fab.show { transform: translate(-50%, 0); }
+.cart-fab .n { display: inline-grid; place-items: center; min-width: 1.6rem; height: 1.6rem; border-radius: 999px; background: var(--white); color: var(--navy); font-size: .8rem; font-weight: 500; padding-inline: .4rem; }
+.cart-fab.bump { animation: bump .35s var(--ease); }
+@keyframes bump { 50% { transform: translate(-50%, 0) scale(1.06); } }
+.fab-wa.raise { bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+
+/* Panel del pedido */
+.sheet-bg { position: fixed; inset: 0; z-index: 70; background: rgba(35,49,73,.35); opacity: 0; pointer-events: none; transition: opacity .3s var(--ease); }
+.sheet { position: fixed; z-index: 71; right: 0; top: 0; bottom: 0; width: min(28rem, 100vw); background: var(--white); display: grid; grid-template-rows: auto 1fr auto; transform: translateX(100%); transition: transform .35s var(--ease); box-shadow: -20px 0 60px -30px rgba(43,59,90,.5); }
+.sheet-open .sheet-bg { opacity: 1; pointer-events: auto; }
+.sheet-open .sheet { transform: none; }
+.sheet header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 1.4rem; border-bottom: 1px solid var(--mist); }
+.sheet header h2 { font-size: 1.6rem; }
+.sheet .items { overflow-y: auto; padding: .5rem 1.4rem 1rem; }
+.line { display: grid; grid-template-columns: 1fr auto; gap: .4rem 1rem; padding-block: 1rem; border-bottom: 1px solid var(--mist); }
+.line strong { font-weight: 500; font-size: .92rem; }
+.line small { display: block; font-size: .8rem; color: #6B7585; }
+.line .qty { height: 34px; }
+.line .qty button { height: 32px; width: 32px; }
+.line .rm { background: none; border: 0; color: #6B7585; font-size: .78rem; text-decoration: underline; cursor: pointer; padding: 0; justify-self: start; }
+.sheet .checkout { padding: 1.2rem 1.4rem calc(1.2rem + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--mist); display: grid; gap: .8rem; background: var(--soft); }
+.sheet .checkout .row2 { display: grid; gap: .6rem; grid-template-columns: 1fr 1fr; }
+.sheet .field input, .sheet .field select { min-height: 44px; padding: .55rem .8rem; font-size: .92rem; }
+.sheet .total { display: flex; justify-content: space-between; font-size: .9rem; }
+.sheet .total b { font-variant-numeric: tabular-nums; }
+.sheet .vacio { padding: 3rem 0; text-align: center; color: #6B7585; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Consultorios Dina Huapi, inicio">
+      <svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg>
+      <span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#catalogo" aria-current="page">Catálogo</a>
+      <a href="#como">Cómo comprar</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="../profesionales/">Alquiler de consultorio</a>
+      <a href="../">Pacientes</a>
+    </nav>
+    <div class="top-actions">
+      <button class="btn sm ghost" type="button" id="ver-pedido">Pedido <span class="num" id="n-top">(0)</span></button>
+      <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="menu" aria-hidden="true">
+  <div class="bar"><span class="eyebrow">Insumos</span><button class="menu-btn" type="button" data-close aria-label="Cerrar menú"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <nav aria-label="Menú">
+    <a href="#catalogo">Catálogo</a>
+    <a href="#como">Cómo comprar</a>
+    <a href="#preguntas">Preguntas</a>
+    <a href="../profesionales/">Alquiler de consultorio</a>
+    <a href="../">Sitio para pacientes</a>
+  </nav>
+  <div class="foot"><a class="btn ghost" href="#" data-wa="Hola, quiero consultar por insumos.">Consultar por WhatsApp</a></div>
+</div>
+
+<main>
+  <section class="wrap shop-hero">
+    <div class="hero-copy">
+      <span class="eyebrow reveal">Insumos para profesionales</span>
+      <h1 class="reveal d1" style="font-size:clamp(2.3rem,5.6vw,4.2rem)">Lo que usás todos los días, <em>sin viajar</em></h1>
+      <p class="lead reveal d2">Bioseguridad, descartables y materiales de uso diario en Dina Huapi. <span class="key">Armás el pedido acá y te confirmamos precio y stock por WhatsApp.</span></p>
+      <div class="perks reveal d3">
+        <div><span class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Z"/><circle cx="10" cy="8" r="2"/></svg></span><p><strong>Retiro en el consultorio</strong><span>Estados Unidos 860, Oficina D, Dina Huapi.</span></p></div>
+        <div><span class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 6h9v7.5h-9zM11.5 9h3l3 3v1.5h-6"/><circle cx="6" cy="15" r="1.5"/><circle cx="14.5" cy="15" r="1.5"/></svg></span><p><strong>Envío a Dina Huapi y Bariloche</strong><span><span class="ph">[Costo y días de envío]</span></span></p></div>
+        <div><span class="ic"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg></span><p><strong>Precio preferencial</strong><span>Para profesionales que atienden en el consultorio.</span></p></div>
+      </div>
+    </div>
+    <div class="media reveal d1"><img src="../img/insumos.jpg" alt="Guantes, sobres de esterilización, jeringas de resina, rollos de algodón y baberos ordenados sobre una superficie clara" width="1536" height="1024" fetchpriority="high"></div>
+  </section>
+
+  <div class="toolbar" id="catalogo">
+    <div class="wrap">
+      <label class="search"><span class="sr">Buscar insumos</span><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 4 4"/></svg><input id="q" type="search" placeholder="Buscar: guantes, resina, alginato…" autocomplete="off"></label>
+      <div class="cats" id="cats" role="group" aria-label="Categorías"></div>
+    </div>
+  </div>
+
+  <section class="wrap catalog" aria-label="Catálogo">
+    <div class="result"><span id="count" class="muted" aria-live="polite"></span><span class="note">Precios con IVA <span class="ph">[confirmar]</span></span></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="section soft" id="como">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow reveal">Cómo comprar</span><h2 class="reveal d1">Tu pedido <em>en tres pasos</em></h2></div>
+      <div class="steps reveal">
+        <div class="step"><h3>Armás el pedido</h3><p>Elegís productos y cantidades. No hace falta crear una cuenta.</p></div>
+        <div class="step"><h3>Lo enviás por WhatsApp</h3><p>Te confirmamos precio final, stock y forma de pago en el día.</p></div>
+        <div class="step"><h3>Retirás o te lo llevamos</h3><p>En el consultorio o con envío a Dina Huapi y Bariloche.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="preguntas">
+    <div class="wrap">
+      <div class="head center"><span class="eyebrow reveal">Preguntas frecuentes</span><h2 class="reveal d1">Antes de <em>tu pedido</em></h2></div>
+      <div class="faq center reveal">
+        <details><summary>¿Quién puede comprar?<span class="pm" aria-hidden="true"></span></summary><div>Profesionales de la salud. Algunos productos, como los anestésicos, se venden solo con matrícula vigente.</div></details>
+        <details><summary>¿Cómo se paga?<span class="pm" aria-hidden="true"></span></summary><div><span class="ph">[Transferencia, Mercado Pago o efectivo al retirar]</span>. Te pasamos los datos al confirmar el pedido.</div></details>
+        <details><summary>¿Hacen factura?<span class="pm" aria-hidden="true"></span></summary><div><span class="ph">[Factura A o B]</span>. Indicá tu CUIT en el pedido si la necesitás.</div></details>
+        <details><summary>¿Y si no está lo que busco?<span class="pm" aria-hidden="true"></span></summary><div>Escribinos: si lo podemos conseguir, lo sumamos al próximo pedido al proveedor.</div></details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 90V52C180 12 380 0 620 22s470 58 820 6v62Z"/></svg>
+  <div class="wrap cols">
+    <div>
+      <a class="brand" href="../" aria-label="Consultorios Dina Huapi"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
+      <p class="claim">Odontología · Salud integral.</p>
+    </div>
+    <div><h4>Insumos</h4><p><a href="#catalogo">Catálogo</a></p><p><a href="#como">Cómo comprar</a></p><p><a href="#preguntas">Preguntas</a></p></div>
+    <div><h4>Profesionales</h4><p><a href="../profesionales/">Alquiler de consultorio</a></p><p><a href="../turnos/panel.html">Acceso a la agenda</a></p></div>
+    <div><h4>Contacto</h4><p>Estados Unidos 860, Oficina D<br>Dina Huapi, Río Negro</p><p><a href="#" data-wa="Hola, quiero consultar por insumos.">WhatsApp</a></p></div>
+  </div>
+  <div class="wrap base"><span>© <span data-year>2026</span> Consultorios Dina Huapi</span><span>Imágenes ilustrativas</span></div>
+</footer>
+
+<a class="fab-wa" href="#" data-wa="Hola, quiero consultar por insumos." aria-label="Escribir por WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg></a>
+<button class="btn navy cart-fab" type="button" id="cart-fab">Ver pedido <span class="n" id="n-fab">0</span></button>
+
+<div class="sheet-bg" id="sheet-bg"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t" aria-hidden="true">
+  <header><h2 id="sheet-t">Tu pedido</h2><button class="menu-btn" type="button" id="sheet-x" aria-label="Cerrar pedido"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
+  <div class="items" id="items"></div>
+  <form class="checkout" id="checkout" novalidate>
+    <div class="total"><span>Total estimado</span><b id="total">—</b></div>
+    <div class="row2">
+      <div class="field"><label for="c-nombre">Nombre</label><input id="c-nombre" autocomplete="name" required></div>
+      <div class="field"><label for="c-mat">Matrícula</label><input id="c-mat" inputmode="numeric" placeholder="M.P."></div>
+    </div>
+    <div class="field"><label for="c-ent">Entrega</label>
+      <select id="c-ent"><option>Retiro en el consultorio</option><option>Envío a Dina Huapi</option><option>Envío a Bariloche</option></select></div>
+    <div class="field"><label for="c-nota">Comentarios <span class="muted">(opcional)</span></label><input id="c-nota" placeholder="CUIT para factura, horario de entrega…"></div>
+    <button class="btn" type="submit" id="c-enviar">Enviar pedido por WhatsApp</button>
+    <p class="note" style="text-align:center">Te confirmamos precio y stock antes de cobrar.</p>
+  </form>
+</aside>
+
+<script type="module">
+import { wa } from '../assets/sitio.js';
+
+const FOTO_CAT = { bioseguridad: 'guantes', descartables: 'algodon', esterilizacion: 'sobres', restauracion: 'jeringas', anestesia: 'jeringas', impresion: 'cartuchos', endodoncia: 'sobres' };
+const ICONOS = {
+  bioseguridad: '<path d="M8 21V11.5L6.2 8.4a1.2 1.2 0 0 1 2-1.3L9 8.5V4.3a1.2 1.2 0 0 1 2.4 0V9V3.2a1.2 1.2 0 0 1 2.4 0V9V4.2a1.2 1.2 0 0 1 2.4 0V10V6.3a1.2 1.2 0 0 1 2.4 0V14c0 3.9-2.1 7-5.6 7H8Z"/>',
+  descartables: '<rect x="4" y="6" width="16" height="12" rx="6"/><path d="M10 6v12M14 6v12"/>',
+  esterilizacion: '<path d="M4 3h16v18H4z"/><path d="M4 7h16M8 11h8M8 15h5"/>',
+  restauracion: '<path d="M14 3l7 7M16.5 5.5l-9 9-3 1 1-3 9-9M7.5 14.5 3 21"/>',
+  anestesia: '<path d="M18 2l4 4M20 4l-3 3M17 7l-9.5 9.5M14 4l6 6M5 19l-3 3M9.5 8.5l6 6M11.5 6.5l6 6"/><path d="M7.5 16.5 5 19"/>',
+  impresion: '<path d="M3 13c0-4 4-8 9-8s9 4 9 8v2a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-2Z"/><path d="M7 13h10"/>',
+  endodoncia: '<path d="M12 2v15M9 5h6M12 17l-1.5 5h3L12 17"/><path d="M10 8l4 1.5M10 11l4 1.5M10 14l4 1.5"/>',
+};
+const $ = (s) => document.querySelector(s);
+const fmt = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
+const CLAVE = 'cdh-pedido-v1';
+let datos = { categorias: [], productos: [] };
+let filtro = { cat: 'todas', q: '' };
+let pedido = [];
+try { pedido = JSON.parse(localStorage.getItem(CLAVE)) || []; } catch { pedido = []; }
+const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(pedido)); } catch {} };
+const sinAcentos = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const el = (tag, attrs = {}, html = '') => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); if (html) e.innerHTML = html; return e; };
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function cargar() {
+  try {
+    const r = await fetch('catalogo.json', { cache: 'no-cache' });
+    datos = await r.json();
+  } catch {
+    $('#grid').innerHTML = '<p class="empty">No se pudo cargar el catálogo. Escribinos por WhatsApp y te pasamos la lista.</p>';
+    return;
+  }
+  pintarCats(); pintar(); pintarPedido();
+}
+
+function pintarCats() {
+  const cats = $('#cats');
+  const todas = [{ id: 'todas', nombre: 'Todo' }, ...datos.categorias];
+  cats.replaceChildren(...todas.map((c) => {
+    const n = c.id === 'todas' ? datos.productos.length : datos.productos.filter((p) => p.cat === c.id).length;
+    const b = el('button', { type: 'button', 'aria-pressed': String(filtro.cat === c.id) }, `${esc(c.nombre)}<small>${n}</small>`);
+    b.addEventListener('click', () => { filtro.cat = c.id; pintarCats(); pintar(); });
+    return b;
+  }));
+}
+
+function pintar() {
+  const q = sinAcentos(filtro.q.trim());
+  const lista = datos.productos.filter((p) => (filtro.cat === 'todas' || p.cat === filtro.cat) && (!q || sinAcentos(`${p.nombre} ${p.presentacion} ${p.cat}`).includes(q)));
+  lista.sort((a, b) => (b.stock - a.stock) || ((b.destacado ? 1 : 0) - (a.destacado ? 1 : 0)));
+  $('#count').textContent = `${lista.length} ${lista.length === 1 ? 'producto' : 'productos'}`;
+  const grid = $('#grid');
+  if (!lista.length) { grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><p><strong>No encontramos ese insumo.</strong></p><p class="muted" style="margin-top:.4rem">Escribinos y vemos si lo podemos conseguir.</p></div>'; return; }
+  const catNombre = Object.fromEntries(datos.categorias.map((c) => [c.id, c.nombre]));
+  grid.replaceChildren(...lista.map((p) => {
+    const card = el('article', { class: 'prod' });
+    const badge = !p.stock ? '<span class="badge out">Sin stock</span>' : p.destacado ? '<span class="badge">Más pedido</span>' : '';
+    card.innerHTML = `
+      <div class="art">${(p.foto || FOTO_CAT[p.cat]) ? `<img src="../img/insumos/${esc(p.foto || FOTO_CAT[p.cat])}.jpg" alt="" width="640" height="400" loading="lazy">` : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[p.cat] || ''}</svg>`}${badge}</div>
+      <div class="info"><span class="cat">${esc(catNombre[p.cat] || '')}</span><h3>${esc(p.nombre)}</h3><span class="pres">${esc(p.presentacion)}</span>${p.matricula ? '<span class="mat">Venta con matrícula</span>' : ''}</div>
+      <div class="buy">
+        <span class="price ${p.precio == null ? 'ask' : ''}">${p.precio == null ? 'Precio a confirmar' : fmt.format(p.precio)}</span>
+        ${p.variantes ? `<label class="sr" for="v-${p.id}">Variante</label><select id="v-${p.id}">${p.variantes.map((v) => `<option>${esc(v)}</option>`).join('')}</select>` : ''}
+        <div class="row"><div class="qty"><button type="button" data-d="-1" aria-label="Menos">−</button><span>1</span><button type="button" data-d="1" aria-label="Más">+</button></div>
+        <button class="btn sm add" type="button">${p.stock ? 'Agregar' : 'Encargar'}</button></div>
+      </div>`;
+    let cant = 1;
+    const span = card.querySelector('.qty span');
+    card.querySelectorAll('.qty button').forEach((b) => b.addEventListener('click', () => { cant = Math.max(1, Math.min(99, cant + Number(b.dataset.d))); span.textContent = cant; }));
+    const add = card.querySelector('.add');
+    add.addEventListener('click', () => {
+      const variante = card.querySelector('select')?.value || '';
+      agregar(p, variante, cant);
+      add.classList.add('done'); add.textContent = 'Agregado ✓';
+      setTimeout(() => { add.classList.remove('done'); add.textContent = p.stock ? 'Agregar' : 'Encargar'; }, 1400);
+      cant = 1; span.textContent = 1;
+    });
+    return card;
+  }));
+}
+
+function agregar(p, variante, cant) {
+  const key = `${p.id}|${variante}`;
+  const it = pedido.find((x) => x.key === key);
+  if (it) it.cant = Math.min(99, it.cant + cant);
+  else pedido.push({ key, id: p.id, nombre: p.nombre, pres: p.presentacion, variante, cant, precio: p.precio, encargo: !p.stock });
+  guardar(); pintarPedido();
+  const fab = $('#cart-fab'); fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
+}
+
+function pintarPedido() {
+  const n = pedido.reduce((s, x) => s + x.cant, 0);
+  $('#n-fab').textContent = n; $('#n-top').textContent = `(${n})`;
+  $('#cart-fab').classList.toggle('show', n > 0);
+  document.querySelector('.fab-wa').classList.toggle('raise', n > 0);
+  const items = $('#items');
+  if (!pedido.length) {
+    items.innerHTML = '<p class="vacio">Todavía no agregaste productos.</p>';
+    $('#checkout').hidden = true;
+    return;
+  }
+  $('#checkout').hidden = false;
+  items.replaceChildren(...pedido.map((x) => {
+    const li = el('div', { class: 'line' });
+    li.innerHTML = `<div><strong>${esc(x.nombre)}</strong><small>${esc(x.pres)}${x.variante ? ` · ${esc(x.variante)}` : ''}${x.encargo ? ' · por encargo' : ''}</small></div>
+      <div class="qty"><button type="button" data-d="-1" aria-label="Menos">−</button><span>${x.cant}</span><button type="button" data-d="1" aria-label="Más">+</button></div>
+      <button class="rm" type="button">Quitar</button>`;
+    li.querySelectorAll('.qty button').forEach((b) => b.addEventListener('click', () => { x.cant = Math.max(1, Math.min(99, x.cant + Number(b.dataset.d))); guardar(); pintarPedido(); }));
+    li.querySelector('.rm').addEventListener('click', () => { pedido = pedido.filter((y) => y !== x); guardar(); pintarPedido(); });
+    return li;
+  }));
+  const conPrecio = pedido.every((x) => x.precio != null);
+  $('#total').textContent = conPrecio ? fmt.format(pedido.reduce((s, x) => s + x.precio * x.cant, 0)) : 'A confirmar';
+}
+
+function abrir(open) {
+  document.body.classList.toggle('sheet-open', open);
+  $('#sheet').setAttribute('aria-hidden', String(!open));
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (open) $('#sheet-x').focus();
+}
+$('#cart-fab').addEventListener('click', () => abrir(true));
+$('#ver-pedido').addEventListener('click', () => abrir(true));
+$('#sheet-x').addEventListener('click', () => abrir(false));
+$('#sheet-bg').addEventListener('click', () => abrir(false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') abrir(false); });
+$('#q').addEventListener('input', (e) => { filtro.q = e.target.value; pintar(); });
+
+$('#checkout').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const nombre = $('#c-nombre').value.trim();
+  if (!nombre) { $('#c-nombre').focus(); $('#c-nombre').setCustomValidity('Completá tu nombre'); $('#c-nombre').reportValidity(); return; }
+  const lineas = pedido.map((x) => `• ${x.cant} × ${x.nombre} (${x.pres}${x.variante ? `, ${x.variante}` : ''})${x.encargo ? ' [encargo]' : ''}`);
+  const mat = $('#c-mat').value.trim(), nota = $('#c-nota').value.trim();
+  const msg = [`Hola, quiero hacer este pedido de insumos:`, ...lineas, '', `Nombre: ${nombre}`, mat ? `Matrícula: ${mat}` : '', `Entrega: ${$('#c-ent').value}`, nota ? `Comentarios: ${nota}` : ''].filter((l) => l !== null && l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n');
+  window.open(wa(msg), '_blank', 'noopener');
+});
+$('#c-nombre').addEventListener('input', (e) => e.target.setCustomValidity(''));
+
+cargar();
+</script>
+</body>
+</html>

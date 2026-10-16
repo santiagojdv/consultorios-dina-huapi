@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alquiler de consultorio odontológico · Consultorios Dina Huapi</title>
+<meta name="description" content="Box odontológico equipado en alquiler por turnos fijos semanales en Dina Huapi, Río Negro. Esterilización, limpieza, residuos y agenda online incluidos. Sin inversión inicial.">
+<meta name="theme-color" content="#2B3B5A">
+<meta property="og:title" content="Alquiler de consultorio odontológico en Dina Huapi">
+<meta property="og:image" content="../img/profesional.jpg">
+<link rel="icon" href="../turnos/icono.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="../assets/sitio.css">
+<style>
+/* Modalidades */
+.plans { display: grid; gap: 1rem; }
+@media (min-width: 960px) { .plans { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
+.plan { position: relative; display: grid; gap: 1rem; align-content: start; padding: 2rem; border: 1px solid var(--mist); border-radius: 24px; background: var(--white); }
+.plan.feat { background: var(--navy); border-color: var(--navy); color: rgba(255,255,255,.82); }
+.plan.feat h3, .plan.feat .price { color: var(--white); }
+.plan.feat .eyebrow { color: #8FD0DC; }
+.plan.feat .ticks, .plan.feat .ticks li { border-color: rgba(255,255,255,.14); }
+.plan.feat .ticks li svg { color: #8FD0DC; }
+.plan .flag { position: absolute; top: 1.4rem; right: 1.4rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; background: #8FD0DC; color: var(--navy); border-radius: 999px; padding: .25rem .7rem; }
+.plan h3 { font-family: var(--serif); text-transform: uppercase; letter-spacing: .04em; font-size: 1.8rem; font-weight: 500; line-height: 1.05; }
+.plan .price { font-family: var(--serif); font-size: 2.6rem; line-height: 1; color: var(--navy); font-variant-numeric: lining-nums tabular-nums; }
+.plan .price small { font-family: var(--sans); font-size: .85rem; font-weight: 300; letter-spacing: 0; opacity: .8; }
+.plan .ticks li { font-size: .92rem; padding-block: .7rem; }
+.plan .btn { justify-self: start; margin-top: .4rem; }
+/* Tabla comparativa */
+.compare-wrap { overflow-x: auto; border: 1px solid var(--mist); border-radius: 24px; background: var(--white); }
+table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-size: .95rem; }
+.compare th, .compare td { text-align: left; vertical-align: top; padding: 1.15rem 1.5rem; border-bottom: 1px solid var(--mist); }
+.compare thead th { font-size: .7rem; letter-spacing: .22em; text-transform: uppercase; font-weight: 500; color: #6B7585; }
+.compare thead th.us { color: var(--petrol); }
+.compare tbody th { font-weight: 500; color: var(--navy); width: 26%; }
+.compare td.us { background: #F0F7F8; color: var(--navy); font-weight: 400; }
+.compare tr:last-child > * { border-bottom: 0; }
+/* Agenda online */
+.feat-grid { display: grid; gap: 1px; background: rgba(255,255,255,.14); border-radius: 24px; overflow: hidden; }
+@media (min-width: 760px) { .feat-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px) { .feat-grid { grid-template-columns: repeat(4, 1fr); } }
+.feat-grid div { background: var(--navy); padding: 1.75rem; display: grid; gap: .6rem; align-content: start; }
+.feat-grid svg { color: #8FD0DC; }
+.feat-grid p { font-size: .92rem; }
+.equip { display: grid; gap: 0 3rem; }
+@media (min-width: 760px) { .equip { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../" aria-label="Consultorios Dina Huapi, inicio">
+      <svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg>
+      <span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span>
+    </a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#modalidades">Modalidades</a>
+      <a href="#incluye">Qué incluye</a>
+      <a href="#agenda">Agenda online</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="../">Pacientes</a>
+    </nav>
+    <div class="top-actions">
+      <a class="btn sm ghost hide-xs" href="../turnos/panel.html">Ingresar</a>
+      <a class="btn sm hide-xs" href="#visita">Coordinar visita</a>
+      <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="menu" aria-hidden="true">
+  <div class="bar"><span class="eyebrow">Profesionales</span><button class="menu-btn" type="button" data-close aria-label="Cerrar menú"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <nav aria-label="Menú">
+    <a href="#modalidades">Modalidades</a>
+    <a href="#incluye">Qué incluye</a>
+    <a href="#agenda">Agenda online</a>
+    <a href="#preguntas">Preguntas</a>
+    <a href="../">Sitio para pacientes</a>
+  </nav>
+  <div class="foot"><a class="btn" href="#visita">Coordinar una visita</a><a class="btn ghost" href="../turnos/panel.html">Ingresar a mi agenda</a></div>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow reveal">Para odontólogos · Dina Huapi</span>
+        <h1 class="reveal d1" style="font-size:clamp(2.4rem,6vw,4.6rem)">Tu consultorio, <em>sin invertir</em> en uno</h1>
+        <p class="lead reveal d2">Un box equipado en Dina Huapi, por turnos fijos semanales. <span class="key">Vos atendés; la esterilización, la limpieza, los residuos y la agenda online ya están resueltos.</span></p>
+        <div class="actions reveal d3">
+          <a class="btn" href="#visita">Coordinar una visita</a>
+          <a class="btn ghost" href="#modalidades">Ver modalidades</a>
+        </div>
+        <div class="trust reveal d3">
+          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Sin inversión inicial</span>
+          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Abono mensual, sin contrato largo</span>
+          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Tus pacientes reservan online</span>
+        </div>
+      </div>
+      <div class="hero-media reveal d1">
+        <img src="../img/profesional.jpg" alt="Odontólogo preparando la bandeja de instrumental junto al sillón" width="1536" height="1024" fetchpriority="high">
+        <div class="hero-badge"><span class="dot" aria-hidden="true"></span><span><strong>Hay bloques disponibles.</strong><br><span class="ph">[Martes y jueves por la tarde]</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modalidades -->
+  <section class="section soft" id="modalidades">
+    <div class="wrap">
+      <div class="head split">
+        <div style="display:grid;gap:1.1rem"><span class="eyebrow reveal">Modalidades</span><h2 class="reveal d1">Elegís tus bloques, <em>pagás por mes</em></h2></div>
+        <p class="lead reveal d2">Reservás siempre el mismo día y horario, así tus pacientes saben cuándo encontrarte. Podés sumar o soltar bloques con un mes de aviso.</p>
+      </div>
+      <div class="plans">
+        <article class="plan reveal">
+          <span class="eyebrow">Para conocernos</span>
+          <h3>Jornada de prueba</h3>
+          <div class="price"><span class="ph">$ —</span> <small>por día</small></div>
+          <ul class="ticks">
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Un día suelto para atender con tus pacientes.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Se descuenta si después tomás un bloque fijo.</li>
+          </ul>
+          <a class="btn ghost" href="#visita" data-plan="Jornada de prueba">Consultar fecha</a>
+        </article>
+        <article class="plan feat reveal d1">
+          <span class="flag">Más elegido</span>
+          <span class="eyebrow">Turno fijo</span>
+          <h3>Medio día semanal</h3>
+          <div class="price"><span class="ph">$ —</span> <small>por mes</small></div>
+          <ul class="ticks">
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Un bloque de mañana o tarde, el mismo día cada semana.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Agenda online propia y link para tus pacientes.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Ideal para empezar a construir pacientes en la zona.</li>
+          </ul>
+          <a class="btn light" href="#visita" data-plan="Medio día semanal">Quiero este bloque</a>
+        </article>
+        <article class="plan reveal d2">
+          <span class="eyebrow">Turno fijo</span>
+          <h3>Día completo semanal</h3>
+          <div class="price"><span class="ph">$ —</span> <small>por mes</small></div>
+          <ul class="ticks">
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Jornada entera, el mismo día cada semana.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Para agendas largas, cirugías u ortodoncia.</li>
+          </ul>
+          <a class="btn ghost" href="#visita" data-plan="Día completo semanal">Consultar disponibilidad</a>
+        </article>
+      </div>
+      <p class="note reveal" style="margin-top:1.5rem">Valores finales con IVA <span class="ph">[confirmar]</span>. Bloques de mañana <span class="ph">[8 a 13 h]</span> y de tarde <span class="ph">[14 a 20 h]</span>.</p>
+    </div>
+  </section>
+
+  <!-- Qué incluye -->
+  <section class="section" id="incluye">
+    <div class="wrap">
+      <div class="split">
+        <div class="media reveal"><img src="../img/esterilizacion.jpg" alt="Área de esterilización con autoclave y material en bolsas selladas" width="960" height="1280" loading="lazy"></div>
+        <div class="copy reveal d1">
+          <span class="eyebrow">Qué incluye</span>
+          <h2>Llegás y <em>atendés</em></h2>
+          <p>El box está limpio, equipado y con el material esterilizado cuando entrás. Lo administrativo corre por nuestra cuenta.</p>
+          <ul class="ticks">
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Esterilización en autoclave y área de lavado.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Limpieza y desinfección entre turnos.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Retiro de residuos patogénicos y habilitación del consultorio.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Luz, gas, calefacción y wifi.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg><span>Sala de espera y recepción <span class="ph">[confirmar alcance]</span>.</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="split flip" style="margin-top:clamp(3.5rem,7vw,6rem)">
+        <div class="media wide reveal"><img src="../img/box-lago.jpg" alt="Box odontológico con sillón, equipo y ventanal" width="1536" height="864" loading="lazy"></div>
+        <div class="copy reveal d1">
+          <span class="eyebrow">Equipamiento</span>
+          <h2>Un box <em>completo</em></h2>
+          <ul class="ticks equip">
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg><span>Sillón eléctrico <span class="ph">[marca]</span></span></li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg><span>Rayos X y radiovisiógrafo <span class="ph">[confirmar]</span></span></li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Turbina y micromotor</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Ultrasonido</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Lámpara de fotocurado</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Autoclave</li>
+          </ul>
+          <p class="note">Vos traés tu instrumental específico. <span class="ph">[Definir qué descartables incluye el abono]</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agenda online -->
+  <section class="section navy" id="agenda">
+    <div class="wrap">
+      <div class="head split">
+        <div style="display:grid;gap:1.1rem"><span class="eyebrow reveal">Agenda online incluida</span><h2 class="reveal d1">Tus pacientes reservan <em style="color:#8FD0DC">solos</em></h2></div>
+        <p class="lead reveal d2">Cada profesional tiene su agenda, su link para compartir y su ficha en la web de la clínica. Los turnos caen solo dentro de tus bloques, sin superposiciones.</p>
+      </div>
+      <div class="feat-grid reveal">
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4m8-4v4"/></svg><h3>Reserva online 24 h</h3><p>Tu link personal para Instagram o WhatsApp. El paciente elige el horario sin llamarte.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2M17 3h4v4"/></svg><h3>Sincroniza con tu calendario</h3><p>Ves tus turnos en Google Calendar o en el iPhone, junto con el resto de tu vida.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6L12 3Z"/></svg><h3>Tus pacientes son tuyos</h3><p>Nadie más ve sus datos, ni siquiera la administración del consultorio.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><h3>Tu ficha en la clínica</h3><p>Aparecés en el equipo de la web de la clínica con tu presentación, tu agenda y tu sitio.</p></div>
+      </div>
+      <p class="reveal" style="margin-top:2rem"><a class="btn light" href="../turnos/panel.html">Ingresar a mi agenda</a></p>
+    </div>
+  </section>
+
+  <!-- Comparativa -->
+  <section class="section">
+    <div class="wrap">
+      <div class="head center"><span class="eyebrow reveal">Números claros</span><h2 class="reveal d1">Consultorio propio <em>o compartido</em></h2></div>
+      <div class="compare-wrap reveal">
+        <table class="compare">
+          <thead><tr><th scope="col"><span class="sr">Concepto</span></th><th scope="col">Consultorio propio</th><th scope="col" class="us">Consultorios Dina Huapi</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Inversión inicial</th><td>Sillón, rayos, autoclave, obra y habilitación</td><td class="us">Ninguna</td></tr>
+            <tr><th scope="row">Costos fijos</th><td>Alquiler, servicios y personal, atiendas o no</td><td class="us">Un abono por los bloques que usás</td></tr>
+            <tr><th scope="row">Habilitación y residuos</th><td>Trámites y contratos a tu cargo</td><td class="us">Resueltos</td></tr>
+            <tr><th scope="row">Mantenimiento de equipos</th><td>A tu cargo</td><td class="us">Incluido</td></tr>
+            <tr><th scope="row">Agenda y reservas</th><td>Software aparte o llamadas</td><td class="us">Agenda online incluida</td></tr>
+            <tr><th scope="row">Compromiso</th><td>Contrato de alquiler de años</td><td class="us">Mes a mes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pasos -->
+  <section class="section soft">
+    <div class="wrap">
+      <div class="head"><span class="eyebrow reveal">Cómo empezar</span><h2 class="reveal d1">Empezás a atender <em>en tres pasos</em></h2></div>
+      <div class="steps reveal">
+        <div class="step"><h3>Visitás el consultorio</h3><p>Coordinamos una visita sin compromiso para que conozcas el box y el equipamiento.</p></div>
+        <div class="step"><h3>Elegís tus bloques</h3><p>Ves qué días y horarios están libres y firmamos un acuerdo mensual simple.</p></div>
+        <div class="step"><h3>Compartís tu link</h3><p>Activás tu agenda online y tus pacientes empiezan a reservar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preguntas -->
+  <section class="section" id="preguntas">
+    <div class="wrap">
+      <div class="head center"><span class="eyebrow reveal">Preguntas frecuentes</span><h2 class="reveal d1">Lo que <em>nos preguntan</em></h2></div>
+      <div class="faq center reveal">
+        <details><summary>¿Qué necesito para atender?<span class="pm" aria-hidden="true"></span></summary><div>Título, matrícula vigente en Río Negro y seguro de mala praxis. <span class="ph">[Confirmar requisitos de habilitación provincial]</span></div></details>
+        <details><summary>¿Tengo que llevar mi instrumental?<span class="pm" aria-hidden="true"></span></summary><div>Sí, tu instrumental específico. Los equipos del box y la esterilización están incluidos. <span class="ph">[Definir qué insumos básicos incluye el abono]</span></div></details>
+        <details><summary>¿Puedo atender por obra social?<span class="pm" aria-hidden="true"></span></summary><div>Sí. La facturación a pacientes y obras sociales la hacés vos, como en tu propio consultorio.</div></details>
+        <details><summary>¿Puedo cambiar o sumar bloques?<span class="pm" aria-hidden="true"></span></summary><div>Sí, con <span class="ph">[un mes]</span> de aviso y según disponibilidad. Para un día puntual extra, consultanos.</div></details>
+        <details><summary>¿Quién ve los datos de mis pacientes?<span class="pm" aria-hidden="true"></span></summary><div>Solo vos. La agenda está armada para que ni otros profesionales ni la administración vean nombres ni teléfonos de tus pacientes.</div></details>
+        <details><summary>¿Hay consultorio para otras especialidades?<span class="pm" aria-hidden="true"></span></summary><div>Está previsto sumar un consultorio médico. <span class="ph">[Fecha estimada]</span></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visita -->
+  <section class="section soft" id="visita">
+    <div class="wrap split">
+      <div class="copy reveal">
+        <span class="eyebrow">Contacto</span>
+        <h2>Coordiná <em>una visita</em></h2>
+        <p class="lead">Contanos tu especialidad y qué días te interesan. Te respondemos por WhatsApp con la disponibilidad real.</p>
+        <ul class="ticks">
+          <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Z"/></svg>Estados Unidos 860, Oficina D, Dina Huapi</li>
+          <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4l2.5 1.5"/></svg><span>Visitas <span class="ph">[lunes a viernes, 9 a 18 h]</span></span></li>
+        </ul>
+      </div>
+      <form class="form-card reveal d1" id="form-visita" aria-label="Coordinar una visita">
+        <div class="row2">
+          <div class="field"><label for="v-nombre">Nombre y apellido</label><input id="v-nombre" autocomplete="name" placeholder="Dra. Laura Pérez"></div>
+          <div class="field"><label for="v-esp">Especialidad</label>
+            <select id="v-esp"><option>Odontología general</option><option>Ortodoncia</option><option>Endodoncia</option><option>Implantes y cirugía</option><option>Odontopediatría</option><option>Periodoncia</option><option>Otra</option></select></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="v-plan">Modalidad</label>
+            <select id="v-plan"><option>Medio día semanal</option><option>Día completo semanal</option><option>Jornada de prueba</option><option>Todavía no sé</option></select></div>
+          <div class="field"><label for="v-dias">Días que te interesan</label><input id="v-dias" placeholder="Ej.: martes a la tarde"></div>
+        </div>
+        <a class="btn" id="v-enviar" href="#">Enviar por WhatsApp</a>
+        <p class="note">Se abre WhatsApp con el mensaje armado. No guardamos tus datos en esta página.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 90V52C180 12 380 0 620 22s470 58 820 6v62Z"/></svg>
+  <div class="wrap cols">
+    <div>
+      <a class="brand" href="../" aria-label="Consultorios Dina Huapi"><svg class="iso" viewBox="8 8 94 64" aria-hidden="true"><circle class="c1" cx="40" cy="40" r="30"/><circle class="c2" cx="70" cy="40" r="30"/><path class="lens" d="M55 14.02 A30 30 0 0 1 55 65.98 A30 30 0 0 1 55 14.02 Z"/><path class="smile" d="M33 51 C 50 63, 76 58, 99 34 C 79 53, 54 58, 33 51 Z"/></svg><span class="wm"><span>CONSULTORIOS</span><span>DINA HUAPI</span></span></a>
+      <p class="claim">Odontología · Salud integral.</p>
+    </div>
+    <div><h4>Profesionales</h4><p><a href="#modalidades">Modalidades</a></p><p><a href="#incluye">Qué incluye</a></p><p><a href="../turnos/panel.html">Acceso a la agenda</a></p></div>
+    <div><h4>Pacientes</h4><p><a href="../">Sitio del consultorio</a></p><p><a href="../turnos/">Pedir turno</a></p></div>
+    <div><h4>Contacto</h4><p>Estados Unidos 860, Oficina D<br>Dina Huapi, Río Negro</p><p><a href="#" data-wa="Hola, me interesa alquilar un bloque en el consultorio.">WhatsApp</a> · <a href="https://www.linkedin.com/company/consultoriosdinahuapi" target="_blank" rel="noopener">LinkedIn</a></p></div>
+  </div>
+  <div class="wrap base"><span>© <span data-year>2026</span> Consultorios Dina Huapi</span><span>Imágenes ilustrativas</span></div>
+</footer>
+
+<nav class="mbar" aria-label="Acciones rápidas"><a class="btn" href="#visita">Coordinar visita</a></nav>
+<a class="fab-wa" href="#" data-wa="Hola, me interesa alquilar un bloque en el consultorio." aria-label="Escribir por WhatsApp"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg></a>
+
+<script type="module">
+import { wa } from '../assets/sitio.js';
+const $ = (id) => document.getElementById(id);
+const enviar = $('v-enviar');
+function armar() {
+  const n = $('v-nombre').value.trim();
+  const msg = `Hola, quiero coordinar una visita a Consultorios Dina Huapi.${n ? ` Soy ${n}.` : ''} Especialidad: ${$('v-esp').value}. Modalidad: ${$('v-plan').value}.${$('v-dias').value.trim() ? ` Días: ${$('v-dias').value.trim()}.` : ''}`;
+  enviar.href = wa(msg);
+}
+$('form-visita').addEventListener('input', armar);
+$('form-visita').addEventListener('change', armar);
+enviar.target = '_blank'; enviar.rel = 'noopener';
+armar();
+// Los botones de cada modalidad preseleccionan la opción en el formulario.
+document.querySelectorAll('[data-plan]').forEach((a) => a.addEventListener('click', () => {
+  const sel = $('v-plan');
+  for (const o of sel.options) if (o.text === a.dataset.plan) sel.value = o.text;
+  armar();
+}));
+// Desde la portada se llega con ?plan=prueba|medio|completo#visita
+const PLANES = { prueba: 'Jornada de prueba', medio: 'Medio día semanal', completo: 'Día completo semanal' };
+const pedido = PLANES[new URLSearchParams(location.search).get('plan')];
+if (pedido) { $('v-plan').value = pedido; armar(); }
+</script>
+</body>
+</html>
