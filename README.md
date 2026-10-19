@@ -38,6 +38,10 @@ Turnos online para pacientes y agenda para profesionales, sobre el mismo GitHub 
 - `supabase/functions/calendario/` — entrega el calendario de cada profesional (.ics) para suscribirse desde Google Calendar o iPhone.
 - `supabase/schema.sql` — tablas, reglas y permisos. Las reglas críticas (sin superposiciones, turnos solo dentro de horarios alquilados, cada profesional ve solo a sus pacientes) las garantiza la base, no la página.
 
+### Modo demostración
+
+Mientras `turnos/config.js` esté vacío, las tres páginas funcionan con una base simulada (`turnos/demo.js`) que respeta las mismas reglas que la real: se puede reservar como paciente, cancelar, entrar al panel como la Dra. Cárdenas o como Administración y asignar alquileres. Los datos quedan solo en el navegador de quien prueba y una franja amarilla avisa que es una demostración. Al completar `config.js`, la demo se apaga sola.
+
 ### Puesta en marcha (una sola vez, ~20 minutos)
 
 1. Crear un proyecto gratuito en supabase.com (región São Paulo, la más cercana).

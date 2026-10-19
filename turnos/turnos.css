@@ -221,3 +221,8 @@ header.top .wrap { padding-block: .85rem; }
 .cal-titulo { font-family: var(--serif); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; color: #2B3B5A; }
 .cal-cab strong { font-weight: 300; }
 footer.pie a { color: inherit; }
+
+/* Modo demostración (sin base real configurada) */
+.demo-bar { background: #FFF6E0; color: #6B4E00; font-size: .85rem; border-bottom: 1px solid #F0DFAF; }
+.demo-bar .wrap { padding-block: .55rem; }
+.demo-login { border-top: 1px dashed var(--line); padding-top: 1rem; display: grid; gap: .6rem; }

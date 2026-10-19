@@ -1,5 +1,5 @@
 import {
-  sb, configurado, faltaConfig, $, h, aviso, mensajeError, DIAS,
+  sb, demo, configurado, faltaConfig, $, h, aviso, mensajeError, DIAS,
   hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp, URL_FEED,
 } from './comun.js';
 
@@ -74,6 +74,14 @@ function aplicarVista(vista) {
 }
 
 $('#cambiar-vista').addEventListener('click', () => aplicarVista(st.vista === 'admin' ? 'pro' : 'admin'));
+
+// En la demostración no se mandan mails: se entra directo con un usuario de ejemplo.
+if (demo) {
+  const entrarComo = (id, texto) => h('button', { class: 'btn ghost sm', type: 'button', onclick: () => sb.demo.entrarComo(id) }, texto);
+  $('#login').append(h('div', { class: 'demo-login' },
+    h('p', { class: 'small muted' }, 'En la demostración no se mandan mails. Entrá directo con un usuario de ejemplo:'),
+    h('div', { class: 'row' }, entrarComo('demo-nati', 'Dra. Natalia Cárdenas (profesional)'), entrarComo('demo-admin', 'Administración'))));
+}
 
 $('#login-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
