@@ -360,3 +360,7 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .map.plain .cover { place-items: center; align-content: center; gap: .9rem; text-align: center; background: none; color: var(--navy); }
 .map.plain .cover svg { color: var(--petrol); }
 .team > .member:only-child { grid-column: 1 / -1; max-width: 52rem; }
+/* Portada: foto más alta en celular; el acceso a turnos ya está en la barra inferior */
+@media (max-width: 959px) { .hero-media { aspect-ratio: 1 / 1; } .hero-media img { object-position: 50% 30%; } .hero-media .hero-badge { display: none; } }
+a.hero-badge { text-decoration: none; }
+a.hero-badge strong { font-weight: 500; }
