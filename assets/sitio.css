@@ -355,18 +355,6 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .aud a[aria-current="page"] { color: var(--white); border-bottom-color: #8FD0DC; }
 .aud .right { margin-left: auto; }
 
-/* Prevención */
-.care { display: grid; gap: 1rem; }
-@media (min-width: 860px) { .care { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
-.care article { display: grid; gap: .7rem; align-content: start; padding: 1.75rem; border-radius: 20px; background: var(--soft); }
-.care h3 { font-weight: 500; color: var(--navy); font-size: 1.05rem; }
-.care p { font-size: .95rem; }
-.care-note { margin-top: 1.25rem; font-size: .8rem; color: #6B7585; }
-
-/* Bioseguridad en tres columnas bajo las fotos */
-.ticks.cols3 { margin-top: 2rem; }
-@media (min-width: 860px) { .ticks.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 2.5rem; } }
-
 /* Mapa sin foto: se carga recién cuando la persona lo pide */
 .map.plain { background: var(--sky); }
 .map.plain .cover { place-items: center; align-content: center; gap: .9rem; text-align: center; background: none; color: var(--navy); }
