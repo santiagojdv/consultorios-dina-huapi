@@ -346,3 +346,29 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .rent-foot { display: flex; flex-wrap: wrap; gap: .8rem 1.4rem; align-items: center; margin-top: 2rem; }
 .hero .pro-link { font-size: .88rem; color: var(--graphite); text-decoration: none; border-bottom: 1px solid var(--mist); justify-self: start; }
 .hero .pro-link strong { color: var(--petrol); font-weight: 500; }
+
+/* Selector de público: pacientes / profesionales, como en los sitios institucionales */
+.aud { background: var(--navy); font-size: .78rem; }
+.aud nav { display: flex; gap: 1.6rem; height: 34px; align-items: stretch; }
+.aud a { display: inline-flex; align-items: center; color: rgba(255,255,255,.66); text-decoration: none; letter-spacing: .06em; border-bottom: 2px solid transparent; transition: color .2s var(--ease); }
+.aud a:hover { color: var(--white); }
+.aud a[aria-current="page"] { color: var(--white); border-bottom-color: #8FD0DC; }
+.aud .right { margin-left: auto; }
+
+/* Prevención */
+.care { display: grid; gap: 1rem; }
+@media (min-width: 860px) { .care { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } }
+.care article { display: grid; gap: .7rem; align-content: start; padding: 1.75rem; border-radius: 20px; background: var(--soft); }
+.care h3 { font-weight: 500; color: var(--navy); font-size: 1.05rem; }
+.care p { font-size: .95rem; }
+.care-note { margin-top: 1.25rem; font-size: .8rem; color: #6B7585; }
+
+/* Bioseguridad en tres columnas bajo las fotos */
+.ticks.cols3 { margin-top: 2rem; }
+@media (min-width: 860px) { .ticks.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 2.5rem; } }
+
+/* Mapa sin foto: se carga recién cuando la persona lo pide */
+.map.plain { background: var(--sky); }
+.map.plain .cover { place-items: center; align-content: center; gap: .9rem; text-align: center; background: none; color: var(--navy); }
+.map.plain .cover svg { color: var(--petrol); }
+.team > .member:only-child { grid-column: 1 / -1; max-width: 52rem; }

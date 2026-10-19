@@ -20,11 +20,11 @@ flowchart LR
 
     subgraph s1 ["1. Portada de la clínica"]
         c1Nati["Dra. Natalia Cárdenas: directora (sección destacada)"]
-        c1Pro["Para profesionales: reservá tu consultorio"]
+        c1Atencion["Primera consulta y prevención"]
         c1Trat["Tratamientos"]
         c1Equipo["Equipo"]
         c1Lugar["El consultorio y bioseguridad"]
-        c1Ubic["Ubicación, horarios y obras sociales"]
+        c1Ubic["Contacto, horarios y obras sociales"]
         c1Faq["Preguntas frecuentes"]
     end
 
@@ -65,13 +65,12 @@ flowchart LR
     db[("Supabase: base y login")]
     gcal[/"Google Calendar"/]
 
-    dominio --> c1Trat & c1Equipo & c1Lugar & c1Ubic & c1Faq
+    dominio --> c1Atencion & c1Trat & c1Equipo & c1Lugar & c1Ubic & c1Faq
     dominio -->|"Pedir turno"| t4Reserva
-    dominio --> c1Nati & c1Pro
+    dominio --> c1Nati
     c1Nati -->|"Conocer su consultorio"| n5Home
     c1Nati -->|"Sacar turno con Natalia"| t4Reserva
-    c1Pro -->|"Elegís modalidad"| p2Visita
-    c1Pro -->|"Ver modalidades"| p2Mod
+    dominio -->|"Selector Pacientes / Profesionales"| p2Mod
     dominio -->|"Agenda online"| t4Login
     c1Equipo -->|"Ficha de Nati"| n5Home
     c1Equipo -->|"Una ficha por profesional"| o6Ficha
