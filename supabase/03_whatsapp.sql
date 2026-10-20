@@ -167,6 +167,23 @@ begin
     'bot_activo', coalesce((select valor from ajustes where clave = 'bot_activo'), 'true') = 'true');
 end $$;
 
+-- Mensaje que Nati escribió desde la app WhatsApp Business del celular (número en "coexistencia":
+-- la app y el asistente comparten el número). Lo guarda y deja el chat en manos de una persona,
+-- así el asistente no le habla encima. Si Meta reenvía el mismo aviso, no hace nada.
+create or replace function public.wa_registrar_eco(p_telefono text, p_texto text, p_wa_id text)
+returns void
+language plpgsql volatile security definer set search_path = public as $$
+begin
+  if exists (select 1 from wa_mensajes where wa_id = p_wa_id) then
+    return;
+  end if;
+  insert into wa_conversaciones (telefono, estado) values (p_telefono, 'humano')
+  on conflict (telefono) do update set estado = 'humano', ultimo_mensaje = now(), no_leidos = 0;
+  insert into wa_mensajes (telefono, direccion, autor, texto, wa_id)
+  values (p_telefono, 'saliente', 'persona', left(p_texto, 4096), p_wa_id)
+  on conflict (wa_id) do nothing;
+end $$;
+
 -- Próximos turnos confirmados de un teléfono.
 create or replace function public.wa_turnos(p_telefono text) returns json
 language sql stable security definer set search_path = public as $$
@@ -214,10 +231,10 @@ end $$;
 
 -- ───────────────────────────── Permisos de ejecución ─────────────────────────────
 
-revoke execute on function public.wa_registrar_entrante(text, text, text, text), public.wa_turnos(text),
+revoke execute on function public.wa_registrar_entrante(text, text, text, text), public.wa_registrar_eco(text, text, text), public.wa_turnos(text),
   public.wa_cancelar_turno(text, bigint), public.wa_reservar_turno(text, uuid, timestamptz, json, smallint, smallint, text)
   from public, anon, authenticated;
-grant execute on function public.wa_registrar_entrante(text, text, text, text), public.wa_turnos(text),
+grant execute on function public.wa_registrar_entrante(text, text, text, text), public.wa_registrar_eco(text, text, text), public.wa_turnos(text),
   public.wa_cancelar_turno(text, bigint), public.wa_reservar_turno(text, uuid, timestamptz, json, smallint, smallint, text)
   to service_role;
 revoke execute on function public.soy_whatsapp(), public.proteger_conversacion() from public, anon;

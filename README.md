@@ -93,14 +93,16 @@ No tiene datos propios. Usa las mismas funciones que la página de turnos, así 
 - **Turnos**: pregunta qué necesita y la cobertura, muestra el precio, ofrece 3 a 5 horarios reales, pide DNI, nombre y apellido, muestra un resumen y reserva solo después de un "sí". El teléfono es siempre el del chat: un paciente solo puede ver y cancelar sus propios turnos. Los turnos quedan con origen "whatsapp" en la agenda.
 - **Precios**: solo los de la lista (nunca inventa). Si la obra social no está, informa el particular.
 - **Salud**: no diagnostica ni indica medicación. Ante sangrado que no para, fiebre o hinchazón de cara, indica guardia y deriva.
-- **Derivación**: la conversación pasa a "Para vos" con un resumen para Nati, y si está configurado le llega un aviso a su celular. Vuelve sola al asistente después de 24 h sin mensajes (configurable) o cuando Nati toca "Devolver al asistente". Si escribe Nati, la conversación queda en sus manos.
+- **Derivación**: la conversación pasa a "Para vos" con un resumen para Nati, y si está configurado le llega un aviso a otro celular. Con el número en coexistencia, Nati también puede contestar directo desde la app WhatsApp Business: el asistente lo detecta y deja el chat en sus manos. Vuelve sola al asistente después de 24 h sin mensajes (configurable) o cuando Nati toca "Devolver al asistente". Si escribe Nati, la conversación queda en sus manos.
 - **Mensajes seguidos**: espera 3 segundos y contesta todo junto. Audios y fotos: pide que lo escriban o que pidan hablar con Nati.
 - **Si algo falla** (Claude no responde, error de la API): deriva a Nati y le avisa al paciente.
 
 ### Puesta en marcha
 
 **1. Número y cuenta de Meta** (lo hace el dueño de la cuenta, ~1 hora más la aprobación de Meta)
-1. Elegir el número. Tiene que ser una línea que **no** esté usando la app de WhatsApp (ni la común ni Business), o darla de baja ahí primero. Lo más simple es un chip nuevo solo para el consultorio.
+1. Elegir el número. Hay dos caminos:
+   - **El número que el consultorio ya usa en la app WhatsApp Business ("coexistencia")**: la app sigue andando en el celular de Nati y el asistente contesta en el mismo número. Meta solo lo habilita a través de un proveedor oficial (BSP o *Tech Provider*, ej. 360dialog), que hace la conexión con su *Embedded Signup* y cobra un abono además de las tarifas de Meta; desde una app propia no se puede. Requisitos: app WhatsApp Business 2.24.17 o más nueva (si hoy está en WhatsApp común, pasarlo a Business primero; conserva los chats), uso sostenido del número (los recién creados no califican) y abrir la app al menos cada 13 días. Al conectarlo se desvinculan los dispositivos (WhatsApp para Windows no vuelve a funcionar), se apagan las listas de difusión, los mensajes temporales y los de una sola vista, y los grupos no pasan al asistente. Se puede importar el historial de los últimos 6 meses. En el webhook hay que suscribir también **smb_message_echoes**, así lo que Nati escribe desde el celular queda guardado y el asistente se calla en ese chat.
+   - **Una línea nueva solo para el asistente**: no puede estar en ninguna app de WhatsApp. No necesita proveedor (se hace todo desde Meta, pasos 2 a 7), pero los pacientes tienen que agendar otro número.
 2. En business.facebook.com crear el portfolio comercial del consultorio y, si se puede, verificarlo (sube los límites de envío y permite mostrar el nombre).
 3. En developers.facebook.com: *Create app* → tipo *Business* → agregar el producto **WhatsApp** → *API Setup* → agregar el número, verificarlo por SMS y cargar el nombre visible ("Consultorios Dina Huapi").
 4. En el portfolio, *Usuarios del sistema*: crear uno, asignarle la app y el número, y generar un **token permanente** con los permisos `whatsapp_business_messaging` y `whatsapp_business_management`.
@@ -112,7 +114,7 @@ No tiene datos propios. Usa las mismas funciones que la página de turnos, así 
 1. **SQL Editor** → pegar `supabase/03_whatsapp.sql` → Run.
 2. **Edge Functions → Deploy a new function → Via editor**: nombre `whatsapp`, pegar `index.ts` y `asistente.ts` (dos archivos), y **desactivar "Enforce JWT verification"**. Con la CLI: `supabase functions deploy whatsapp`.
 3. **Edge Functions → Secrets**: `ANTHROPIC_API_KEY` (de console.anthropic.com), `WA_TOKEN`, `WA_PHONE_ID`, `WA_APP_SECRET`, `WA_VERIFY_TOKEN` (una palabra larga cualquiera) y, para el aviso, `WA_AVISO_NUMERO` (celular de Nati, ej. `5492944636977`). Opcionales: `CLAUDE_MODELO` (por defecto `claude-opus-5-5`) y `CLAUDE_ESFUERZO` (`low`).
-4. En la app de Meta: *WhatsApp → Configuration → Webhook*: *Callback URL* `https://<proyecto>.supabase.co/functions/v1/whatsapp`, *Verify token* el mismo `WA_VERIFY_TOKEN`, y suscribir el campo **messages**.
+4. En la app de Meta: *WhatsApp → Configuration → Webhook*: *Callback URL* `https://<proyecto>.supabase.co/functions/v1/whatsapp`, *Verify token* el mismo `WA_VERIFY_TOKEN`, y suscribir el campo **messages** (y **smb_message_echoes** si el número está en coexistencia).
 5. En el panel → Administración → **WhatsApp**: completar la información del consultorio (horarios, pagos, etc.) y tildar quién atiende la bandeja (Nati).
 6. Probar escribiéndole al número desde otro celular.
 

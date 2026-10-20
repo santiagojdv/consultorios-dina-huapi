@@ -1,7 +1,8 @@
 // Asistente de WhatsApp del consultorio (WhatsApp Cloud API oficial de Meta + Claude).
 //
 // GET  /functions/v1/whatsapp   → verificación del webhook (Meta, una sola vez al configurarlo)
-// POST /functions/v1/whatsapp   → mensajes que llegan al número del consultorio (Meta, firmado)
+// POST /functions/v1/whatsapp   → mensajes que llegan al número del consultorio (Meta, firmado), y con el
+//                                número en coexistencia, los que Nati manda desde la app (smb_message_echoes)
 // POST /functions/v1/whatsapp   con {accion: 'enviar', telefono, texto} y la sesión de un profesional
 //                                → respuesta escrita por una persona desde la bandeja del panel
 //
@@ -11,7 +12,9 @@
 //   WA_PHONE_ID        "Phone number ID" del número del consultorio
 //   WA_APP_SECRET      "App secret" de la app de Meta (para validar que el aviso viene de Meta)
 //   WA_VERIFY_TOKEN    texto cualquiera; el mismo que se pone al configurar el webhook en Meta
-//   WA_AVISO_NUMERO    (opcional) celular de Nati para avisarle de cada derivación, ej. 5492944636977
+//   WA_AVISO_NUMERO    (opcional) celular de Nati para avisarle de cada derivación, ej. 5492944636977.
+//                      Con el número en coexistencia (app WhatsApp Business + asistente) Nati ya ve el chat
+//                      en la app; este aviso solo sirve si va a otro número, nunca al del consultorio.
 //   WA_AVISO_PLANTILLA (opcional) nombre de la plantilla aprobada para ese aviso (por defecto aviso_derivacion)
 //   CLAUDE_MODELO      (opcional) por defecto claude-opus-5-5
 //   CLAUDE_ESFUERZO    (opcional) low | medium | high; por defecto low (charla corta)
@@ -81,6 +84,13 @@ async function procesarAviso(aviso: any) {
       for (const m of v.messages ?? []) {
         const nombre = v.contacts?.find((c: any) => c.wa_id === m.from)?.profile?.name ?? '';
         await recibir(m, nombre);
+      }
+      // Número en coexistencia: lo que Nati escribe desde la app del celular llega como "eco".
+      for (const e of v.message_echoes ?? []) {
+        const { error } = await admin.rpc('wa_registrar_eco', {
+          p_telefono: String(e.to), p_texto: textoDe(e) ?? `[${e.type}]`, p_wa_id: e.id,
+        });
+        if (error) throw error;
       }
     }
   }
