@@ -3,7 +3,7 @@
 // turnos solo dentro de horarios alquilados, cada profesional ve solo a sus pacientes) para que
 // todo el circuito se pueda probar antes de crear la base real. Los datos quedan en este navegador.
 export function crearDemo() {
-  const CLAVE = 'cdh-demo-v3';
+  const CLAVE = 'cdh-demo-v4';
   const minutos = (t) => { const [a, b] = t.split(':').map(Number); return a * 60 + b; };
   const hhmmDe = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const isodow = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay() || 7;
@@ -60,12 +60,62 @@ export function crearDemo() {
         }
       }
     }
-    return { consultorios: [{ id: 1, nombre: 'Box 1', activo: true }, { id: 2, nombre: 'Box 2', activo: true }], profesionales: pros, alquileres, ausencias: [], turnos, calendario_tokens: [], seq: 1000 };
+    // Catálogo y precios de EJEMPLO (los reales los carga Nati con la planilla)
+    const serv = [
+      ['Consultas', 'Primera consulta y diagnóstico', 'Revisión completa, diagnóstico y plan de tratamiento.', 40, 30000],
+      ['Consultas', 'Control', 'Control periódico o seguimiento.', 20, 20000],
+      ['Consultas', 'Urgencia', 'Dolor, golpe o una pieza rota.', 30, 35000],
+      ['Prevención', 'Limpieza y fluoración', 'Limpieza profesional y fluoración.', 40, 40000],
+      ['Odontología general', 'Arreglo de caries', 'Restauración del color del diente.', 45, 55000],
+      ['Odontología general', 'Tratamiento de conducto', 'Endodoncia (puede requerir más de una sesión).', 60, 150000],
+      ['Odontología general', 'Extracción', 'Extracción simple.', 40, 50000],
+      ['Ortodoncia', 'Consulta de ortodoncia', 'Evaluación de la mordida y opciones de tratamiento.', 40, 35000],
+      ['Ortodoncia', 'Control de ortodoncia', 'Para pacientes en tratamiento con brackets o placas.', 20, 30000],
+      ['Ortodoncia', 'Alineadores invisibles: evaluación', 'Escaneo y evaluación para alineadores.', 45, 40000],
+      ['Estética', 'Blanqueamiento', 'Blanqueamiento en consultorio.', 60, 180000],
+      ['Estética', 'Estética facial: consulta', 'Evaluación de tratamientos faciales complementarios.', 30, 30000],
+      ['Bruxismo', 'Placa de bruxismo', 'Toma de impresiones para la placa a medida.', 30, 120000],
+    ];
+    const servicios = serv.map(([categoria, nombre, descripcion, duracion_min], i) => ({ id: i + 1, nombre, categoria, descripcion, duracion_min, reservable_online: true, activo: true, orden: { Consultas: 10, Prevención: 20, 'Odontología general': 30, Ortodoncia: 40, Estética: 50, Bruxismo: 60 }[categoria] ?? 100 }));
+    const obras_sociales = ['IPROSS', 'OSDE', 'Swiss Medical', 'Galeno', 'Medifé'].map((nombre, i) => ({ id: i + 1, nombre, activo: true, nota: '' }));
+    const base = '2026-08-01';
+    const aranceles = [];
+    let ka = 0;
+    serv.forEach(([cat, , , , precio], i) => {
+      aranceles.push({ id: ++ka, servicio_id: i + 1, obra_social_id: null, modalidad: 'particular', monto: precio, valor_os: null, periodo_base: base, ajusta_ipc: true });
+      for (const o of obras_sociales) {
+        const mod = ['Consultas', 'Prevención'].includes(cat) ? 'cubierto' : ['Odontología general', 'Bruxismo'].includes(cat) ? 'copago' : cat === 'Ortodoncia' ? 'copago' : 'no_cubre';
+        const monto = mod === 'copago' ? Math.round(precio * (cat === 'Ortodoncia' ? 0.5 : 0.2) / 1000) * 1000 : 0;
+        aranceles.push({ id: ++ka, servicio_id: i + 1, obra_social_id: o.id, modalidad: mod, monto, valor_os: mod === 'no_cubre' ? null : Math.round(precio * 0.6 / 1000) * 1000, periodo_base: base, ajusta_ipc: true });
+      }
+    });
+    const profesional_servicios = [
+      ...[1, 2, 3, 4, 8, 9, 10, 11, 12, 13].map((id) => ({ profesional_id: 'demo-nati', servicio_id: id, duracion_min: null })),
+      ...[1, 2, 3, 4, 5, 7, 13].map((id) => ({ profesional_id: 'demo-gomez', servicio_id: id, duracion_min: null })),
+      ...[1, 3, 6].map((id) => ({ profesional_id: 'demo-ruiz', servicio_id: id, duracion_min: id === 6 ? 90 : null })),
+    ];
+    const ipc = [{ periodo: '2026-08-01', variacion: 1.9, fuente: 'ejemplo (demo)', cargado: new Date().toISOString() }, { periodo: '2026-09-01', variacion: 2.1, fuente: 'ejemplo (demo)', cargado: new Date().toISOString() }];
+    // Fichas de pacientes para los turnos de ejemplo
+    const pacientes = [];
+    for (const t of turnos) {
+      let pac = pacientes.find((x) => `${x.nombre} ${x.apellido}` === t.paciente_nombre);
+      if (!pac) {
+        const [nombre, apellido] = t.paciente_nombre.split(' ');
+        pac = { id: pacientes.length + 1, dni: String(30000000 + pacientes.length * 1234567), nombre, apellido, fecha_nacimiento: null, telefono: t.paciente_telefono, email: '', obra_social_id: (pacientes.length % 3) ? (pacientes.length % 5) + 1 : null, nro_afiliado: '', consentimiento: new Date().toISOString(), creado: new Date().toISOString(), actualizado: new Date().toISOString() };
+        pacientes.push(pac);
+      }
+      const delPro = profesional_servicios.filter((x) => x.profesional_id === t.profesional_id).map((x) => x.servicio_id);
+      Object.assign(t, { paciente_id: pac.id, servicio_id: delPro[t.id % delPro.length], detalle: '', obra_social_id: pac.obra_social_id, modalidad: null, monto_estimado: null, datos_distintos: false });
+    }
+    const ajustes = [{ id: 901, clave: 'redondeo', valor: '100' }, { id: 902, clave: 'ipc_serie', valor: '148.3_INIVELNAL_DICI_M_26' }];
+    profesional_servicios.forEach((x, i) => { x.id = 500 + i; });
+    ipc.forEach((x, i) => { x.id = 950 + i; });
+    return { consultorios: [{ id: 1, nombre: 'Box 1', activo: true }, { id: 2, nombre: 'Box 2', activo: true }], profesionales: pros, alquileres, ausencias: [], turnos, calendario_tokens: [], servicios, obras_sociales, aranceles, profesional_servicios, ipc, pacientes, ajustes, seq: 1000 };
   }
 
   let db;
   try { db = JSON.parse(localStorage.getItem(CLAVE)); } catch { db = null; }
-  if (!db?.profesionales || !db.calendario_tokens) db = semilla();
+  if (!db?.profesionales || !db.aranceles) db = semilla();
   let sesion = null;
   try { sesion = JSON.parse(localStorage.getItem(`${CLAVE}-sesion`)); } catch { sesion = null; }
   const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(db)); localStorage.setItem(`${CLAVE}-sesion`, JSON.stringify(sesion)); } catch { /* sin almacenamiento: la demo sigue en memoria */ } };
@@ -77,24 +127,50 @@ export function crearDemo() {
   const soyAdmin = () => Boolean(yo()?.activo && yo()?.es_admin);
   const confirmado = (t) => t.estado === 'confirmado';
 
-  function libres(pid, desde, hasta) {
+  // ── Precios (mismas cuentas que factor_ipc / monto_vigente / cotizar en SQL) ──
+  const factorIpc = (base) => db.ipc.filter((x) => x.periodo >= base).reduce((f, x) => f * (1 + x.variacion / 100), 1);
+  const montoVigente = (monto, base, ajusta) => {
+    if (monto == null || !monto || !ajusta) return monto;
+    const r = Math.max(Number(db.ajustes.find((x) => x.clave === 'redondeo')?.valor) || 1, 1);
+    return Math.round((monto * factorIpc(base)) / r) * r;
+  };
+  function cotizar(sid, osid) {
+    const part = db.aranceles.find((a) => a.servicio_id === sid && a.obra_social_id == null);
+    const os = osid ? db.aranceles.find((a) => a.servicio_id === sid && a.obra_social_id === osid) : null;
+    if (os && ['cubierto', 'copago'].includes(os.modalidad)) return { modalidad: os.modalidad, monto: montoVigente(os.monto, os.periodo_base, os.ajusta_ipc) };
+    return { modalidad: osid ? 'no_cubre' : 'particular', monto: part ? montoVigente(part.monto, part.periodo_base, part.ajusta_ipc) : null };
+  }
+  function duracionDe(pid, sid) {
+    const ps = db.profesional_servicios.find((x) => x.profesional_id === pid && x.servicio_id === sid);
+    const s = db.servicios.find((x) => x.id === sid && x.activo);
+    if (ps && s) return ps.duracion_min || s.duracion_min;
+    return db.profesionales.find((x) => x.id === pid).duracion_turno;
+  }
+  const aVigentes = () => db.aranceles.map((a) => {
+    const s = db.servicios.find((x) => x.id === a.servicio_id);
+    return { ...a, servicio: s?.nombre, categoria: s?.categoria, obra_social: db.obras_sociales.find((o) => o.id === a.obra_social_id)?.nombre ?? 'Particular',
+      monto_hoy: montoVigente(a.monto, a.periodo_base, a.ajusta_ipc), valor_os_hoy: a.valor_os == null ? null : montoVigente(a.valor_os, a.periodo_base, a.ajusta_ipc) };
+  });
+
+  function libres(pid, desde, hasta, sid = null) {
     const p = db.profesionales.find((x) => x.id === pid && x.activo);
     const propio = uid() === pid;
     if (!p || !(p.publico || propio)) return [];
     const hoy = fLocal(new Date());
-    const dur = p.duracion_turno;
+    const paso = p.duracion_turno;
+    const dur = duracionDe(pid, sid);
     const desdeOk = propio ? new Date().toISOString() : masMin(new Date().toISOString(), p.anticipacion_horas * 60);
     const tope = propio ? hasta : [hasta, masDias(hoy, p.ventana_dias)].sort()[0];
     const out = [];
     for (let f = desde < hoy ? hoy : desde; f <= tope; f = masDias(f, 1)) {
       for (const a of db.alquileres) {
         if (a.profesional_id !== pid || a.dia_semana !== isodow(f) || f < a.vigente_desde || f > a.vigente_hasta) continue;
-        for (let m = minutos(a.hora_inicio); m + dur <= minutos(a.hora_fin); m += dur) {
+        for (let m = minutos(a.hora_inicio); m + dur <= minutos(a.hora_fin); m += paso) {
           const ini = inst(f, hhmmDe(m)), fin = masMin(ini, dur);
           if (ini < desdeOk) continue;
           if (db.turnos.some((t) => t.profesional_id === pid && confirmado(t) && pisa(t.inicio, t.fin, ini, fin))) continue;
           if (db.ausencias.some((x) => x.profesional_id === pid && pisa(x.desde, x.hasta, ini, fin))) continue;
-          out.push({ inicio: ini, fin });
+          out.push({ inicio: ini, fin: propio ? fin : null });
         }
       }
     }
@@ -125,12 +201,16 @@ export function crearDemo() {
   }
 
   const visibles = (tabla) => {
-    const filas = db[tabla];
+    const filas = db[tabla] ?? [];
     if (tabla === 'calendario_tokens') return soyActivo() ? filas.filter((r) => r.profesional_id === uid()) : [];
     if (tabla === 'turnos' || tabla === 'ausencias') return soyActivo() ? filas.filter((r) => r.profesional_id === uid()) : [];
     if (tabla === 'profesionales') return filas.filter((r) => soyActivo() || r.id === uid());
+    if (tabla === 'pacientes') return soyActivo() ? filas.filter((r) => db.turnos.some((t) => t.paciente_id === r.id && t.profesional_id === uid())) : [];
+    if (tabla === 'aranceles_vigentes') return soyActivo() ? aVigentes() : [];
     return soyActivo() ? filas : [];
   };
+
+  const SOLO_ADMIN = ['consultorios', 'alquileres', 'servicios', 'obras_sociales', 'aranceles', 'ipc', 'ajustes'];
 
   class Consulta {
     constructor(tabla) { Object.assign(this, { tabla, op: 'select', filtros: [], orden: [], uno: null, cols: '*', conteo: false, cabeza: false, devolver: false }); }
@@ -160,6 +240,9 @@ export function crearDemo() {
     _select() { return this.forma(this.filas().map((r) => this.embebido({ ...r }))); }
     embebido(r) {
       if (this.cols.includes('consultorios(')) r.consultorios = { nombre: db.consultorios.find((c) => c.id === r.consultorio_id)?.nombre };
+      if (this.cols.includes('servicios(')) r.servicios = db.servicios.find((c) => c.id === r.servicio_id) ?? null;
+      if (this.cols.includes('obras_sociales(')) r.obras_sociales = db.obras_sociales.find((c) => c.id === r.obra_social_id) ?? null;
+      if (this.cols.includes('pacientes(')) r.pacientes = db.pacientes.find((c) => c.id === r.paciente_id) ?? null;
       return r;
     }
     forma(filas) {
@@ -169,8 +252,9 @@ export function crearDemo() {
       return { data: filas, error: null, count: this.conteo ? filas.length : null };
     }
     puedoEscribir() {
-      if (['consultorios', 'alquileres'].includes(this.tabla) && !soyAdmin()) throw error('permiso denegado');
+      if (SOLO_ADMIN.includes(this.tabla) && !soyAdmin()) throw error('permiso denegado');
       if (!soyActivo()) throw error('permiso denegado');
+      if (this.tabla === 'profesional_servicios' && !soyAdmin() && [this.fila, ...this.filas()].some((r) => r && r.profesional_id && r.profesional_id !== uid())) throw error('permiso denegado');
     }
     _insert() {
       if (Array.isArray(this.fila)) {
@@ -190,6 +274,17 @@ export function crearDemo() {
         validarTurno(fila);
       }
       if (t === 'ausencias' && fila.profesional_id !== uid()) throw error('permiso denegado');
+      if (t === 'profesional_servicios') {
+        fila.profesional_id ??= uid();
+        if (db.profesional_servicios.some((x) => x.profesional_id === fila.profesional_id && x.servicio_id === fila.servicio_id)) throw error('duplicate key value violates unique constraint');
+      }
+      if (t === 'pacientes') {
+        if (db.pacientes.some((x) => x.dni === fila.dni)) throw error('Ya existe un paciente con ese DNI');
+        Object.assign(fila, { email: '', obra_social_id: null, nro_afiliado: '', fecha_nacimiento: null, ...fila, creado: new Date().toISOString(), actualizado: new Date().toISOString() });
+      }
+      if (['servicios', 'obras_sociales'].includes(t) && db[t].some((c) => c.nombre.toLowerCase() === String(fila.nombre).toLowerCase())) throw error('duplicate key value violates unique constraint');
+      if (t === 'servicios') Object.assign(fila, { categoria: 'Consultas', descripcion: '', duracion_min: 30, reservable_online: true, activo: true, orden: 100, ...fila });
+      if (t === 'obras_sociales') Object.assign(fila, { activo: true, nota: '', ...fila });
       if (t === 'calendario_tokens') {
         if (fila.profesional_id !== uid() || db.calendario_tokens.some((x) => x.profesional_id === uid())) throw error('permiso denegado');
         fila.token = uuid();
@@ -204,7 +299,8 @@ export function crearDemo() {
     }
     _update() {
       const t = this.tabla;
-      if (['consultorios', 'alquileres'].includes(t) && !soyAdmin()) return { data: [], error: null };
+      if (SOLO_ADMIN.includes(t) && !soyAdmin()) return { data: [], error: null };
+      if (t === 'profesional_servicios' && !soyAdmin()) this.filtros.push((r) => r.profesional_id === uid());
       const filas = this.filas().filter((r) => t !== 'profesionales' || r.id === uid() || soyAdmin());
       if (t === 'profesionales' && !soyAdmin() && ['es_admin', 'activo', 'email'].some((c) => c in this.cambios)) throw error('Solo un administrador puede cambiar esos datos');
       if (t === 'profesionales' && this.cambios.es_admin === false && filas.some((r) => r.id === uid())) throw error('No podés quitarte el rol de administrador a vos mismo');
@@ -220,7 +316,7 @@ export function crearDemo() {
     }
     _delete() {
       this.puedoEscribir();
-      if (this.tabla === 'turnos') throw error('permiso denegado');
+      if (['turnos', 'pacientes'].includes(this.tabla)) throw error('permiso denegado');
       const ids = new Set(this.filas().map((r) => r.id));
       db[this.tabla] = db[this.tabla].filter((r) => !ids.has(r.id));
       return { data: null, error: null };
@@ -232,25 +328,101 @@ export function crearDemo() {
       .filter((p) => p.publico && p.activo && p.nombre && db.alquileres.some((a) => a.profesional_id === p.id && a.vigente_hasta >= fLocal(new Date())))
       .map(({ id, nombre, especialidad, duracion_turno, bio, web, foto }) => ({ id, nombre, especialidad, duracion_turno, bio, web, foto }))
       .sort((a, b) => a.nombre.localeCompare(b.nombre)),
-    turnos_disponibles: ({ p_profesional, p_desde, p_hasta }) => libres(p_profesional, p_desde, p_hasta),
-    reservar_turno: ({ p_profesional, p_inicio, p_nombre, p_telefono, p_email }) => {
+    turnos_disponibles: ({ p_profesional, p_desde, p_hasta, p_servicio = null }) => libres(p_profesional, p_desde, p_hasta, p_servicio),
+    catalogo_publico: ({ p_profesional }) => ({
+      servicios: db.servicios.filter((s) => s.activo && s.reservable_online && db.profesional_servicios.some((x) => x.profesional_id === p_profesional && x.servicio_id === s.id))
+        .sort((a, b) => a.orden - b.orden || a.categoria.localeCompare(b.categoria) || a.nombre.localeCompare(b.nombre))
+        .map(({ id, nombre, categoria, descripcion }) => ({ id, nombre, categoria, descripcion })),
+      obras_sociales: db.obras_sociales.filter((o) => o.activo).map(({ id, nombre }) => ({ id, nombre })).sort((a, b) => a.nombre.localeCompare(b.nombre)),
+    }),
+    cotizar: ({ p_servicio, p_obra_social = null }) => cotizar(p_servicio, p_obra_social),
+    cargar_ipc: ({ p_periodo, p_variacion, p_fuente = 'manual' }) => {
+      if (!soyAdmin()) throw error('Solo para administradores');
+      const periodo = `${p_periodo.slice(0, 7)}-01`;
+      const v = Number(p_variacion);
+      if (!Number.isFinite(v) || v < -50 || v > 100) throw error('Variación fuera de rango');
+      db.ipc = [...db.ipc.filter((x) => x.periodo !== periodo), { id: ++db.seq, periodo, variacion: v, fuente: p_fuente, cargado: new Date().toISOString() }].sort((a, b) => a.periodo.localeCompare(b.periodo));
+      return null;
+    },
+    importar_aranceles: ({ p_filas }) => {
+      if (!soyAdmin()) throw error('Solo para administradores');
+      const copia = JSON.stringify(db);
+      try {
+        for (const f of p_filas) {
+          const nombre = String(f.servicio || '').trim();
+          if (nombre.length < 2) throw error('Falta el nombre del servicio en una fila');
+          let s = db.servicios.find((x) => x.nombre.toLowerCase() === nombre.toLowerCase());
+          if (!s) { s = { id: ++db.seq, nombre, categoria: 'Consultas', descripcion: '', duracion_min: 30, reservable_online: true, activo: true, orden: 100 }; db.servicios.push(s); }
+          if (f.categoria) s.categoria = f.categoria;
+          if (f.descripcion != null && f.descripcion !== '') s.descripcion = f.descripcion;
+          if (f.duracion_min) s.duracion_min = Number(f.duracion_min);
+          if (f.reservable_online !== '' && f.reservable_online != null) s.reservable_online = f.reservable_online === true || f.reservable_online === 'true';
+          let oid = null;
+          const on = String(f.obra_social || '').trim();
+          if (on && on.toLowerCase() !== 'particular') {
+            let o = db.obras_sociales.find((x) => x.nombre.toLowerCase() === on.toLowerCase());
+            if (!o) { o = { id: ++db.seq, nombre: on, activo: true, nota: '' }; db.obras_sociales.push(o); }
+            oid = o.id;
+          }
+          if (f.modalidad) {
+            if (!['particular', 'cubierto', 'copago', 'no_cubre'].includes(f.modalidad)) throw error(`Modalidad no válida: ${f.modalidad}`);
+            if ((oid == null) !== (f.modalidad === 'particular')) throw error(`"${nombre}": particular va sin obra social, y con obra social no puede ser "particular"`);
+            const fila = { servicio_id: s.id, obra_social_id: oid, modalidad: f.modalidad, monto: ['particular', 'copago'].includes(f.modalidad) ? Number(f.monto || 0) : 0, valor_os: f.valor_os === '' || f.valor_os == null ? null : Number(f.valor_os), periodo_base: f.periodo_base ? `${String(f.periodo_base).slice(0, 7)}-01` : `${fLocal(new Date()).slice(0, 7)}-01`, ajusta_ipc: f.ajusta_ipc === '' || f.ajusta_ipc == null ? true : f.ajusta_ipc === true || f.ajusta_ipc === 'true' };
+            const ya = db.aranceles.find((a) => a.servicio_id === s.id && a.obra_social_id === oid);
+            if (ya) Object.assign(ya, fila); else db.aranceles.push({ id: ++db.seq, ...fila });
+          }
+        }
+      } catch (e) { db = JSON.parse(copia); throw e; }
+      return { filas: p_filas.length };
+    },
+    rebasar_aranceles: () => {
+      if (!soyAdmin()) throw error('Solo para administradores');
+      const ult = db.ipc.map((x) => x.periodo).sort().pop() ?? `${fLocal(new Date()).slice(0, 7)}-01`;
+      const [y, m] = ult.split('-').map(Number);
+      const base = new Date(Date.UTC(y, m, 1)).toISOString().slice(0, 10);
+      let n = 0;
+      for (const a of db.aranceles) {
+        if (!a.ajusta_ipc || a.periodo_base >= base) continue;
+        a.monto = montoVigente(a.monto, a.periodo_base, true);
+        if (a.valor_os != null) a.valor_os = montoVigente(a.valor_os, a.periodo_base, true);
+        a.periodo_base = base; n++;
+      }
+      return n;
+    },
+    reservar_turno: ({ p_profesional, p_inicio, p_paciente, p_servicio = null, p_obra_social = null, p_detalle = '' }) => {
       const p = db.profesionales.find((x) => x.id === p_profesional && x.activo && x.publico);
       if (!p) throw error('Profesional no disponible');
+      if (p_servicio != null && !funciones.catalogo_publico({ p_profesional: p.id }).servicios.some((s) => s.id === p_servicio)) throw error('Ese servicio no se reserva online con este profesional');
+      if (p_servicio == null && (p_detalle || '').trim().length < 3) throw error('Contanos brevemente el motivo de la consulta');
       const f = fLocal(p_inicio);
-      if (!libres(p.id, f, f).some((s) => s.inicio === p_inicio)) throw error('Ese horario ya no está disponible', 'ocupado');
+      if (!libres(p.id, f, f, p_servicio).some((s) => s.inicio === p_inicio)) throw error('Ese horario ya no está disponible', 'ocupado');
+      const x = p_paciente || {};
+      const dni = String(x.dni || '').replace(/\D/g, '');
+      if (!/^\d{7,9}$/.test(dni)) throw error('Revisá el DNI');
       const norm = (t) => (t || '').replace(/\D/g, '').slice(-10);
-      const futuros = db.turnos.filter((t) => confirmado(t) && t.inicio > new Date().toISOString() && norm(t.paciente_telefono) === norm(p_telefono));
+      const futuros = db.turnos.filter((t) => confirmado(t) && t.inicio > new Date().toISOString() && norm(t.paciente_telefono) === norm(x.telefono));
       if (futuros.filter((t) => t.profesional_id === p.id).length >= 2 || futuros.length >= 4) throw error('Ya tenés varios turnos reservados con ese teléfono. Para más, comunicate con el profesional.', 'limite');
-      const t = { id: ++db.seq, profesional_id: p.id, inicio: p_inicio, fin: masMin(p_inicio, p.duracion_turno), paciente_nombre: p_nombre.trim(), paciente_telefono: p_telefono.trim(), paciente_email: (p_email || '').trim().toLowerCase(), nota: '', origen: 'online', estado: 'confirmado', cancelado_por: null, token: uuid(), creado: new Date().toISOString() };
+      let pac = db.pacientes.find((y) => y.dni === dni);
+      let distinto = false;
+      const ahora = new Date().toISOString();
+      if (!pac) {
+        pac = { id: ++db.seq, dni, nombre: x.nombre.trim(), apellido: x.apellido.trim(), fecha_nacimiento: x.fecha_nacimiento || null, telefono: x.telefono.trim(), email: (x.email || '').trim().toLowerCase(), obra_social_id: p_obra_social, nro_afiliado: (x.nro_afiliado || '').trim(), consentimiento: ahora, creado: ahora, actualizado: ahora };
+        db.pacientes.push(pac);
+      } else if (norm(pac.telefono) === norm(x.telefono)) {
+        Object.assign(pac, { email: (x.email || '').trim().toLowerCase() || pac.email, obra_social_id: p_obra_social, nro_afiliado: (x.nro_afiliado || '').trim() || pac.nro_afiliado, fecha_nacimiento: pac.fecha_nacimiento || x.fecha_nacimiento || null, consentimiento: ahora, actualizado: ahora });
+      } else { distinto = true; pac = null; }
+      const cot = p_servicio == null ? { modalidad: null, monto: null } : cotizar(p_servicio, p_obra_social);
+      const t = { id: ++db.seq, profesional_id: p.id, inicio: p_inicio, fin: masMin(p_inicio, duracionDe(p.id, p_servicio)), paciente_nombre: `${x.nombre.trim()} ${x.apellido.trim()}`, paciente_telefono: x.telefono.trim(), paciente_email: (x.email || '').trim().toLowerCase(), nota: '', origen: 'online', estado: 'confirmado', cancelado_por: null, token: uuid(), creado: ahora,
+        paciente_id: pac?.id ?? null, servicio_id: p_servicio, detalle: (p_detalle || '').trim().slice(0, 500), obra_social_id: p_obra_social, modalidad: cot.modalidad, monto_estimado: cot.monto, datos_distintos: distinto };
       validarTurno(t);
       db.turnos.push(t);
-      return { token: t.token, inicio: t.inicio, fin: t.fin, profesional: p.nombre, especialidad: p.especialidad, consultorio: db.consultorios.find((c) => c.id === t.consultorio_id)?.nombre };
+      return { token: t.token, inicio: t.inicio, profesional: p.nombre, especialidad: p.especialidad, consultorio: db.consultorios.find((c) => c.id === t.consultorio_id)?.nombre, servicio: db.servicios.find((s) => s.id === t.servicio_id)?.nombre ?? null, modalidad: t.modalidad, monto: t.monto_estimado };
     },
     turno_por_token: ({ p_token }) => {
       const t = db.turnos.find((x) => x.token === p_token);
       if (!t) return null;
       const p = db.profesionales.find((x) => x.id === t.profesional_id);
-      return { inicio: t.inicio, fin: t.fin, estado: t.estado, paciente: t.paciente_nombre, profesional: p.nombre, especialidad: p.especialidad, telefono_profesional: p.telefono, consultorio: db.consultorios.find((c) => c.id === t.consultorio_id)?.nombre, cancelable: confirmado(t) && t.inicio > masMin(new Date().toISOString(), p.aviso_cancelacion_horas * 60), aviso_cancelacion_horas: p.aviso_cancelacion_horas };
+      return { inicio: t.inicio, estado: t.estado, paciente: t.paciente_nombre, servicio: db.servicios.find((s) => s.id === t.servicio_id)?.nombre ?? null, modalidad: t.modalidad ?? null, monto: t.monto_estimado ?? null, profesional: p.nombre, especialidad: p.especialidad, telefono_profesional: p.telefono, consultorio: db.consultorios.find((c) => c.id === t.consultorio_id)?.nombre, cancelable: confirmado(t) && t.inicio > masMin(new Date().toISOString(), p.aviso_cancelacion_horas * 60), aviso_cancelacion_horas: p.aviso_cancelacion_horas };
     },
     cancelar_turno: ({ p_token }) => {
       const r = funciones.turno_por_token({ p_token });
@@ -292,6 +464,13 @@ export function crearDemo() {
       });
     },
     from: (tabla) => new Consulta(tabla),
+    functions: {
+      async invoke(nombre) {
+        await new Promise((r) => setTimeout(r, 400));
+        if (nombre === 'ipc') return { data: null, error: { message: 'En la demostración no hay conexión con INDEC. Con la base real, el índice se baja solo todos los meses; también podés cargarlo a mano acá abajo.' } };
+        return { data: null, error: { message: 'Función no disponible en la demostración' } };
+      },
+    },
     auth: {
       onAuthStateChange(cb) { avisarAuth = cb; setTimeout(() => cb('INITIAL_SESSION', sesion), 0); return { data: { subscription: { unsubscribe() {} } } }; },
       async signInWithOtp({ email }) {

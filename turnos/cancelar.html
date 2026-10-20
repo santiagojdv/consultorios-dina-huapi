@@ -51,7 +51,7 @@ function mostrar(t, mensaje) {
     cancelado && !mensaje ? h('div', { class: 'aviso info' }, 'Este turno está cancelado.') : null,
     h('div', { class: 'stack' },
       h('p', {}, h('strong', {}, `${diaLargo(t.inicio)}, ${hora(t.inicio)} h`)),
-      h('p', {}, `${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
+      h('p', {}, `${t.servicio ? `${t.servicio} · ` : ''}${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
       h('p', { class: 'muted' }, `${t.consultorio ?? ''} · Paciente: ${t.paciente}`)),
     !cancelado && t.cancelable
       ? h('div', { class: 'row' },

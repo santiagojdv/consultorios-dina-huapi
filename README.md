@@ -32,27 +32,39 @@ Settings → Pages → Branch `main`, carpeta `/ (root)`. Queda en https://santi
 
 Turnos online para pacientes y agenda para profesionales, sobre el mismo GitHub Pages. La base de datos y el login los pone [Supabase](https://supabase.com) (plan gratuito).
 
-- `turnos/index.html` — página pública: el paciente elige profesional, día y horario. Cada profesional tiene su link directo (`turnos/index.html?p=…`).
+- `turnos/index.html` — página pública: el paciente elige profesional, qué necesita (servicio o motivo libre), su cobertura (ve el precio o adicional), día y horario, y deja sus datos (DNI, nombre, nacimiento, teléfono). Cada profesional tiene su link directo (`turnos/index.html?p=…`).
 - `turnos/cancelar.html` — el paciente ve o cancela su turno con el link que recibe al reservar.
-- `turnos/panel.html` — profesionales (agenda, calendario consolidado de todos los consultorios, turnos manuales, perfil, ausencias, link para Google Calendar) y administración (consultorios, alquileres mensuales, profesionales).
+- `turnos/panel.html` — profesionales (agenda, calendario consolidado de todos los consultorios, turnos manuales, perfil, ausencias, link para Google Calendar) y administración (consultorios, alquileres mensuales, profesionales, servicios, obras sociales, precios e IPC).
+- `turnos/planilla.js` — lee la planilla de precios (CSV o Excel) para importarla desde el panel.
 - `supabase/functions/calendario/` — entrega el calendario de cada profesional (.ics) para suscribirse desde Google Calendar o iPhone.
+- `supabase/functions/ipc/` — baja la variación mensual del IPC (INDEC, vía datos.gob.ar) y la carga en la base.
+- `supabase/02_pacientes_y_precios.sql` — fichas de pacientes, servicios, obras sociales, aranceles e IPC. Va después de `schema.sql`.
 - `supabase/schema.sql` — tablas, reglas y permisos. Las reglas críticas (sin superposiciones, turnos solo dentro de horarios alquilados, cada profesional ve solo a sus pacientes) las garantiza la base, no la página.
 
 ### Modo demostración
 
 Mientras `turnos/config.js` esté vacío, las tres páginas funcionan con una base simulada (`turnos/demo.js`) que respeta las mismas reglas que la real: se puede reservar como paciente, cancelar, entrar al panel como la Dra. Cárdenas o como Administración y asignar alquileres. Los datos quedan solo en el navegador de quien prueba y una franja amarilla avisa que es una demostración. Al completar `config.js`, la demo se apaga sola.
 
+### Pacientes, servicios y precios
+
+- **Ficha por DNI.** Al reservar, el paciente deja DNI, nombre, apellido, nacimiento, teléfono, email, obra social y n.º de afiliado. Si vuelve con el mismo DNI y teléfono, se actualiza su ficha. Si el DNI existe con otro teléfono, no se toca ni se vincula la ficha (podría ser un DNI ajeno) y el turno queda marcado "Revisar" para el profesional. Cada profesional ve solo las fichas de sus pacientes; la administración no las ve.
+- **Servicios con duración interna.** El paciente elige un servicio (o "Otro motivo" con texto libre). La duración la define el servicio (o el profesional en "Mis servicios") y decide cuánto ocupa en la agenda; el paciente solo ve horas de inicio.
+- **Precios por cobertura.** Por servicio: precio particular y, por obra social, *cubierto*, *copago* (adicional) o *no cubre*. Sin fila para su obra social, el paciente ve el precio particular aclarando que no hay cobertura registrada. El precio informado queda guardado en el turno.
+- **Ajuste por IPC.** Cada monto tiene un mes base. Precio de hoy = monto × Π(1 + IPC mensual desde el mes base), redondeado (por defecto a $100). Se usan variaciones mensuales para que un cambio de base de INDEC no rompa la serie. Los valores con "ajusta IPC = No" (ej. lo que paga una obra social por convenio) quedan fijos. "Tomar precios de hoy como nueva base" consolida todo cuando se revisa la lista.
+- **Carga.** La lista entera se importa desde una planilla (Administración → Servicios y precios). Plantilla con instrucciones: botón "Descargar plantilla vacía" o la versión Excel que se le pasó a Nati.
+
 ### Puesta en marcha (una sola vez, ~20 minutos)
 
 1. Crear un proyecto gratuito en supabase.com (región São Paulo, la más cercana).
-2. **SQL Editor** → pegar todo `supabase/schema.sql` → Run.
+2. **SQL Editor** → pegar todo `supabase/schema.sql` → Run. Después, lo mismo con `supabase/02_pacientes_y_precios.sql`.
 3. **Authentication → Sign In / Providers**: dejar Email activo y **desactivar "Allow new users to sign up"** (solo entra quien invites).
 4. **Authentication → URL Configuration**: en *Site URL* y en *Redirect URLs* poner `https://santiagojdv.github.io/consultorios-dina-huapi/turnos/panel.html`.
 5. **Authentication → Users → Invite user** con tu email. Después, en SQL Editor:
    `update profesionales set es_admin = true where email = 'tu@email.com';`
 6. **Project Settings → API**: copiar *Project URL* y la *anon / publishable key* en `turnos/config.js`. La anon key es pública por diseño; **nunca** pegues la `service_role`.
 7. **Edge Functions → Deploy a new function → Via editor**: nombre `calendario`, pegar `supabase/functions/calendario/index.ts`, y **desactivar "Enforce JWT verification"** (Google Calendar no manda credenciales; el secreto es el token del link). Con la CLI: `supabase functions deploy calendario` (toma `supabase/config.toml`).
-8. Entrar a `turnos/panel.html` → Administración: cargar consultorios, invitar profesionales (paso 5, sin el `update`) y cargar sus alquileres. Cada profesional completa "Mi perfil" y activa "Aceptar turnos online".
+8. **IPC automático**: publicar la función `ipc` (`supabase/functions/ipc/index.ts`, sin "Enforce JWT verification"); en *Edge Functions → Secrets* crear `IPC_CLAVE` con una clave larga cualquiera; en *Database → Extensions* activar `pg_cron` y `pg_net`; y correr el `cron.schedule` que está comentado al final de `02_pacientes_y_precios.sql` (reemplazando proyecto y clave). Desde ahí se consulta INDEC del 10 al 20 de cada mes y los precios se actualizan apenas sale el índice. El botón "Buscar índice nuevo en INDEC" del panel hace lo mismo a mano.
+9. Entrar a `turnos/panel.html` → Administración: cargar consultorios, invitar profesionales (paso 5, sin el `update`) y cargar sus alquileres. Cada profesional completa "Mi perfil" y activa "Aceptar turnos online".
 
 ### Límites conocidos
 
@@ -60,4 +72,5 @@ Mientras `turnos/config.js` esté vacío, las tres páginas funcionan con una ba
 - **Google Calendar actualiza los calendarios suscriptos cada varias horas**, no al instante (lo decide Google). El panel siempre está al día.
 - **Sin notificaciones automáticas**: el profesional ve los turnos nuevos en su agenda; el recordatorio al paciente es un botón de WhatsApp. Mails/recordatorios automáticos serían una segunda etapa.
 - **Antispam básico**: máximo 2 turnos futuros por teléfono por profesional (4 en total). Si aparece abuso, agregar un captcha (Cloudflare Turnstile).
-- **Datos personales**: solo se piden nombre, teléfono y email. No cargar datos clínicos en notas. Conviene publicar una política de privacidad y registrar la base ante la AAIP (Ley 25.326).
+- **Datos personales**: la ficha guarda DNI, contacto, cobertura y el motivo de consulta que escribe el paciente. Eso es dato de salud (sensible, Ley 25.326): antes de usarlo con pacientes reales hay que publicar una política de privacidad, registrar la base ante la AAIP y no cargar historia clínica acá (tiene sus propias exigencias, Ley 26.529).
+- **Planilla en Excel**: la lectura de `.xlsx` baja la librería SheetJS desde jsdelivr al momento de importar; si falla, guardar la planilla como CSV.

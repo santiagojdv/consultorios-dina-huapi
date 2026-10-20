@@ -2,3 +2,7 @@
 # Google Calendar no manda credenciales: la función tiene que aceptar pedidos sin JWT.
 [functions.calendario]
 verify_jwt = false
+
+# La función del IPC la llama pg_cron con una clave propia (x-ipc-clave) o el panel con la sesión del admin.
+[functions.ipc]
+verify_jwt = false
