@@ -1,0 +1,135 @@
+<title>Asistente de WhatsApp · Consultorios Dina Huapi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap">
+<style>
+/*__TURNOS_CSS__*/
+/* Demo: teléfono del paciente a la izquierda, bandeja de Nati a la derecha. Un solo aspecto claro (el del panel). */
+:root {
+  --navy: #2B3B5A; --petroleo: #127285; --grafito: #4B5668; --niebla: #D5DDE2; --fondo: #F4F7F8;
+  --wa-fondo: #EFEAE2; --wa-mio: #D9FDD3; --wa-cab: #127285;
+  color-scheme: light;
+}
+body { background: var(--fondo); }
+.demo-bar { display: none; }
+.demo { max-width: 74rem; margin: 0 auto; padding-block: 1.25rem 2rem; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 1.25rem; }
+.demo-cab { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: end; justify-content: space-between; }
+.demo-cab .stack { gap: .35rem; max-width: 44rem; }
+.demo-cab h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); text-wrap: balance; }
+.demo-cab p { margin: 0; }
+.col-tel, .tel { min-width: 0; }
+.tel { grid-template-columns: minmax(0, 1fr); }
+.demo-grilla { display: grid; grid-template-columns: minmax(18rem, 25rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.vistas { display: none; gap: .25rem; background: #fff; border: 1px solid var(--niebla); border-radius: 999px; padding: .25rem; justify-self: start; }
+.vistas button { border: 0; background: none; font: inherit; font-size: .9rem; padding: .45rem 1rem; border-radius: 999px; color: var(--grafito); min-height: 40px; cursor: pointer; }
+.vistas button[aria-pressed="true"] { background: var(--navy); color: #fff; }
+@media (max-width: 860px) {
+  .demo-grilla { grid-template-columns: 1fr; }
+  .vistas { display: inline-flex; }
+  body:not([data-vista="nati"]) .col-nati { display: none; }
+  body[data-vista="nati"] .col-tel { display: none; }
+}
+
+/* Teléfono */
+.tel { border-radius: 28px; background: #fff; border: 1px solid var(--niebla); box-shadow: var(--shadow); overflow: hidden; display: grid; grid-template-rows: auto 1fr auto auto; height: min(44rem, 82vh); min-height: 30rem; }
+.tel-cab { background: var(--wa-cab); color: #fff; display: flex; align-items: center; gap: .65rem; padding: .7rem .9rem; }
+.tel-foto { width: 38px; height: 38px; border-radius: 50%; background: #fff; display: grid; place-items: center; flex: none; }
+.tel-foto svg { width: 30px; }
+.tel-cab strong { display: block; font-weight: 500; font-size: .95rem; line-height: 1.2; }
+.tel-cab small { opacity: .85; font-size: .78rem; }
+.tel-cab .btn.link { color: #fff; margin-left: auto; font-size: .8rem; min-height: 36px; }
+#chat { background: var(--wa-fondo); overflow-y: auto; padding: .8rem .7rem; display: flex; flex-direction: column; gap: .3rem; }
+.tel-aviso { align-self: center; text-align: center; font-size: .7rem; background: #FFF5C4; color: #54656F; border-radius: 8px; padding: .3rem .6rem; max-width: 85%; margin-bottom: .3rem; }
+.tel-vacio { align-self: center; text-align: center; font-size: .82rem; color: #54656F; max-width: 80%; margin-top: 2rem; }
+.tel-msj { max-width: 82%; padding: .35rem .55rem .2rem; border-radius: 9px; background: #fff; box-shadow: 0 1px .5px rgba(11,20,26,.13); display: grid; gap: .05rem; font-size: .88rem; line-height: 1.4; color: #111B21; overflow-wrap: anywhere; }
+.tel-msj.mio { align-self: flex-end; background: var(--wa-mio); }
+.tel-msj.suyo { align-self: flex-start; }
+.tel-texto { white-space: pre-wrap; }
+.tel-texto strong { font-weight: 600; }
+.tel-autor { font-size: .72rem; font-weight: 600; color: var(--petroleo); }
+.tel-hora { font-size: .66rem; color: #667781; justify-self: end; }
+.tel-nota { align-self: center; font-size: .72rem; color: var(--grafito); background: #FFF6E0; border: 1px dashed #E5CF8E; border-radius: 8px; padding: .3rem .6rem; text-align: center; max-width: 90%; }
+.escribiendo { flex-direction: row; display: flex; gap: .25rem; padding: .7rem .8rem; }
+.escribiendo span { width: 7px; height: 7px; border-radius: 50%; background: #8696A0; animation: punto 1.2s infinite ease-in-out; }
+.escribiendo span:nth-child(2) { animation-delay: .15s; } .escribiendo span:nth-child(3) { animation-delay: .3s; }
+@keyframes punto { 0%, 60%, 100% { opacity: .35; transform: none; } 30% { opacity: 1; transform: translateY(-3px); } }
+@media (prefers-reduced-motion: reduce) { .escribiendo span { animation: none; } }
+.sugerencias { display: flex; gap: .35rem; overflow-x: auto; padding: .5rem .6rem; background: var(--wa-fondo); border-top: 1px solid rgba(0,0,0,.04); }
+.sugerencias button { flex: none; border: 1px solid var(--niebla); background: #fff; color: var(--navy); border-radius: 999px; padding: .35rem .75rem; font: inherit; font-size: .78rem; cursor: pointer; min-height: 34px; }
+.sugerencias button:hover { border-color: var(--petroleo); }
+#escribir { display: flex; gap: .45rem; padding: .55rem .6rem; background: #F0F2F5; }
+#mensaje { flex: 1; min-width: 0; border: 0; border-radius: 999px; padding: .65rem 1rem; font: inherit; font-size: .92rem; background: #fff; min-height: 44px; }
+#mensaje:focus { outline: 2px solid var(--petroleo); }
+#escribir button { width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--petroleo); color: #fff; display: grid; place-items: center; cursor: pointer; flex: none; }
+#escribir button svg { width: 20px; }
+
+/* Columna de Nati */
+.col-nati { display: grid; gap: 1.25rem; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.col-nati .card > p { margin: 0; }
+#registro { display: grid; gap: .4rem; }
+#registro:empty::before { content: "Acá aparece cada consulta del asistente a la agenda y a la lista de precios, con lo que pidió y lo que recibió."; font-size: .85rem; color: var(--muted); }
+.reg { border: 1px solid var(--niebla); border-radius: 10px; padding: .45rem .7rem; background: #fff; font-size: .85rem; }
+.reg summary { cursor: pointer; color: var(--navy); }
+.reg-hora { color: var(--muted); font-variant-numeric: tabular-nums; }
+.reg pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .75rem; background: var(--fondo); border-radius: 8px; padding: .5rem; margin: .4rem 0 0; max-height: 16rem; overflow-y: auto; }
+</style>
+
+<div class="demo">
+  <header class="demo-cab">
+    <div class="stack">
+      <span class="label">Consultorios Dina Huapi · demostración</span>
+      <h1>Asistente de WhatsApp</h1>
+      <p class="muted">El WhatsApp de un paciente y, al lado, lo que ve Nati en el panel. El asistente es el real: responde con Claude y usa la agenda y la lista de precios de ejemplo del sistema de turnos.</p>
+    </div>
+    <div class="row">
+      <button class="btn ghost sm" type="button" id="reiniciar">Reiniciar datos de ejemplo</button>
+    </div>
+  </header>
+
+  <div class="vistas" role="group" aria-label="Vista">
+    <button type="button" data-vista="tel" aria-pressed="true">Paciente</button>
+    <button type="button" data-vista="nati" aria-pressed="false">Panel de Nati</button>
+  </div>
+
+  <div id="aviso-claude" class="aviso error" role="status" hidden></div>
+
+  <div class="demo-grilla">
+    <section class="col-tel" aria-label="WhatsApp del paciente">
+      <div class="tel">
+        <div class="tel-cab">
+          <span class="tel-foto"><svg viewBox="8 8 94 64" aria-hidden="true"><circle cx="40" cy="40" r="30" fill="#2B3B5A"/><circle cx="70" cy="40" r="30" fill="#127285" opacity=".85"/></svg></span>
+          <div><strong>Consultorios Dina Huapi</strong><small id="estado-chat">asistente virtual</small></div>
+          <button class="btn link" type="button" id="nueva">Nueva conversación</button>
+        </div>
+        <div id="chat" aria-live="polite"></div>
+        <div class="sugerencias" aria-label="Mensajes de ejemplo">
+          <button type="button" data-sugerencia="Hola! ¿Atienden por OSDE?">¿Atienden por OSDE?</button>
+          <button type="button" data-sugerencia="Quiero sacar un turno para una limpieza">Turno para limpieza</button>
+          <button type="button" data-sugerencia="¿Cuánto sale un blanqueamiento?">Precio de blanqueamiento</button>
+          <button type="button" data-sugerencia="Me duele mucho una muela desde ayer">Me duele una muela</button>
+          <button type="button" data-sugerencia="¿Qué turnos tengo? Quiero cancelar uno">Cancelar un turno</button>
+          <button type="button" data-sugerencia="Prefiero hablar con Nati, por favor">Hablar con Nati</button>
+        </div>
+        <form id="escribir" autocomplete="off">
+          <label class="sr" for="mensaje">Mensaje</label>
+          <input id="mensaje" maxlength="1000" placeholder="Mensaje">
+          <button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6l.01 6.53L15 12l-11.59 1.87z"/></svg></button>
+        </form>
+      </div>
+    </section>
+
+    <section class="col-nati" aria-label="Panel de Nati">
+      <div class="card">
+        <div class="stack"><h2>Bandeja de WhatsApp de Nati</h2>
+          <p class="muted small">Las conversaciones marcadas "Para vos" las derivó el asistente. Respondé desde acá y el mensaje le llega al paciente; "Devolver al asistente" lo vuelve a poner a cargo.</p></div>
+        <div id="bandeja"></div>
+      </div>
+      <div class="card">
+        <h2>Qué consultó el asistente</h2>
+        <div id="registro"></div>
+      </div>
+    </section>
+  </div>
+</div>
+<!--__SCRIPT__-->

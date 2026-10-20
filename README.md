@@ -14,6 +14,7 @@ Sitio de Consultorios Dina Huapi: portada de la clínica para pacientes, alquile
 | `img/` | Imágenes. Las actuales son **ilustrativas**: reemplazarlas por fotos reales con el mismo nombre |
 | `nati/` | Sitio de la Dra. Natalia Cárdenas |
 | `docs/mapa-del-sitio.md` | Mapa del sitio (copia del FigJam) |
+| `supabase/functions/whatsapp/`, `turnos/whatsapp.js` | Asistente de WhatsApp y su bandeja en el panel (ver abajo) |
 
 ## Cómo editarlo
 
@@ -74,3 +75,51 @@ Mientras `turnos/config.js` esté vacío, las tres páginas funcionan con una ba
 - **Antispam básico**: máximo 2 turnos futuros por teléfono por profesional (4 en total). Si aparece abuso, agregar un captcha (Cloudflare Turnstile).
 - **Datos personales**: la ficha guarda DNI, contacto, cobertura y el motivo de consulta que escribe el paciente. Eso es dato de salud (sensible, Ley 25.326): antes de usarlo con pacientes reales hay que publicar una política de privacidad, registrar la base ante la AAIP y no cargar historia clínica acá (tiene sus propias exigencias, Ley 26.529).
 - **Planilla en Excel**: la lectura de `.xlsx` baja la librería SheetJS desde jsdelivr al momento de importar; si falla, guardar la planilla como CSV.
+
+## Asistente de WhatsApp
+
+Responde en el WhatsApp del consultorio: preguntas frecuentes, precios según servicio y cobertura, y turnos (dar, consultar y cancelar). Cuando el paciente pide hablar con una persona, hace una pregunta clínica o hay un reclamo, le pasa la conversación a Nati: el asistente deja de responder en ese chat y ella contesta desde el panel.
+
+No tiene datos propios. Usa las mismas funciones que la página de turnos, así que los precios (con IPC), las obras sociales, las duraciones y las reglas de agenda son siempre las mismas que en la web.
+
+- `supabase/functions/whatsapp/index.ts` — recibe los mensajes de WhatsApp (Cloud API oficial de Meta), llama a Claude y manda la respuesta. También envía lo que Nati escribe desde el panel.
+- `supabase/functions/whatsapp/asistente.ts` — instrucciones del asistente, herramientas (profesionales, servicios y precios, horarios, reservar, mis turnos, cancelar, derivar) y cómo se ejecuta cada una. Es el mismo archivo que usa la demo.
+- `supabase/03_whatsapp.sql` — conversaciones, mensajes, quién atiende la bandeja y las funciones que usa el asistente. Va después de `02_pacientes_y_precios.sql`.
+- `turnos/whatsapp.js` — pestaña **WhatsApp** del panel: bandeja con las conversaciones (las derivadas, arriba y marcadas "Para vos"), respuesta, "Tomar la conversación" y "Devolver al asistente". En la vista de administración: encender o apagar el asistente, la información del consultorio que usa y quién atiende la bandeja.
+- `herramientas/asistente-demo/` — arma una demo en un solo archivo (teléfono del paciente + bandeja de Nati) para probarlo sin número real.
+
+### Cómo se comporta
+
+- **Turnos**: pregunta qué necesita y la cobertura, muestra el precio, ofrece 3 a 5 horarios reales, pide DNI, nombre y apellido, muestra un resumen y reserva solo después de un "sí". El teléfono es siempre el del chat: un paciente solo puede ver y cancelar sus propios turnos. Los turnos quedan con origen "whatsapp" en la agenda.
+- **Precios**: solo los de la lista (nunca inventa). Si la obra social no está, informa el particular.
+- **Salud**: no diagnostica ni indica medicación. Ante sangrado que no para, fiebre o hinchazón de cara, indica guardia y deriva.
+- **Derivación**: la conversación pasa a "Para vos" con un resumen para Nati, y si está configurado le llega un aviso a su celular. Vuelve sola al asistente después de 24 h sin mensajes (configurable) o cuando Nati toca "Devolver al asistente". Si escribe Nati, la conversación queda en sus manos.
+- **Mensajes seguidos**: espera 3 segundos y contesta todo junto. Audios y fotos: pide que lo escriban o que pidan hablar con Nati.
+- **Si algo falla** (Claude no responde, error de la API): deriva a Nati y le avisa al paciente.
+
+### Puesta en marcha
+
+**1. Número y cuenta de Meta** (lo hace el dueño de la cuenta, ~1 hora más la aprobación de Meta)
+1. Elegir el número. Tiene que ser una línea que **no** esté usando la app de WhatsApp (ni la común ni Business), o darla de baja ahí primero. Lo más simple es un chip nuevo solo para el consultorio.
+2. En business.facebook.com crear el portfolio comercial del consultorio y, si se puede, verificarlo (sube los límites de envío y permite mostrar el nombre).
+3. En developers.facebook.com: *Create app* → tipo *Business* → agregar el producto **WhatsApp** → *API Setup* → agregar el número, verificarlo por SMS y cargar el nombre visible ("Consultorios Dina Huapi").
+4. En el portfolio, *Usuarios del sistema*: crear uno, asignarle la app y el número, y generar un **token permanente** con los permisos `whatsapp_business_messaging` y `whatsapp_business_management`.
+5. Anotar: token permanente, *Phone number ID* (en *API Setup*) y *App secret* (en *App settings → Basic*).
+6. (Opcional, para el aviso a Nati) En *WhatsApp Manager → Plantillas*: crear `aviso_derivacion`, categoría *Utilidad*, idioma *Español (ARG)*, con el texto `Hola, {{1}} pidió hablar con una persona en el WhatsApp del consultorio ({{2}}). Entrá al panel para responderle.`
+7. Cargar un medio de pago en WhatsApp Manager. Las conversaciones que inicia el paciente no se cobran; las plantillas (el aviso a Nati) sí, unos centavos de dólar cada una.
+
+**2. Supabase**
+1. **SQL Editor** → pegar `supabase/03_whatsapp.sql` → Run.
+2. **Edge Functions → Deploy a new function → Via editor**: nombre `whatsapp`, pegar `index.ts` y `asistente.ts` (dos archivos), y **desactivar "Enforce JWT verification"**. Con la CLI: `supabase functions deploy whatsapp`.
+3. **Edge Functions → Secrets**: `ANTHROPIC_API_KEY` (de console.anthropic.com), `WA_TOKEN`, `WA_PHONE_ID`, `WA_APP_SECRET`, `WA_VERIFY_TOKEN` (una palabra larga cualquiera) y, para el aviso, `WA_AVISO_NUMERO` (celular de Nati, ej. `5492944636977`). Opcionales: `CLAUDE_MODELO` (por defecto `claude-opus-5-5`) y `CLAUDE_ESFUERZO` (`low`).
+4. En la app de Meta: *WhatsApp → Configuration → Webhook*: *Callback URL* `https://<proyecto>.supabase.co/functions/v1/whatsapp`, *Verify token* el mismo `WA_VERIFY_TOKEN`, y suscribir el campo **messages**.
+5. En el panel → Administración → **WhatsApp**: completar la información del consultorio (horarios, pagos, etc.) y tildar quién atiende la bandeja (Nati).
+6. Probar escribiéndole al número desde otro celular.
+
+### Costos y límites
+
+- **Claude**: se paga por uso en console.anthropic.com. Estimación (no medida): entre US$ 0,02 y 0,05 por mensaje del paciente con el modelo por defecto, o sea unos US$ 0,20–0,40 por una conversación completa de turno. Con `CLAUDE_MODELO=claude-haiku-5-5` baja mucho, a costa de respuestas menos finas. Conviene medirlo el primer mes.
+- **Ventana de 24 h de WhatsApp**: solo se le puede escribir libremente a un paciente hasta 24 h después de su último mensaje. Pasado eso, el panel no deja enviar hasta que vuelva a escribir.
+- **No hay recordatorios automáticos** todavía (necesitan plantillas aprobadas por Meta). Es la siguiente mejora natural.
+- **Datos de salud**: las conversaciones pueden tener motivos de consulta. Valen las mismas reglas que las fichas (Ley 25.326): incluirlas en la política de privacidad y en la inscripción ante la AAIP, y definir cuánto tiempo se guardan. Además, el contenido de cada conversación pasa por la API de Claude para generar la respuesta.
+- **Audios**: no los transcribe. En Argentina se usan mucho; se puede sumar después.
