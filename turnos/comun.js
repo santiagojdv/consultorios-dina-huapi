@@ -1,11 +1,14 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
 export const TZ = 'America/Argentina/Buenos_Aires';
-export const configurado = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
-export const sb = configurado ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+/** Sin datos de Supabase en config.js, todo funciona en modo demostración con una base simulada (demo.js). */
+export const demo = !(SUPABASE_URL && SUPABASE_ANON_KEY);
+export const configurado = true;
+export const sb = demo
+  ? (await import('./demo.js')).crearDemo()
+  : (await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm')).createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /** Servicio que entrega el calendario .ics de cada profesional (supabase/functions/calendario). */
-export const URL_FEED = configurado ? `${SUPABASE_URL}/functions/v1/calendario` : '';
+export const URL_FEED = demo ? 'https://demo.invalid/functions/v1/calendario' : `${SUPABASE_URL}/functions/v1/calendario`;
 
 export const DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -87,4 +90,11 @@ export function linkGoogleCalendar({ titulo, inicio, fin, lugar = '', detalle = 
 export function faltaConfig(el) {
   el.replaceChildren(h('div', { class: 'aviso error' },
     'El sistema de turnos todavía no está configurado. Completá turnos/config.js (ver README).'));
+}
+
+// Aviso fijo arriba de cada página mientras se usa la base simulada.
+if (demo) {
+  const reiniciar = h('button', { class: 'btn link', type: 'button', onclick: () => { sb.demo.reiniciar(); location.reload(); } }, 'Reiniciar datos');
+  document.body.prepend(h('div', { class: 'demo-bar', role: 'note' }, h('div', { class: 'wrap' },
+    h('p', {}, h('strong', {}, 'Modo demostración. '), 'Datos de ejemplo que quedan solo en este navegador; no se guarda nada ni se avisa a nadie. ', reiniciar))));
 }

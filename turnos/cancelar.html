@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tu turno · Consultorios Dina Huapi</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#2F5D8A">
+<meta name="theme-color" content="#2B3B5A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap">
 <link rel="stylesheet" href="turnos.css">
 </head>
 <body>
@@ -51,7 +51,7 @@ function mostrar(t, mensaje) {
     cancelado && !mensaje ? h('div', { class: 'aviso info' }, 'Este turno está cancelado.') : null,
     h('div', { class: 'stack' },
       h('p', {}, h('strong', {}, `${diaLargo(t.inicio)}, ${hora(t.inicio)} h`)),
-      h('p', {}, `${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
+      h('p', {}, `${t.servicio ? `${t.servicio} · ` : ''}${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
       h('p', { class: 'muted' }, `${t.consultorio ?? ''} · Paciente: ${t.paciente}`)),
     !cancelado && t.cancelable
       ? h('div', { class: 'row' },

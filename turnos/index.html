@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Turnos · Consultorios Dina Huapi</title>
 <meta name="description" content="Reservá tu turno online con los profesionales de Consultorios Dina Huapi.">
-<meta name="theme-color" content="#2F5D8A">
+<meta name="theme-color" content="#2B3B5A">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icono.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap">
 <link rel="stylesheet" href="turnos.css">
 </head>
 <body>
@@ -34,8 +34,21 @@
     <div class="pros" id="pros"></div>
   </section>
 
+  <section class="card" id="paso-motivo" hidden>
+    <h2>2. ¿Qué necesitás?</h2>
+    <div class="stack" id="servicios"></div>
+    <div class="field"><label for="m-detalle" id="m-detalle-label">Contanos un poco más <span class="muted">(opcional)</span></label><textarea id="m-detalle" rows="2" maxlength="500" placeholder="Ej.: me molesta una muela de abajo al tomar frío."></textarea></div>
+    <div class="grid2">
+      <div class="field"><label for="m-os">Cobertura</label><select id="m-os"><option value="">Particular (sin obra social)</option></select></div>
+      <div class="field" id="m-afil-campo" hidden><label for="m-afil">N.º de afiliado <span class="muted">(opcional)</span></label><input id="m-afil" maxlength="40" autocomplete="off"></div>
+    </div>
+    <div id="precio" class="aviso info" hidden></div>
+    <div id="motivo-estado"></div>
+    <div><button class="btn" type="button" id="m-seguir">Ver horarios</button></div>
+  </section>
+
   <section class="card" id="paso-horario" hidden>
-    <h2>2. Elegí día y horario</h2>
+    <h2>3. Elegí día y horario</h2>
     <div class="semana-nav">
       <button class="btn ghost sm" id="sem-ant" aria-label="Semana anterior">←</button>
       <strong id="sem-titulo"></strong>
@@ -46,15 +59,19 @@
   </section>
 
   <section class="card" id="paso-datos" hidden>
-    <h2>3. Tus datos</h2>
+    <h2>4. Tus datos</h2>
     <p id="resumen" class="aviso info"></p>
     <form id="form" class="stack" novalidate>
       <div class="grid2">
-        <div class="field"><label for="f-nombre">Nombre y apellido</label><input id="f-nombre" name="nombre" autocomplete="name" required minlength="2" maxlength="120"></div>
+        <div class="field"><label for="f-dni">DNI</label><input id="f-dni" inputmode="numeric" autocomplete="off" required maxlength="11" placeholder="Sin puntos"></div>
+        <div class="field"><label for="f-nac">Fecha de nacimiento</label><input id="f-nac" type="date" autocomplete="bday"></div>
+        <div class="field"><label for="f-nombre">Nombre</label><input id="f-nombre" autocomplete="given-name" required maxlength="60"></div>
+        <div class="field"><label for="f-apellido">Apellido</label><input id="f-apellido" autocomplete="family-name" required maxlength="60"></div>
         <div class="field"><label for="f-tel">Teléfono (WhatsApp)</label><input id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" required placeholder="294 1234567"></div>
+        <div class="field"><label for="f-email">Email <span class="muted">(opcional)</span></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200"></div>
       </div>
-      <div class="field"><label for="f-email">Email <span class="muted">(opcional)</span></label><input id="f-email" name="email" type="email" autocomplete="email" maxlength="200"></div>
-      <label class="check"><input type="checkbox" id="f-ok" required><span>Acepto que mis datos de contacto se usen solo para gestionar este turno. No se piden ni guardan datos de salud en esta página (Ley 25.326).</span></label>
+      <p class="small muted">Si ya te atendiste con nosotros, usá el mismo DNI y teléfono: tus datos se actualizan solos.</p>
+      <label class="check"><input type="checkbox" id="f-ok" required><span>Acepto que Consultorios Dina Huapi guarde mis datos, mi cobertura y el motivo de consulta para gestionar mis turnos y mi atención. Solo los ve el profesional que me atiende. Puedo pedir verlos, corregirlos o borrarlos (Ley 25.326).</span></label>
       <div id="form-estado"></div>
       <div class="row"><button class="btn" id="f-enviar" type="submit">Confirmar turno</button><button class="btn link" type="button" id="f-volver">Cambiar horario</button></div>
     </form>
@@ -74,8 +91,10 @@
 import { sb, configurado, faltaConfig, $, h, aviso, mensajeError, hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, linkGoogleCalendar } from './comun.js';
 
 const estado = $('#estado');
-const st = { pros: [], pro: null, semana: null, slot: null };
+const st = { pros: [], pro: null, catalogo: null, servicio: null, semana: null, slot: null };
 const hoy = fechaLocal(new Date());
+const pesos = (n) => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n);
+const OTRO = 'otro';
 
 if (!configurado) {
   faltaConfig(estado);
@@ -91,12 +110,10 @@ async function iniciar() {
   st.pros = data;
   if (!data.length) return aviso(estado, 'Por ahora no hay profesionales con turnos online. Consultá por WhatsApp.', 'info');
 
-  const cont = $('#pros');
-  cont.replaceChildren(...data.map((p) => h('button', {
+  $('#pros').replaceChildren(...data.map((p) => h('button', {
     class: 'pro', type: 'button', 'aria-pressed': 'false', 'data-id': p.id,
     onclick: () => elegirPro(p),
-  }, h('strong', {}, p.nombre), h('span', { class: 'muted small' }, p.especialidad || ' '),
-     h('span', { class: 'muted small' }, `Turnos de ${p.duracion_turno} min`))));
+  }, h('strong', {}, p.nombre), h('span', { class: 'muted small' }, p.especialidad || ' '))));
   $('#paso-pro').hidden = false;
 
   const pedido = new URLSearchParams(location.search).get('p');
@@ -104,14 +121,85 @@ async function iniciar() {
   if (pre) elegirPro(pre);
 }
 
-function elegirPro(p) {
-  st.pro = p; st.slot = null;
+function ocultarDesde(id) {
+  const orden = ['paso-motivo', 'paso-horario', 'paso-datos', 'paso-ok'];
+  for (const x of orden.slice(orden.indexOf(id))) $(`#${x}`).hidden = true;
+}
+
+// ── 2. Qué necesita, cobertura y precio ──
+async function elegirPro(p) {
+  st.pro = p; st.servicio = null; st.slot = null;
   document.querySelectorAll('.pro').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === p.id)));
-  $('#paso-datos').hidden = true; $('#paso-ok').hidden = true;
+  ocultarDesde('paso-motivo');
+  const { data, error } = await sb.rpc('catalogo_publico', { p_profesional: p.id });
+  if (error) return aviso(estado, mensajeError(error));
+  st.catalogo = data;
+
+  const os = $('#m-os');
+  const elegida = os.value;
+  os.replaceChildren(h('option', { value: '' }, 'Particular (sin obra social)'),
+    ...data.obras_sociales.map((o) => h('option', { value: String(o.id) }, o.nombre)));
+  os.value = data.obras_sociales.some((o) => String(o.id) === elegida) ? elegida : '';
+
+  // Servicios agrupados por categoría, y "Otro motivo" al final
+  const grupos = new Map();
+  for (const s of data.servicios) {
+    if (!grupos.has(s.categoria)) grupos.set(s.categoria, []);
+    grupos.get(s.categoria).push(s);
+  }
+  const boton = (s) => h('button', {
+    class: 'pro', type: 'button', 'aria-pressed': 'false', 'data-sid': String(s.id), onclick: () => elegirServicio(s.id),
+  }, h('strong', {}, s.nombre), s.descripcion ? h('span', { class: 'muted small' }, s.descripcion) : null);
+  $('#servicios').replaceChildren(
+    ...[...grupos].map(([cat, lista]) => h('div', { class: 'stack' }, h('span', { class: 'label' }, cat), h('div', { class: 'pros' }, lista.map(boton)))),
+    h('div', { class: 'pros' }, boton({ id: OTRO, nombre: 'Otro motivo o no sé', descripcion: 'Contanos qué te pasa y te damos una consulta.' })));
+  $('#paso-motivo').hidden = false;
+  $('#paso-motivo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function elegirServicio(id) {
+  st.servicio = id;
+  ocultarDesde('paso-horario');
+  document.querySelectorAll('[data-sid]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sid === String(id))));
+  $('#m-detalle-label').firstChild.textContent = id === OTRO ? 'Contanos qué te pasa ' : 'Contanos un poco más ';
+  $('#m-detalle-label').querySelector('span').hidden = id === OTRO;
+  aviso($('#motivo-estado'), '');
+  mostrarPrecio();
+}
+
+const osElegida = () => ($('#m-os').value ? Number($('#m-os').value) : null);
+const nombreOs = () => $('#m-os').selectedOptions[0]?.textContent ?? '';
+
+async function mostrarPrecio() {
+  const caja = $('#precio');
+  $('#m-afil-campo').hidden = !osElegida();
+  if (!st.servicio || st.servicio === OTRO) { caja.hidden = true; return; }
+  const { data, error } = await sb.rpc('cotizar', { p_servicio: st.servicio, p_obra_social: osElegida() });
+  if (error) { caja.hidden = true; return; }
+  const m = data.monto;
+  const textos = {
+    particular: m == null ? 'El valor se informa en la consulta.' : `Valor particular: ${pesos(m)}.`,
+    cubierto: `Cubierto por ${nombreOs()}. Traé tu credencial y DNI.`,
+    copago: `Con ${nombreOs()} abonás un adicional de ${pesos(m)}.`,
+    no_cubre: m == null ? `No tenemos cobertura registrada de ${nombreOs()} para este servicio. El valor se informa en la consulta.`
+                        : `No tenemos cobertura registrada de ${nombreOs()} para este servicio: valor particular ${pesos(m)}.`,
+  };
+  caja.replaceChildren(h('strong', {}, textos[data.modalidad]), h('br'), h('span', { class: 'small' }, 'Valor de referencia a hoy. Si el profesional indica otra práctica, te lo informa antes.'));
+  caja.hidden = false;
+}
+$('#m-os').addEventListener('change', mostrarPrecio);
+
+$('#m-seguir').addEventListener('click', () => {
+  if (!st.servicio) return aviso($('#motivo-estado'), 'Elegí qué necesitás.');
+  if (st.servicio === OTRO && $('#m-detalle').value.trim().length < 3) return aviso($('#motivo-estado'), 'Contanos brevemente qué te pasa.');
+  aviso($('#motivo-estado'), '');
   $('#paso-horario').hidden = false;
   cargarSemana(lunesDe(hoy));
   $('#paso-horario').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+});
+
+// ── 3. Día y horario ──
+const servicioId = () => (st.servicio === OTRO ? null : st.servicio);
 
 async function cargarSemana(lunes) {
   st.semana = lunes;
@@ -122,7 +210,7 @@ async function cargarSemana(lunes) {
   dias.replaceChildren();
   aviso($('#sem-estado'), 'Buscando horarios…', 'info');
 
-  const { data, error } = await sb.rpc('turnos_disponibles', { p_profesional: st.pro.id, p_desde: lunes, p_hasta: domingo });
+  const { data, error } = await sb.rpc('turnos_disponibles', { p_profesional: st.pro.id, p_desde: lunes, p_hasta: domingo, p_servicio: servicioId() });
   if (st.semana !== lunes) return; // el usuario ya cambió de semana
   if (error) return aviso($('#sem-estado'), mensajeError(error));
 
@@ -152,14 +240,18 @@ async function cargarSemana(lunes) {
 $('#sem-ant').addEventListener('click', () => cargarSemana(sumarDias(st.semana, -7)));
 $('#sem-sig').addEventListener('click', () => cargarSemana(sumarDias(st.semana, 7)));
 
+function nombreServicio() {
+  return st.servicio === OTRO ? 'Consulta' : st.catalogo.servicios.find((s) => s.id === st.servicio)?.nombre;
+}
+
 function elegirSlot(s, boton) {
   st.slot = s;
   document.querySelectorAll('.slot').forEach((b) => b.setAttribute('aria-pressed', String(b === boton)));
-  $('#resumen').textContent = `${st.pro.nombre} · ${diaLargo(s.inicio)} a las ${hora(s.inicio)} h`;
+  $('#resumen').textContent = `${nombreServicio()} con ${st.pro.nombre} · ${diaLargo(s.inicio)} a las ${hora(s.inicio)} h`;
   aviso($('#form-estado'), '');
   $('#paso-datos').hidden = false;
   $('#paso-datos').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  $('#f-nombre').focus({ preventScroll: true });
+  $('#f-dni').focus({ preventScroll: true });
 }
 
 $('#f-volver').addEventListener('click', () => {
@@ -167,21 +259,26 @@ $('#f-volver').addEventListener('click', () => {
   $('#paso-horario').scrollIntoView({ behavior: 'smooth' });
 });
 
+// ── 4. Datos del paciente ──
 $('#form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
-  const nombre = $('#f-nombre').value.trim();
-  const tel = $('#f-tel').value.trim();
-  const email = $('#f-email').value.trim();
+  const v = (id) => $(id).value.trim();
+  const paciente = {
+    dni: v('#f-dni').replace(/\D/g, ''), nombre: v('#f-nombre'), apellido: v('#f-apellido'),
+    fecha_nacimiento: v('#f-nac'), telefono: v('#f-tel'), email: v('#f-email'), nro_afiliado: osElegida() ? v('#m-afil') : '',
+  };
   const err = $('#form-estado');
-  if (nombre.length < 2) return aviso(err, 'Completá tu nombre y apellido.');
-  if (tel.replace(/\D/g, '').length < 8) return aviso(err, 'Revisá el teléfono: incluí la característica (ej. 294 1234567).');
-  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return aviso(err, 'Revisá el email.');
+  if (!/^\d{7,9}$/.test(paciente.dni)) return aviso(err, 'Revisá el DNI (solo números, sin puntos).');
+  if (!paciente.nombre || !paciente.apellido) return aviso(err, 'Completá nombre y apellido.');
+  if (paciente.telefono.replace(/\D/g, '').length < 8) return aviso(err, 'Revisá el teléfono: incluí la característica (ej. 294 1234567).');
+  if (paciente.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(paciente.email)) return aviso(err, 'Revisá el email.');
   if (!$('#f-ok').checked) return aviso(err, 'Tenés que aceptar el uso de tus datos para reservar.');
 
   const btn = $('#f-enviar');
   btn.disabled = true; btn.textContent = 'Reservando…';
   const { data, error } = await sb.rpc('reservar_turno', {
-    p_profesional: st.pro.id, p_inicio: st.slot.inicio, p_nombre: nombre, p_telefono: tel, p_email: email,
+    p_profesional: st.pro.id, p_inicio: st.slot.inicio, p_paciente: paciente,
+    p_servicio: servicioId(), p_obra_social: osElegida(), p_detalle: $('#m-detalle').value.trim(),
   });
   btn.disabled = false; btn.textContent = 'Confirmar turno';
 
@@ -193,16 +290,25 @@ $('#form').addEventListener('submit', async (ev) => {
   mostrarConfirmacion(data);
 });
 
+function textoPrecio(t) {
+  if (t.modalidad === 'cubierto') return `Cubierto por ${nombreOs()}`;
+  if (t.monto == null) return '';
+  return t.modalidad === 'copago' ? `Adicional ${nombreOs()}: ${pesos(t.monto)}` : `Valor particular: ${pesos(t.monto)}`;
+}
+
 function mostrarConfirmacion(t) {
   const linkCancelar = new URL(`cancelar.html?t=${t.token}`, location.href).href;
+  // El paciente no ve la duración del turno: en su calendario se agenda solo la hora de inicio (30 min).
+  const fin = new Date(new Date(t.inicio).getTime() + 30 * 60000).toISOString();
   $('#ok-detalle').replaceChildren(
     h('p', {}, h('strong', {}, `${diaLargo(t.inicio)}, ${hora(t.inicio)} h`)),
-    h('p', {}, `${t.profesional}${t.especialidad ? ` · ${t.especialidad}` : ''}`),
+    h('p', {}, `${t.servicio ?? 'Consulta'} · ${t.profesional}`),
+    textoPrecio(t) ? h('p', {}, textoPrecio(t)) : null,
     h('p', { class: 'muted' }, `${t.consultorio ?? ''} · Consultorios Dina Huapi`),
   );
   $('#ok-acciones').replaceChildren(
     h('a', { class: 'btn', target: '_blank', rel: 'noopener', href: linkGoogleCalendar({
-      titulo: `Turno con ${t.profesional}`, inicio: t.inicio, fin: t.fin,
+      titulo: `Turno con ${t.profesional}`, inicio: t.inicio, fin,
       lugar: 'Consultorios Dina Huapi, Dina Huapi, Río Negro',
       detalle: `Para cancelar: ${linkCancelar}`,
     }) }, 'Agendar en Google Calendar'),
@@ -212,7 +318,7 @@ function mostrarConfirmacion(t) {
       catch { prompt('Copiá este link:', linkCancelar); }
     } }, 'Copiar link'),
   );
-  $('#paso-pro').hidden = true; $('#paso-horario').hidden = true; $('#paso-datos').hidden = true;
+  for (const x of ['paso-pro', 'paso-motivo', 'paso-horario', 'paso-datos']) $(`#${x}`).hidden = true;
   $('#paso-ok').hidden = false;
   $('#form').reset();
   window.scrollTo({ top: 0, behavior: 'smooth' });

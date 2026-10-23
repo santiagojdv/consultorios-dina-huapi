@@ -1,13 +1,17 @@
 import {
-  sb, configurado, faltaConfig, $, h, aviso, mensajeError, DIAS,
+  sb, demo, configurado, faltaConfig, $, h, aviso, mensajeError, DIAS,
   hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp, URL_FEED,
 } from './comun.js';
+import { leerCsv, leerExcel, interpretar, aCsv, numero } from './planilla.js';
 
 const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [], cal: { desde: null, dias: null, box: null, datos: [] } };
 const hoy = () => fechaLocal(new Date());
 const ddmm = (iso) => iso.split('-').reverse().slice(0, 2).join('/');
 const ddmmaa = (iso) => iso.split('-').reverse().join('/');
 const hhmm = (t) => t.slice(0, 5);
+const pesos = (n) => (n == null ? '—' : new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(n));
+const MODALIDAD = { particular: 'Particular', cubierto: 'Cubierto', copago: 'Adicional', no_cubre: 'No cubre' };
+const mesTexto = (iso) => new Intl.DateTimeFormat('es-AR', { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso.slice(0, 7)}-15T12:00:00Z`));
 const finDeMes = (iso, masMeses = 0) => {
   const [y, m] = iso.split('-').map(Number);
   return new Date(Date.UTC(y, m + masMeses, 0)).toISOString().slice(0, 10);
@@ -44,6 +48,7 @@ async function entrar(sesion) {
   aviso($('#estado'), '');
   $('#login').hidden = true; $('#app').hidden = false; $('#sesion').hidden = false;
   $('#quien').textContent = yo.nombre || yo.email;
+  cargarMisServicios();
   // Un admin ve la vista de administración; si además atiende (tiene alquileres), puede alternar.
   st.atiende = !yo.es_admin;
   if (yo.es_admin) {
@@ -74,6 +79,14 @@ function aplicarVista(vista) {
 }
 
 $('#cambiar-vista').addEventListener('click', () => aplicarVista(st.vista === 'admin' ? 'pro' : 'admin'));
+
+// En la demostración no se mandan mails: se entra directo con un usuario de ejemplo.
+if (demo) {
+  const entrarComo = (id, texto) => h('button', { class: 'btn ghost sm', type: 'button', onclick: () => sb.demo.entrarComo(id) }, texto);
+  $('#login').append(h('div', { class: 'demo-login' },
+    h('p', { class: 'small muted' }, 'En la demostración no se mandan mails. Entrá directo con un usuario de ejemplo:'),
+    h('div', { class: 'row' }, entrarComo('demo-nati', 'Dra. Natalia Cárdenas (profesional)'), entrarComo('demo-admin', 'Administración'))));
+}
 
 $('#login-form').addEventListener('submit', async (ev) => {
   ev.preventDefault();
@@ -108,6 +121,7 @@ document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => tab.addEventLis
   if (tab.dataset.tab === 'calendario') cargarCalendario(st.cal.desde);
   if (tab.dataset.tab === 'perfil') cargarPerfil();
   if (['reservas', 'profesionales', 'consultorios'].includes(tab.dataset.tab)) cargarAdmin();
+  if (tab.dataset.tab === 'precios') cargarPrecios();
 }));
 
 // ───────────────────────── Agenda ─────────────────────────
@@ -120,7 +134,7 @@ async function cargarSemana(lunes) {
   aviso(est, 'Cargando…', 'info');
 
   const [turnos, libres] = await Promise.all([
-    sb.from('turnos').select('*')
+    sb.from('turnos').select('*, servicios(nombre), obras_sociales(nombre), pacientes(dni, fecha_nacimiento, nro_afiliado)')
       .gte('inicio', instante(lunes, '00:00')).lt('inicio', instante(sumarDias(lunes, 7), '00:00'))
       .order('inicio'),
     $('#ag-libres').checked
@@ -159,11 +173,26 @@ function vistaTurno(t) {
   return h('div', { class: `turno${cancelado ? ' cancelado' : ''}` },
     h('span', { class: 'hh' }, `${hora(t.inicio)}–${hora(t.fin)} `, t.origen === 'online' ? h('span', { class: 'badge' }, 'online') : null),
     h('span', { class: 'nom' }, t.paciente_nombre),
+    t.servicios ? h('span', { class: 'small' }, t.servicios.nombre) : null,
+    t.detalle ? h('span', { class: 'muted small' }, `“${t.detalle}”`) : null,
+    t.obras_sociales || t.modalidad ? h('span', { class: 'muted small' }, [
+      t.obras_sociales?.nombre ?? 'Particular',
+      t.pacientes?.nro_afiliado ? `n.º ${t.pacientes.nro_afiliado}` : null,
+      t.modalidad === 'cubierto' ? 'cubierto' : t.modalidad === 'copago' ? `adicional ${pesos(t.monto_estimado)}` : t.monto_estimado != null ? `particular ${pesos(t.monto_estimado)}` : null,
+    ].filter(Boolean).join(' · ')) : null,
+    t.pacientes ? h('span', { class: 'muted small' }, `DNI ${t.pacientes.dni}${t.pacientes.fecha_nacimiento ? ` · ${edad(t.pacientes.fecha_nacimiento)} años` : ''}`) : null,
+    t.datos_distintos ? h('span', { class: 'small', style: 'color:#8a5a00' }, 'Revisar: el teléfono no coincide con la ficha de ese DNI') : null,
     t.nota ? h('span', { class: 'muted small' }, t.nota) : null,
     h('span', { class: 'acciones' },
       h('a', { href: linkWhatsApp(t.paciente_telefono, texto), target: '_blank', rel: 'noopener' }, cancelado ? 'Avisar por WhatsApp' : 'WhatsApp'),
       cancelado ? null : h('a', { href: `tel:${t.paciente_telefono}` }, 'Llamar'),
       cancelado ? null : h('button', { class: 'btn link', type: 'button', onclick: () => cancelarTurno(t) }, 'Cancelar')));
+}
+
+function edad(nac) {
+  const [y, m, d] = nac.split('-').map(Number);
+  const [hy, hm, hd] = hoy().split('-').map(Number);
+  return hy - y - (hm < m || (hm === m && hd < d) ? 1 : 0);
 }
 
 // Turnos uno debajo del otro; los horarios libres consecutivos, juntos como chips.
@@ -209,11 +238,16 @@ function abrirTurno(fecha = hoy(), hh = '') {
   $('#t-fecha').value = fecha;
   $('#t-hora').value = hh;
   $('#t-dur').value = st.yo.duracion_turno;
+  $('#t-serv').replaceChildren(h('option', { value: '' }, '—'), ...(st.misServicios ?? []).map((x) => h('option', { value: String(x.id) }, x.nombre)));
   aviso($('#turno-estado'), '');
   dlg.showModal();
   (hh ? $('#t-nombre') : $('#t-hora')).focus();
 }
 $('#nuevo-turno').addEventListener('click', () => abrirTurno());
+$('#t-serv').addEventListener('change', () => {
+  const x = (st.misServicios ?? []).find((y) => String(y.id) === $('#t-serv').value);
+  $('#t-dur').value = x ? x.duracion : st.yo.duracion_turno;
+});
 $('#t-cerrar').addEventListener('click', () => dlg.close());
 
 $('#turno-form').addEventListener('submit', async (ev) => {
@@ -230,6 +264,7 @@ $('#turno-form').addEventListener('submit', async (ev) => {
     profesional_id: st.yo.id, inicio, fin,
     paciente_nombre: nombre, paciente_telefono: tel,
     paciente_email: $('#t-email').value.trim().toLowerCase(), nota: $('#t-nota').value.trim(),
+    servicio_id: $('#t-serv').value ? Number($('#t-serv').value) : null,
   });
   if (error) return aviso(msg, mensajeError(error));
   dlg.close();
@@ -399,7 +434,8 @@ $('#cal-box').addEventListener('change', (e) => { st.cal.box = e.target.value; d
 
 // ───────────────────────── Perfil ─────────────────────────
 
-const CAMPOS = { nombre: 'pf-nombre', especialidad: 'pf-esp', telefono: 'pf-tel', duracion_turno: 'pf-dur',
+const CAMPOS = { nombre: 'pf-nombre', especialidad: 'pf-esp', bio: 'pf-bio', web: 'pf-web', foto: 'pf-foto',
+  telefono: 'pf-tel', duracion_turno: 'pf-dur',
   anticipacion_horas: 'pf-ant', ventana_dias: 'pf-ven', aviso_cancelacion_horas: 'pf-canc' };
 
 async function cargarPerfil() {
@@ -408,6 +444,7 @@ async function cargarPerfil() {
   $('#pf-pub').checked = yo.publico;
   $('#mi-link').textContent = new URL(`index.html?p=${yo.id}`, location.href).href;
   cargarFeed();
+  cargarMisServicios();
 
   const [alq, aus] = await Promise.all([
     sb.from('alquileres').select('*, consultorios(nombre)').eq('profesional_id', yo.id)
@@ -430,6 +467,43 @@ async function cargarPerfil() {
       if (error) return aviso($('#aus-estado'), mensajeError(error));
       cargarPerfil();
     } }, 'Quitar'))));
+}
+
+// ── Mis servicios ──
+
+async function cargarMisServicios() {
+  const [sv, ps] = await Promise.all([
+    sb.from('servicios').select('*').eq('activo', true).order('orden').order('categoria').order('nombre'),
+    sb.from('profesional_servicios').select('*').eq('profesional_id', st.yo.id),
+  ]);
+  const caja = $('#mis-servicios');
+  const error = sv.error || ps.error;
+  if (error) return aviso($('#ms-estado'), mensajeError(error));
+  const mio = new Map(ps.data.map((x) => [x.servicio_id, x]));
+  st.misServicios = sv.data.filter((x) => mio.has(x.id)).map((x) => ({ id: x.id, nombre: x.nombre, duracion: mio.get(x.id).duracion_min || x.duracion_min }));
+  if (!sv.data.length) return caja.replaceChildren(h('p', { class: 'muted small' }, 'Todavía no hay servicios cargados. Los carga la administración.'));
+  caja.replaceChildren(...sv.data.map((x) => {
+    const p = mio.get(x.id);
+    const dur = h('input', { type: 'number', min: '10', max: '240', step: '5', value: p?.duracion_min ?? '', placeholder: String(x.duracion_min),
+      style: 'width:5.5rem', 'aria-label': `Duración de ${x.nombre} en minutos`, disabled: p ? null : '' });
+    dur.addEventListener('change', async () => {
+      const v = dur.value ? Number(dur.value) : null;
+      const { error: e } = await sb.from('profesional_servicios').update({ duracion_min: v }).eq('profesional_id', st.yo.id).eq('servicio_id', x.id);
+      aviso($('#ms-estado'), e ? mensajeError(e) : 'Guardado.', e ? 'error' : 'ok');
+      cargarMisServicios();
+    });
+    const chk = h('input', { type: 'checkbox', checked: p ? '' : null });
+    chk.addEventListener('change', async () => {
+      const { error: e } = chk.checked
+        ? await sb.from('profesional_servicios').insert({ profesional_id: st.yo.id, servicio_id: x.id })
+        : await sb.from('profesional_servicios').delete().eq('profesional_id', st.yo.id).eq('servicio_id', x.id);
+      aviso($('#ms-estado'), e ? mensajeError(e) : '', e ? 'error' : 'ok');
+      cargarMisServicios();
+    });
+    return h('div', { class: 'item' },
+      h('label', { class: 'check' }, chk, h('span', {}, h('strong', {}, x.nombre), h('br'), h('span', { class: 'small muted' }, `${x.categoria}${x.reservable_online ? '' : ' · solo lo agendás vos'}`))),
+      h('label', { class: 'small muted row', style: 'gap:.4rem' }, dur, 'min'));
+  }));
 }
 
 // ── Link de calendario (.ics) ──
@@ -477,6 +551,8 @@ $('#perfil-form').addEventListener('submit', async (ev) => {
   }));
   cambios.publico = $('#pf-pub').checked;
   if (cambios.publico && !cambios.nombre) return aviso(msg, 'Para aceptar turnos online completá tu nombre.');
+  if (cambios.web && !/^(https:\/\/\S+|[a-z0-9_-]+\/)$/.test(cambios.web)) return aviso(msg, 'El sitio web tiene que empezar con https://');
+  if (cambios.foto && !/^(https:\/\/\S+|img\/[\w./-]+)$/.test(cambios.foto)) return aviso(msg, 'El link de la foto tiene que empezar con https://');
   const { data, error } = await sb.from('profesionales').update(cambios).eq('id', st.yo.id).select().single();
   if (error) return aviso(msg, mensajeError(error));
   st.yo = data;
@@ -688,4 +764,236 @@ $('#box-form').addEventListener('submit', async (ev) => {
   $('#box-nombre').value = '';
   aviso($('#box-estado'), '');
   cargarAdmin();
+});
+
+// ───────────────────────── Servicios y precios (admin) ─────────────────────────
+
+const mesActual = () => hoy().slice(0, 7);
+const pr = { servicios: [], obras: [], aranceles: [], ipc: [], ajustes: [], pendientes: null };
+
+async function cargarPrecios() {
+  const [sv, os, ar, ip, aj] = await Promise.all([
+    sb.from('servicios').select('*').order('orden').order('categoria').order('nombre'),
+    sb.from('obras_sociales').select('*').order('nombre'),
+    sb.from('aranceles_vigentes').select('*').order('categoria').order('servicio'),
+    sb.from('ipc').select('*').order('periodo'),
+    sb.from('ajustes').select('*'),
+  ]);
+  const error = sv.error || os.error || ar.error || ip.error || aj.error;
+  if (error) return aviso($('#pr-estado'), mensajeError(error));
+  Object.assign(pr, { servicios: sv.data, obras: os.data, aranceles: ar.data, ipc: ip.data, ajustes: aj.data });
+  dibujarIpc();
+  dibujarPrecios();
+  dibujarServicios();
+  dibujarObras();
+}
+
+function dibujarIpc() {
+  const ult = pr.ipc.at(-1);
+  const bases = [...new Set(pr.aranceles.filter((a) => a.ajusta_ipc).map((a) => a.periodo_base))].sort();
+  const factor = (desde) => pr.ipc.filter((x) => x.periodo >= desde).reduce((f, x) => f * (1 + Number(x.variacion) / 100), 1);
+  $('#ipc-resumen').replaceChildren(ult
+    ? `Último IPC cargado: ${mesTexto(ult.periodo)} (${String(ult.variacion).replace('.', ',')} %, ${ult.fuente}).`
+      + (bases.length ? ` Ajuste acumulado desde ${mesTexto(bases[0])}: ${((factor(bases[0]) - 1) * 100).toFixed(1).replace('.', ',')} %.` : '')
+    : 'Todavía no hay meses de IPC cargados: los precios se informan tal cual se cargaron.');
+  $('#ipc-red').value = pr.ajustes.find((x) => x.clave === 'redondeo')?.valor ?? '100';
+  if (!$('#ipc-mes').value) {
+    const [y, m] = (ult?.periodo ?? `${mesActual()}-01`).split('-').map(Number);
+    $('#ipc-mes').value = new Date(Date.UTC(y, ult ? m : m - 2, 1)).toISOString().slice(0, 7);
+  }
+  $('#ipc-lista').replaceChildren(...pr.ipc.slice(-12).reverse().map((x) => h('div', { class: 'item' },
+    h('div', {}, h('strong', {}, mesTexto(x.periodo)), ` · ${String(x.variacion).replace('.', ',')} %`),
+    h('span', { class: 'small muted' }, x.fuente))));
+}
+
+$('#ipc-form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const msg = $('#ipc-estado');
+  let v;
+  try { v = numero($('#ipc-var').value); } catch { v = null; }
+  const red = Number($('#ipc-red').value);
+  const actual = pr.ajustes.find((x) => x.clave === 'redondeo')?.valor;
+  if (red >= 1 && String(red) !== actual) {
+    const { error } = await sb.from('ajustes').update({ valor: String(red) }).eq('clave', 'redondeo');
+    if (error) return aviso(msg, mensajeError(error));
+  }
+  if ($('#ipc-var').value.trim()) {
+    if (v == null || !$('#ipc-mes').value) return aviso(msg, 'Completá el mes y la variación (ej. 2,1).');
+    const { error } = await sb.rpc('cargar_ipc', { p_periodo: `${$('#ipc-mes').value}-01`, p_variacion: v, p_fuente: 'manual' });
+    if (error) return aviso(msg, mensajeError(error));
+    $('#ipc-var').value = ''; $('#ipc-mes').value = '';
+  }
+  aviso(msg, 'Guardado. Los precios ya están actualizados.', 'ok');
+  cargarPrecios();
+});
+
+$('#ipc-buscar').addEventListener('click', async (ev) => {
+  const msg = $('#ipc-estado');
+  ev.target.disabled = true;
+  aviso(msg, 'Consultando INDEC…', 'info');
+  const { data, error } = await sb.functions.invoke('ipc', { body: {} });
+  ev.target.disabled = false;
+  if (error) return aviso(msg, mensajeError(error));
+  aviso(msg, data.cargados.length
+    ? `Listo: se cargó ${data.cargados.map((x) => `${mesTexto(x.periodo)} (${String(x.variacion).replace('.', ',')} %)`).join(', ')}.`
+    : 'No hay meses nuevos publicados todavía.', 'ok');
+  cargarPrecios();
+});
+
+$('#ipc-rebasar').addEventListener('click', async () => {
+  if (!confirm('Los montos base pasan a ser los precios de hoy, y desde ahí se ajustan solo los meses de IPC nuevos. Sirve cuando se revisa la lista completa. ¿Seguir?')) return;
+  const { data, error } = await sb.rpc('rebasar_aranceles');
+  aviso($('#ipc-estado'), error ? mensajeError(error) : `Listo: ${data} precios tomados como nueva base.`, error ? 'error' : 'ok');
+  cargarPrecios();
+});
+
+function dibujarPrecios() {
+  const sel = $('#pr-cob');
+  const elegido = sel.value || 'particular';
+  sel.replaceChildren(h('option', { value: 'particular' }, 'Particular'), h('option', { value: 'todas' }, 'Todas las coberturas'),
+    ...pr.obras.map((o) => h('option', { value: String(o.id) }, o.nombre)));
+  sel.value = elegido;
+  const filas = pr.aranceles.filter((a) => elegido === 'todas' || (elegido === 'particular' ? a.obra_social_id == null : String(a.obra_social_id) === elegido));
+  $('#pr-tabla').replaceChildren(
+    h('thead', {}, h('tr', {}, ['Servicio', elegido === 'todas' ? 'Cobertura' : null, 'Paciente paga', 'Base', 'Hoy', 'Obra social', ''].filter((x) => x !== null).map((x) => h('th', {}, x)))),
+    h('tbody', {}, filas.length ? filas.map((a) => h('tr', {},
+      h('td', {}, a.servicio, h('br'), h('span', { class: 'small muted' }, a.categoria)),
+      elegido === 'todas' ? h('td', {}, a.obra_social) : null,
+      h('td', {}, MODALIDAD[a.modalidad]),
+      h('td', {}, ['particular', 'copago'].includes(a.modalidad) ? pesos(a.monto) : '—', h('br'), h('span', { class: 'small muted' }, `${mesTexto(a.periodo_base)}${a.ajusta_ipc ? '' : ' · fijo'}`)),
+      h('td', {}, h('strong', {}, ['particular', 'copago'].includes(a.modalidad) ? pesos(a.monto_hoy) : '—')),
+      h('td', {}, a.valor_os_hoy == null ? '—' : pesos(a.valor_os_hoy)),
+      h('td', {}, h('button', { class: 'btn link', type: 'button', onclick: () => abrirPrecio(a) }, 'Editar')))) : [h('tr', {}, h('td', { colspan: '7' }, 'Sin precios cargados para esta cobertura.'))]));
+}
+$('#pr-cob').addEventListener('change', dibujarPrecios);
+
+const dlgPrecio = $('#dlg-precio');
+function abrirPrecio(a = null) {
+  $('#pf2-serv').replaceChildren(...pr.servicios.map((x) => h('option', { value: String(x.id) }, x.nombre)));
+  $('#pf2-cob').replaceChildren(h('option', { value: '' }, 'Particular'), ...pr.obras.map((o) => h('option', { value: String(o.id) }, o.nombre)));
+  const cob = $('#pr-cob').value;
+  $('#pf2-serv').value = a ? String(a.servicio_id) : $('#pf2-serv').value;
+  $('#pf2-cob').value = a ? (a.obra_social_id == null ? '' : String(a.obra_social_id)) : (/^\d+$/.test(cob) ? cob : '');
+  $('#pf2-mod').value = a?.modalidad ?? ($('#pf2-cob').value ? 'cubierto' : 'particular');
+  $('#pf2-monto').value = a && ['particular', 'copago'].includes(a.modalidad) ? a.monto_hoy : '';
+  $('#pf2-vos').value = a?.valor_os_hoy ?? '';
+  $('#pf2-mes').value = mesActual();
+  $('#pf2-ipc').checked = a ? a.ajusta_ipc : true;
+  $('#pf2-serv').disabled = $('#pf2-cob').disabled = Boolean(a);
+  aviso($('#precio-estado'), a ? 'Los montos se muestran a valores de hoy y se guardan con el mes actual como base.' : '', 'info');
+  dlgPrecio.showModal();
+}
+$('#pr-nuevo').addEventListener('click', () => abrirPrecio());
+$('#pf2-cerrar').addEventListener('click', () => dlgPrecio.close());
+
+$('#precio-form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const msg = $('#precio-estado');
+  const os = $('#pf2-cob').value;
+  const mod = $('#pf2-mod').value;
+  if (!os && mod !== 'particular') return aviso(msg, 'Sin obra social, la modalidad es "Particular".');
+  if (os && mod === 'particular') return aviso(msg, 'Con obra social elegí cubierto, adicional o no cubre.');
+  let monto, vos;
+  try { monto = numero($('#pf2-monto').value); vos = numero($('#pf2-vos').value); } catch (e) { return aviso(msg, e.message); }
+  if (['particular', 'copago'].includes(mod) && monto == null) return aviso(msg, 'Completá el monto que paga el paciente.');
+  const serv = pr.servicios.find((x) => String(x.id) === $('#pf2-serv').value);
+  const { error } = await sb.rpc('importar_aranceles', { p_filas: [{
+    servicio: serv.nombre, obra_social: os ? pr.obras.find((o) => String(o.id) === os).nombre : '', modalidad: mod,
+    monto: monto ?? '', valor_os: vos ?? '', periodo_base: `${$('#pf2-mes').value}-01`, ajusta_ipc: $('#pf2-ipc').checked,
+  }] });
+  if (error) return aviso(msg, mensajeError(error));
+  dlgPrecio.close();
+  cargarPrecios();
+});
+
+// ── Planilla ──
+
+function descargar(nombre, texto) {
+  const a = h('a', { href: URL.createObjectURL(new Blob([texto], { type: 'text/csv;charset=utf-8' })), download: nombre });
+  document.body.append(a); a.click(); a.remove();
+}
+
+$('#pl-plantilla').addEventListener('click', () => descargar('plantilla-precios.csv', aCsv([
+  { servicio: 'Primera consulta y diagnóstico', categoria: 'Consultas', descripcion: 'Revisión completa y plan de tratamiento.', duracion_min: 40, reservable_online: true, obra_social: '', modalidad: 'particular', monto: 30000, valor_os: '', periodo_base: `${mesActual()}-01`, ajusta_ipc: true },
+  { servicio: 'Primera consulta y diagnóstico', obra_social: 'IPROSS', modalidad: 'cubierto', valor_os: 18000, periodo_base: `${mesActual()}-01`, ajusta_ipc: false },
+])));
+
+$('#pl-exportar').addEventListener('click', () => {
+  const sv = new Map(pr.servicios.map((x) => [x.id, x]));
+  descargar(`precios-${hoy()}.csv`, aCsv(pr.aranceles.map((a) => {
+    const s = sv.get(a.servicio_id);
+    return { servicio: a.servicio, categoria: a.categoria, descripcion: s?.descripcion, duracion_min: s?.duracion_min, reservable_online: s?.reservable_online,
+      obra_social: a.obra_social_id == null ? '' : a.obra_social, modalidad: a.modalidad, monto: a.monto, valor_os: a.valor_os,
+      periodo_base: a.periodo_base, ajusta_ipc: a.ajusta_ipc, monto_hoy: a.monto_hoy };
+  }), [...['servicio', 'categoria', 'descripcion', 'duracion_min', 'reservable_online', 'obra_social', 'modalidad', 'monto', 'valor_os', 'periodo_base', 'ajusta_ipc'], 'monto_hoy']));
+});
+
+$('#pl-archivo').addEventListener('change', async (ev) => {
+  const archivo = ev.target.files[0];
+  ev.target.value = '';
+  if (!archivo) return;
+  const msg = $('#pl-estado');
+  try {
+    const matriz = /\.xlsx$/i.test(archivo.name) ? await leerExcel(await archivo.arrayBuffer()) : leerCsv(await archivo.text());
+    const { filas, errores } = interpretar(matriz);
+    pr.pendientes = errores.length ? null : filas;
+    $('#pl-confirmar').hidden = !pr.pendientes;
+    if (errores.length) return aviso(msg, `No se importó nada. Corregí y volvé a subir: ${errores.slice(0, 6).join(' · ')}${errores.length > 6 ? ` (y ${errores.length - 6} más)` : ''}`);
+    const servs = new Set(filas.map((f) => f.servicio.toLowerCase())).size;
+    const obras = new Set(filas.filter((f) => f.obra_social).map((f) => f.obra_social.toLowerCase())).size;
+    aviso(msg, `${archivo.name}: ${filas.length} filas, ${servs} servicios, ${obras} obras sociales. ¿Importar?`, 'info');
+  } catch (e) {
+    aviso(msg, `No se pudo leer el archivo: ${e.message}`);
+  }
+});
+$('#pl-cancelar').addEventListener('click', () => { pr.pendientes = null; $('#pl-confirmar').hidden = true; aviso($('#pl-estado'), ''); });
+$('#pl-importar').addEventListener('click', async () => {
+  const { data, error } = await sb.rpc('importar_aranceles', { p_filas: pr.pendientes });
+  $('#pl-confirmar').hidden = true; pr.pendientes = null;
+  aviso($('#pl-estado'), error ? mensajeError(error) : `Listo: ${data.filas} filas importadas.`, error ? 'error' : 'ok');
+  cargarPrecios();
+});
+
+// ── Servicios y obras sociales ──
+
+function dibujarServicios() {
+  $('#sv-lista').replaceChildren(...pr.servicios.map((x) => {
+    const dur = h('input', { type: 'number', min: '10', max: '240', step: '5', value: x.duracion_min, style: 'width:5.5rem', 'aria-label': `Duración de ${x.nombre}` });
+    dur.addEventListener('change', () => editarServicio(x, { duracion_min: Number(dur.value) }));
+    return h('div', { class: 'item' },
+      h('div', {}, h('strong', {}, x.nombre), x.activo ? '' : h('span', { class: 'small muted' }, ' · inactivo'), h('br'),
+        h('span', { class: 'small muted' }, `${x.categoria}${x.descripcion ? ` · ${x.descripcion}` : ''}`)),
+      h('div', { class: 'row' },
+        h('label', { class: 'small muted row', style: 'gap:.4rem' }, dur, 'min'),
+        h('button', { class: 'btn link', type: 'button', onclick: () => editarServicio(x, { reservable_online: !x.reservable_online }) }, x.reservable_online ? 'Online: sí' : 'Online: no'),
+        h('button', { class: 'btn link', type: 'button', onclick: () => editarServicio(x, { activo: !x.activo }) }, x.activo ? 'Desactivar' : 'Activar')));
+  }));
+  if (!pr.servicios.length) $('#sv-lista').replaceChildren(h('p', { class: 'muted small' }, 'Sin servicios. Se crean al importar la planilla.'));
+}
+
+async function editarServicio(x, cambios) {
+  const { error } = await sb.from('servicios').update(cambios).eq('id', x.id);
+  aviso($('#sv-estado'), error ? mensajeError(error) : '');
+  cargarPrecios();
+}
+
+function dibujarObras() {
+  $('#os-lista').replaceChildren(...pr.obras.map((x) => h('div', { class: 'item' },
+    h('div', {}, h('strong', {}, x.nombre), x.activo ? '' : h('span', { class: 'small muted' }, ' · no se ofrece al reservar')),
+    h('button', { class: 'btn link', type: 'button', onclick: async () => {
+      const { error } = await sb.from('obras_sociales').update({ activo: !x.activo }).eq('id', x.id);
+      aviso($('#os-estado'), error ? mensajeError(error) : '');
+      cargarPrecios();
+    } }, x.activo ? 'Desactivar' : 'Activar'))));
+}
+
+$('#os-form').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const nombre = $('#os-nombre').value.trim();
+  if (!nombre) return;
+  const { error } = await sb.from('obras_sociales').insert({ nombre });
+  if (error) return aviso($('#os-estado'), /duplicate|unique/i.test(error.message) ? 'Ya existe esa obra social.' : mensajeError(error));
+  $('#os-nombre').value = '';
+  aviso($('#os-estado'), '');
+  cargarPrecios();
 });

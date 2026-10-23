@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vista previa · Natalia Cárdenas</title>
+<meta name="theme-color" content="#2B3B5A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@400;500&display=swap">
+<style>
+:root { --navy: #2B3B5A; --petrol: #127285; --graphite: #4B5668; --mist: #D5DDE2; --soft: #F4F7F8; --aqua: #8FD0DC; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: Poppins, system-ui, sans-serif; background: var(--soft); color: var(--graphite); display: flex; flex-direction: column; }
+.bar { flex: none; display: flex; align-items: center; gap: 1rem; padding: .6rem 1rem; background: var(--navy); color: #fff; }
+.bar .tit { font-family: 'Cormorant Garamond', serif; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 1.05rem; white-space: nowrap; }
+.bar .tit small { display: block; font-family: Poppins, sans-serif; font-weight: 400; letter-spacing: .14em; font-size: .6rem; color: var(--aqua); }
+.tabs { display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button, .tools button { font: inherit; font-size: .8rem; border: 0; cursor: pointer; white-space: nowrap; border-radius: 999px; padding: .45rem .9rem; background: transparent; color: rgba(255,255,255,.78); }
+.tabs button:hover { color: #fff; background: rgba(255,255,255,.08); }
+.tabs button[aria-current="true"] { background: #fff; color: var(--navy); }
+.tools { display: flex; gap: .25rem; align-items: center; }
+.tools button { border: 1px solid rgba(255,255,255,.25); }
+.tools button[aria-pressed="true"] { background: var(--aqua); color: var(--navy); border-color: var(--aqua); }
+.stage { flex: 1; min-height: 0; display: flex; justify-content: center; align-items: stretch; }
+.stage iframe { border: 0; width: 100%; height: 100%; background: #fff; display: block; }
+body.cel .stage { padding: 1.5rem; background: radial-gradient(circle at 50% 0, #E6EEF1, var(--soft) 60%); }
+body.cel .stage iframe { width: 390px; max-height: 844px; border-radius: 38px; box-shadow: 0 0 0 10px #1d2840, 0 30px 60px -20px rgba(43,59,90,.5); }
+@media (max-width: 520px) { .bar .tit { display: none; } .tabs button { padding: .45rem .7rem; } }
+@media (max-width: 760px) { .tools .dev, .bar .tit small { display: none; } .bar { gap: .5rem; padding: .5rem .6rem; } .bar .tit { font-size: .9rem; } }
+.toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 1rem); opacity: 0; transition: .25s; background: var(--navy); color: #fff; padding: .7rem 1.1rem; border-radius: 12px; font-size: .85rem; pointer-events: none; max-width: calc(100% - 2rem); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+dialog { border: 0; border-radius: 24px; padding: 0; max-width: 30rem; width: calc(100% - 2rem); color: var(--graphite); box-shadow: 0 40px 80px -30px rgba(43,59,90,.6); }
+dialog::backdrop { background: rgba(43,59,90,.55); backdrop-filter: blur(3px); }
+.hola { padding: 2rem 1.8rem 1.6rem; display: grid; gap: 1rem; }
+.hola h1 { margin: 0; font-family: 'Cormorant Garamond', serif; font-weight: 600; color: var(--navy); text-transform: uppercase; letter-spacing: .04em; font-size: 2rem; line-height: 1.05; }
+.hola h1 em { font-style: normal; color: var(--petrol); }
+.hola p { margin: 0; line-height: 1.6; font-size: .93rem; }
+.hola ol { margin: 0; padding: 0; list-style: none; display: grid; gap: .55rem; counter-reset: p; }
+.hola li { counter-increment: p; display: grid; grid-template-columns: 2rem 1fr; gap: .6rem; align-items: start; font-size: .9rem; line-height: 1.5; background: var(--soft); border-radius: 14px; padding: .7rem .8rem; }
+.hola li::before { content: counter(p); display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--navy); color: #fff; font-size: .85rem; }
+.hola li strong { color: var(--navy); font-weight: 500; }
+.hola .nota { font-size: .78rem; color: #6b7585; }
+.hola button { font: inherit; font-weight: 500; border: 0; border-radius: 999px; padding: .85rem 1.4rem; background: var(--petrol); color: #fff; cursor: pointer; justify-self: start; }
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="tit">Vista previa<small>NATALIA CÁRDENAS</small></div>
+  <nav class="tabs" aria-label="Secciones">
+    <button data-ir="nati/index.html">Tu página</button>
+    <button data-ir="index.html">Consultorios</button>
+    <button data-ir="turnos/index.html">Sacar turno</button>
+    <button data-ir="turnos/panel.html">Tu agenda</button>
+  </nav>
+  <div class="tools">
+    <button class="dev" type="button" id="cel" aria-pressed="false" title="Ver como en el celular">Celular</button>
+    <button type="button" id="ayuda" title="Cómo usar esta vista previa">?</button>
+  </div>
+</header>
+<main class="stage"><iframe id="v" title="Sitio"></iframe></main>
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="hola">
+  <form method="dialog" class="hola">
+    <h1>Hola, <em>Nati</em></h1>
+    <p>Esta es la vista previa de tu página nueva y del sitio de los consultorios. Funciona como el sitio real: podés tocar todo.</p>
+    <ol>
+      <li><span><strong>Recorré tu página</strong> como la vería un paciente.</span></li>
+      <li><span><strong>Sacá un turno con vos misma</strong> desde «Sacar turno».</span></li>
+      <li><span><strong>Entrá a «Tu agenda»</strong> con el botón «Dra. Natalia Cárdenas» y fijate que el turno aparezca.</span></li>
+    </ol>
+    <p class="nota">Los turnos son de prueba y quedan solo en este dispositivo. Textos y fotos son borradores: anotá lo que quieras cambiar y nos lo pasás.</p>
+    <button>Empezar</button>
+  </form>
+</dialog>
+
+<script>
+const PAGINAS = /*PAGINAS*/;
+const ORIGEN = 'https://consultoriosdinahuapi.com.ar';
+const v = document.getElementById('v');
+let actual = null;
+
+function urlDe(path, search = '', hash = '') { return `${ORIGEN}/${path}${search}${hash}`; }
+
+// Lo que las páginas leen de «location» e «history» (el empaquetado los redirige acá).
+window.__crearLoc = () => {
+  const u = new URL(actual.url);
+  return {
+    href: u.href, search: u.search, hash: u.hash, pathname: u.pathname, origin: u.origin, host: u.host,
+    reload() { ir(actual.path, u.search); }, assign(x) { navegar(x); }, replace(x) { navegar(x); },
+    toString() { return u.href; },
+  };
+};
+
+function toast(t) {
+  const el = document.getElementById('toast');
+  el.textContent = t; el.classList.add('on');
+  clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2600);
+}
+
+function ir(path, search = '', hash = '') {
+  actual = { path, url: urlDe(path, search, hash) };
+  const dir = path.includes('/') ? path.slice(0, path.lastIndexOf('/') + 1) : '';
+  const pre = `<base href="${ORIGEN}/${dir}"><script>window.__LOC = parent.__crearLoc(); window.__HIST = { replaceState() {}, pushState() {} };<\/script>`;
+  v.srcdoc = PAGINAS[path].replace(/<head>/i, '<head>' + pre);
+  v.onload = () => preparar(hash);
+  for (const b of document.querySelectorAll('[data-ir]')) b.setAttribute('aria-current', String(b.dataset.ir === path));
+}
+
+function navegar(href, desde = actual.url) {
+  const u = new URL(href, desde);
+  if (u.origin !== ORIGEN) { window.open(u.href, '_blank', 'noopener'); return; }
+  let path = u.pathname.slice(1);
+  if (path === '' || path.endsWith('/')) path += 'index.html';
+  if (path === actual.path && u.hash && u.search === new URL(actual.url).search) {
+    v.contentDocument.getElementById(decodeURIComponent(u.hash.slice(1)))?.scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  if (!PAGINAS[path]) { toast('Esa sección todavía no está en la vista previa.'); return; }
+  ir(path, u.search, u.hash);
+}
+
+function preparar(hash) {
+  const doc = v.contentDocument;
+  if (!doc) return;
+  if (hash) setTimeout(() => doc.getElementById(decodeURIComponent(hash.slice(1)))?.scrollIntoView(), 60);
+  doc.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a[href]');
+    if (!a || e.defaultPrevented) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#' || href.startsWith('javascript:')) { e.preventDefault(); return; }
+    e.preventDefault();
+    navegar(a.href);
+  });
+  doc.addEventListener('submit', (e) => { if (!e.defaultPrevented && e.target.getAttribute('action')) { e.preventDefault(); } });
+}
+
+for (const b of document.querySelectorAll('[data-ir]')) b.addEventListener('click', () => ir(b.dataset.ir));
+const cel = document.getElementById('cel');
+cel.addEventListener('click', () => {
+  const on = !document.body.classList.contains('cel');
+  document.body.classList.toggle('cel', on);
+  cel.setAttribute('aria-pressed', String(on));
+});
+const hola = document.getElementById('hola');
+document.getElementById('ayuda').addEventListener('click', () => hola.showModal());
+
+ir('nati/index.html');
+hola.showModal();
+</script>
+</body>
+</html>

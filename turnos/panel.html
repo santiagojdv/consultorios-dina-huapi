@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel de profesionales · Consultorios Dina Huapi</title>
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#2F5D8A">
+<meta name="theme-color" content="#2B3B5A">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icono.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Poppins:wght@300;400;500;600&display=swap">
 <link rel="stylesheet" href="turnos.css">
 </head>
 <body>
@@ -44,6 +44,7 @@
       <button role="tab" data-tab="reservas" data-vistas="admin" aria-selected="false">Reservas</button>
       <button role="tab" data-tab="profesionales" data-vistas="admin" aria-selected="false">Profesionales</button>
       <button role="tab" data-tab="consultorios" data-vistas="admin" aria-selected="false">Consultorios</button>
+      <button role="tab" data-tab="precios" data-vistas="admin" aria-selected="false">Servicios y precios</button>
     </nav>
 
     <!-- Agenda -->
@@ -101,13 +102,16 @@
           <div class="grid2">
             <div class="field"><label for="pf-nombre">Nombre que ven los pacientes</label><input id="pf-nombre" maxlength="80" placeholder="Dra. Ana Pérez"></div>
             <div class="field"><label for="pf-esp">Especialidad</label><input id="pf-esp" maxlength="80" placeholder="Odontología general"></div>
+            <div class="field" style="grid-column:1/-1"><label for="pf-bio">Presentación breve</label><textarea id="pf-bio" maxlength="400" rows="3" placeholder="Qué hacés y cómo trabajás, en dos o tres líneas."></textarea><small>Aparece en tu ficha de la sección Equipo de la web de la clínica.</small></div>
+            <div class="field"><label for="pf-web">Tu sitio web (opcional)</label><input id="pf-web" maxlength="300" placeholder="https://… o nati/"><small>La ficha enlaza a tu sitio. Tiene que empezar con https://</small></div>
+            <div class="field"><label for="pf-foto">Foto (link, opcional)</label><input id="pf-foto" maxlength="300" placeholder="https://…/foto.jpg"><small>Sin foto se muestran tus iniciales.</small></div>
             <div class="field"><label for="pf-tel">WhatsApp de contacto</label><input id="pf-tel" type="tel" maxlength="30"><small>Lo ve el paciente solo en su página de turno.</small></div>
             <div class="field"><label for="pf-dur">Duración del turno (min)</label><input id="pf-dur" type="number" min="10" max="240" step="5"></div>
             <div class="field"><label for="pf-ant">Anticipación mínima (horas)</label><input id="pf-ant" type="number" min="0" max="168"><small>No se puede reservar online con menos aviso.</small></div>
             <div class="field"><label for="pf-ven">Agenda abierta (días hacia adelante)</label><input id="pf-ven" type="number" min="1" max="120"></div>
             <div class="field"><label for="pf-canc">Aviso para cancelar online (horas)</label><input id="pf-canc" type="number" min="0" max="168"></div>
           </div>
-          <label class="check"><input type="checkbox" id="pf-pub"><span><strong>Aceptar turnos online.</strong> Aparecés en la página pública y los pacientes pueden reservar dentro de tus horarios alquilados.</span></label>
+          <label class="check"><input type="checkbox" id="pf-pub"><span><strong>Aceptar turnos online.</strong> Aparecés en la página de turnos y en la sección Equipo de la web de la clínica, y los pacientes pueden reservar dentro de tus horarios alquilados.</span></label>
           <div id="perfil-estado"></div>
           <div><button class="btn" type="submit">Guardar</button></div>
         </form>
@@ -131,6 +135,12 @@
           <div><button class="btn link" id="feed-regenerar">Generar un link nuevo (el anterior deja de funcionar)</button></div>
         </div>
         <div><button class="btn ghost" id="feed-crear" hidden>Crear mi link</button></div>
+      </div>
+      <div class="card">
+        <h2>Mis servicios</h2>
+        <p class="muted small">Lo que los pacientes pueden elegir al pedir turno con vos. La duración es lo que ocupa en tu agenda: el paciente no la ve. Vacía = la estándar del consultorio.</p>
+        <div id="ms-estado"></div>
+        <div class="lista" id="mis-servicios"></div>
       </div>
       <div class="card">
         <h2>Mis horarios alquilados</h2>
@@ -192,6 +202,66 @@
       </div>
     </section>
 
+    <section data-panel="precios" class="stack" style="margin-top:1rem" hidden>
+      <div class="card">
+        <h2>Actualización por IPC</h2>
+        <p class="muted small">Los precios se cargan en pesos de un mes base y se ajustan solos con cada mes de IPC (INDEC) que se carga. Con la base real, el índice se baja automáticamente apenas se publica; también se puede cargar a mano.</p>
+        <div id="ipc-resumen" class="aviso info"></div>
+        <div class="row">
+          <button class="btn ghost sm" type="button" id="ipc-buscar">Buscar índice nuevo en INDEC</button>
+          <button class="btn link" type="button" id="ipc-rebasar">Tomar precios de hoy como nueva base</button>
+        </div>
+        <form id="ipc-form" class="row" novalidate>
+          <div class="field"><label for="ipc-mes">Mes</label><input id="ipc-mes" type="month" required></div>
+          <div class="field"><label for="ipc-var">Variación mensual (%)</label><input id="ipc-var" inputmode="decimal" placeholder="2,1" required></div>
+          <div class="field"><label for="ipc-red">Redondear a $</label><input id="ipc-red" type="number" min="1" step="1"></div>
+          <button class="btn sm" type="submit" style="align-self:end">Guardar</button>
+        </form>
+        <div id="ipc-estado"></div>
+        <div class="lista" id="ipc-lista"></div>
+      </div>
+
+      <div class="card">
+        <h2>Lista de precios</h2>
+        <div class="row">
+          <div class="field"><label for="pr-cob">Ver</label><select id="pr-cob"></select></div>
+          <button class="btn ghost sm" type="button" id="pr-nuevo" style="align-self:end">+ Precio</button>
+        </div>
+        <div id="pr-estado"></div>
+        <div class="ocupacion"><table id="pr-tabla"></table></div>
+        <p class="small muted">"Base": monto cargado y su mes. "Hoy": con el IPC aplicado, es lo que se le informa al paciente al reservar. "Obra social": lo que paga la obra social (interno).</p>
+      </div>
+
+      <div class="card">
+        <h2>Importar o exportar planilla</h2>
+        <p class="muted small">Una fila por servicio y cobertura. Columnas: servicio, categoria, descripcion, duracion_min, reservable_online, obra_social (vacío = particular), modalidad (particular, cubierto, copago, no cubre), monto (lo que paga el paciente), valor_os, periodo_base (ej. 10/2026), ajusta_ipc (Sí/No). Lo que ya existe se actualiza; nada se borra.</p>
+        <div class="row">
+          <label class="btn ghost sm" style="cursor:pointer">Elegir archivo (.csv o .xlsx)<input type="file" id="pl-archivo" accept=".csv,.txt,.xlsx" hidden></label>
+          <button class="btn link" type="button" id="pl-exportar">Descargar precios actuales (.csv)</button>
+          <button class="btn link" type="button" id="pl-plantilla">Descargar plantilla vacía</button>
+        </div>
+        <div id="pl-estado"></div>
+        <div class="row" id="pl-confirmar" hidden><button class="btn sm" type="button" id="pl-importar">Importar</button><button class="btn link" type="button" id="pl-cancelar">Cancelar</button></div>
+      </div>
+
+      <div class="card">
+        <h2>Servicios</h2>
+        <p class="muted small">Duración estándar (cada profesional puede cambiarla en su perfil). "Online": si el paciente lo puede elegir al reservar.</p>
+        <div id="sv-estado"></div>
+        <div class="lista" id="sv-lista"></div>
+      </div>
+
+      <div class="card">
+        <h2>Obras sociales</h2>
+        <form id="os-form" class="row">
+          <div class="field" style="flex:1;min-width:12rem"><label for="os-nombre" class="sr">Nombre</label><input id="os-nombre" maxlength="80" placeholder="ej. IPROSS" required></div>
+          <button class="btn" type="submit" style="align-self:end">Agregar</button>
+        </form>
+        <div id="os-estado"></div>
+        <div class="lista" id="os-lista"></div>
+      </div>
+    </section>
+
     <section data-panel="consultorios" class="stack" style="margin-top:1rem" hidden>
       <div class="card">
         <h2>Consultorios</h2>
@@ -206,12 +276,32 @@
   </div>
 </main>
 
+<dialog id="dlg-precio">
+  <form id="precio-form" method="dialog" novalidate>
+    <h2>Precio</h2>
+    <div class="grid2">
+      <div class="field"><label for="pf2-serv">Servicio</label><select id="pf2-serv" required></select></div>
+      <div class="field"><label for="pf2-cob">Cobertura</label><select id="pf2-cob"></select></div>
+      <div class="field"><label for="pf2-mod">Qué paga el paciente</label><select id="pf2-mod">
+        <option value="particular">Particular (precio)</option><option value="cubierto">Cubierto (nada)</option>
+        <option value="copago">Adicional / copago</option><option value="no_cubre">No lo cubre (paga particular)</option></select></div>
+      <div class="field"><label for="pf2-monto">Monto que paga el paciente ($)</label><input id="pf2-monto" inputmode="decimal"></div>
+      <div class="field"><label for="pf2-vos">Paga la obra social ($, interno)</label><input id="pf2-vos" inputmode="decimal"></div>
+      <div class="field"><label for="pf2-mes">Mes base del monto</label><input id="pf2-mes" type="month" required></div>
+    </div>
+    <label class="check"><input type="checkbox" id="pf2-ipc" checked><span>Ajustar por IPC todos los meses</span></label>
+    <div id="precio-estado"></div>
+    <div class="row"><button class="btn" type="submit" value="ok">Guardar</button><button class="btn link" type="button" id="pf2-cerrar">Cerrar</button></div>
+  </form>
+</dialog>
+
 <dialog id="dlg-turno">
   <form id="turno-form" method="dialog" novalidate>
     <h2>Nuevo turno</h2>
     <div class="grid2">
       <div class="field"><label for="t-fecha">Fecha</label><input id="t-fecha" type="date" required></div>
       <div class="field"><label for="t-hora">Hora</label><input id="t-hora" type="time" step="300" required></div>
+      <div class="field"><label for="t-serv">Servicio (opcional)</label><select id="t-serv"></select></div>
       <div class="field"><label for="t-dur">Duración (min)</label><input id="t-dur" type="number" min="5" max="480" step="5" required></div>
     </div>
     <div class="field"><label for="t-nombre">Paciente</label><input id="t-nombre" maxlength="120" required></div>
