@@ -3,6 +3,7 @@ import {
   hora, diaLargo, diaDeFecha, fechaLocal, sumarDias, lunesDe, instante, linkWhatsApp, URL_FEED,
 } from './comun.js';
 import { leerCsv, leerExcel, interpretar, aCsv, numero } from './planilla.js';
+import { montarBandeja, montarAjustesBot } from './whatsapp.js';
 
 const st = { yo: null, semana: null, consultorios: [], profesionales: [], alquileres: [], cal: { desde: null, dias: null, box: null, datos: [] } };
 const hoy = () => fechaLocal(new Date());
@@ -49,6 +50,15 @@ async function entrar(sesion) {
   $('#login').hidden = true; $('#app').hidden = false; $('#sesion').hidden = false;
   $('#quien').textContent = yo.nombre || yo.email;
   cargarMisServicios();
+  if (yo.atiende_whatsapp) {
+    // Contador de conversaciones derivadas en la pestaña, aunque no esté abierta
+    const avisar = async () => {
+      const { count } = await sb.from('wa_conversaciones').select('telefono', { count: 'exact', head: true }).eq('estado', 'humano');
+      contadorWhatsapp(count ?? 0);
+    };
+    avisar();
+    setInterval(() => { if (!document.hidden) avisar(); }, 60000);
+  }
   // Un admin ve la vista de administración; si además atiende (tiene alquileres), puede alternar.
   st.atiende = !yo.es_admin;
   if (yo.es_admin) {
@@ -66,6 +76,8 @@ function aplicarVista(vista) {
   try { localStorage.setItem(`vista-${st.yo.id}`, vista); } catch { /* sin almacenamiento */ }
   const tabs = [...document.querySelectorAll('.tabs [role="tab"]')];
   tabs.forEach((t) => { t.hidden = !t.dataset.vistas.split(' ').includes(vista); });
+  // La bandeja de WhatsApp tiene datos de pacientes: solo para quien la atiende (los ajustes, para el admin)
+  $('[data-tab="whatsapp"]').hidden = vista === 'admin' ? false : !st.yo.atiende_whatsapp;
   $('#modo-badge').hidden = vista !== 'admin';
   const cambiar = $('#cambiar-vista');
   cambiar.hidden = !(st.yo.es_admin && st.atiende);
@@ -122,7 +134,25 @@ document.querySelectorAll('.tabs [role="tab"]').forEach((tab) => tab.addEventLis
   if (tab.dataset.tab === 'perfil') cargarPerfil();
   if (['reservas', 'profesionales', 'consultorios'].includes(tab.dataset.tab)) cargarAdmin();
   if (tab.dataset.tab === 'precios') cargarPrecios();
+  if (tab.dataset.tab === 'whatsapp') cargarWhatsapp();
 }));
+
+// ───────────────────────── WhatsApp ─────────────────────────
+
+function cargarWhatsapp() {
+  $('#wa-bandeja-card').hidden = !st.yo.atiende_whatsapp;
+  $('#wa-ajustes-card').hidden = st.vista !== 'admin';
+  if (st.yo.atiende_whatsapp) {
+    if (st.bandeja) st.bandeja.refrescar();
+    else st.bandeja = montarBandeja($('#wa-bandeja'), { alCambiar: contadorWhatsapp });
+  }
+  if (st.vista === 'admin') montarAjustesBot($('#wa-ajustes'));
+}
+
+function contadorWhatsapp(n) {
+  $('#wa-contador').hidden = !n;
+  $('#wa-contador').textContent = String(n);
+}
 
 // ───────────────────────── Agenda ─────────────────────────
 
@@ -171,7 +201,7 @@ function vistaTurno(t) {
     ? `Hola ${t.paciente_nombre}, te aviso que tuvimos que cancelar tu turno del ${diaLargo(t.inicio)} a las ${hora(t.inicio)}. Escribime para reprogramarlo.`
     : `Hola ${t.paciente_nombre}, te recuerdo tu turno del ${diaLargo(t.inicio)} a las ${hora(t.inicio)} en Consultorios Dina Huapi.`;
   return h('div', { class: `turno${cancelado ? ' cancelado' : ''}` },
-    h('span', { class: 'hh' }, `${hora(t.inicio)}–${hora(t.fin)} `, t.origen === 'online' ? h('span', { class: 'badge' }, 'online') : null),
+    h('span', { class: 'hh' }, `${hora(t.inicio)}–${hora(t.fin)} `, t.origen === 'profesional' ? null : h('span', { class: 'badge' }, t.origen)),
     h('span', { class: 'nom' }, t.paciente_nombre),
     t.servicios ? h('span', { class: 'small' }, t.servicios.nombre) : null,
     t.detalle ? h('span', { class: 'muted small' }, `“${t.detalle}”`) : null,

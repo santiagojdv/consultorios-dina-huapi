@@ -3,7 +3,7 @@
 // turnos solo dentro de horarios alquilados, cada profesional ve solo a sus pacientes) para que
 // todo el circuito se pueda probar antes de crear la base real. Los datos quedan en este navegador.
 export function crearDemo() {
-  const CLAVE = 'cdh-demo-v4';
+  const CLAVE = 'cdh-demo-v5';
   const minutos = (t) => { const [a, b] = t.split(':').map(Number); return a * 60 + b; };
   const hhmmDe = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const isodow = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay() || 7;
@@ -27,10 +27,10 @@ export function crearDemo() {
     const hasta = new Date(Date.UTC(y, m + 1, 0)).toISOString().slice(0, 10);
     const pros = [
       { id: 'demo-admin', email: 'administracion@ejemplo.com', nombre: 'Administración', especialidad: '', telefono: '', es_admin: true, publico: false },
-      { id: 'demo-nati', email: 'natalia@ejemplo.com', nombre: 'Dra. Natalia Cárdenas', especialidad: 'Ortodoncia y estética facial', telefono: '2944636977', publico: true, bio: 'Directora del consultorio. Ortodoncia, alineadores, ortopedia maxilar y estética facial.', web: 'nati/' },
+      { id: 'demo-nati', email: 'natalia@ejemplo.com', nombre: 'Dra. Natalia Cárdenas', especialidad: 'Ortodoncia y estética facial', telefono: '2944636977', publico: true, atiende_whatsapp: true, bio: 'Directora del consultorio. Ortodoncia, alineadores, ortopedia maxilar y estética facial.', web: 'nati/' },
       { id: 'demo-gomez', email: 'martin.gomez@ejemplo.com', nombre: 'Dr. Martín Gómez (ejemplo)', especialidad: 'Odontología general', telefono: '2944654321', publico: true, duracion_turno: 45, bio: 'Profesional de ejemplo para la demostración.' },
       { id: 'demo-ruiz', email: 'laura.ruiz@ejemplo.com', nombre: 'Dra. Laura Ruiz (ejemplo)', especialidad: 'Endodoncia', telefono: '', publico: true, duracion_turno: 60, bio: 'Profesional de ejemplo para la demostración.' },
-    ].map((p) => ({ duracion_turno: 30, anticipacion_horas: 2, ventana_dias: 30, aviso_cancelacion_horas: 12, activo: true, es_admin: false, bio: '', web: '', foto: '', ...p }));
+    ].map((p) => ({ duracion_turno: 30, anticipacion_horas: 2, ventana_dias: 30, aviso_cancelacion_horas: 12, activo: true, es_admin: false, atiende_whatsapp: false, bio: '', web: '', foto: '', ...p }));
     let n = 0;
     const alq = (pro, box, dia, ini, fin) => ({ id: ++n, profesional_id: pro, consultorio_id: box, dia_semana: dia, hora_inicio: `${ini}:00`, hora_fin: `${fin}:00`, vigente_desde: desde, vigente_hasta: hasta, nota: 'Abonado' });
     const alquileres = [
@@ -107,15 +107,43 @@ export function crearDemo() {
       const delPro = profesional_servicios.filter((x) => x.profesional_id === t.profesional_id).map((x) => x.servicio_id);
       Object.assign(t, { paciente_id: pac.id, servicio_id: delPro[t.id % delPro.length], detalle: '', obra_social_id: pac.obra_social_id, modalidad: null, monto_estimado: null, datos_distintos: false });
     }
-    const ajustes = [{ id: 901, clave: 'redondeo', valor: '100' }, { id: 902, clave: 'ipc_serie', valor: '148.3_INIVELNAL_DICI_M_26' }];
+    const ajustes = [{ id: 901, clave: 'redondeo', valor: '100' }, { id: 902, clave: 'ipc_serie', valor: '148.3_INIVELNAL_DICI_M_26' },
+      { id: 903, clave: 'bot_activo', valor: 'true' }, { id: 904, clave: 'bot_retoma_horas', valor: '24' },
+      { id: 905, clave: 'bot_info', valor: ['Consultorios Dina Huapi. Odontología general, ortodoncia y estética facial. Fundadora: Dra. Natalia Cárdenas.',
+        'Dirección: Estados Unidos 860, Oficina D, Dina Huapi (Río Negro).',
+        'Horarios de atención (ejemplo): lunes a viernes de 9 a 20.',
+        'Medios de pago (ejemplo): efectivo, transferencia y tarjetas de débito y crédito.',
+        'Obras sociales: las que figuran en la lista de precios. Si una no figura, se atiende como particular.',
+        'Primera visita: llegar 10 minutos antes, traer DNI y credencial de la obra social.',
+        'Cancelaciones: se cancelan con el link que llega al reservar o pidiéndolo por acá, con 12 h de anticipación.',
+        'Urgencias: si hay dolor fuerte, golpe o una pieza rota, ofrecer el primer turno disponible de "Urgencia". Si hay sangrado que no para, fiebre o hinchazón de cara, indicar guardia médica.',
+        'Niños: primera visita cerca del año; evaluación de ortopedia a los 6 o 7 años.'].join('\n') }];
+    // Conversaciones de WhatsApp de ejemplo: una que resolvió el asistente y una derivada a Nati
+    const hace = (min) => new Date(Date.now() - min * 60000).toISOString();
+    const wa_conversaciones = [
+      { telefono: '5492944512345', nombre: 'Marta (ejemplo)', estado: 'humano', motivo_derivacion: 'Pregunta clínica', derivada_en: hace(40), atendida_por: null, ultimo_entrante: hace(41), ultimo_mensaje: hace(40), no_leidos: 1, creado: hace(45) },
+      { telefono: '5492944598765', nombre: 'Julián (ejemplo)', estado: 'bot', motivo_derivacion: '', derivada_en: null, atendida_por: null, ultimo_entrante: hace(180), ultimo_mensaje: hace(179), no_leidos: 0, creado: hace(185) },
+    ];
+    let km = 0;
+    const msj = (telefono, autor, texto, min) => ({ id: ++km, telefono, direccion: autor === 'paciente' ? 'entrante' : 'saliente', autor, autor_id: null, texto, wa_id: null, creado: hace(min) });
+    const wa_mensajes = [
+      msj('5492944598765', 'paciente', 'Hola, ¿atienden por IPROSS?', 185),
+      msj('5492944598765', 'asistente', '¡Hola Julián! Soy el asistente virtual de Consultorios Dina Huapi; si en algún momento querés hablar con Nati, decime.\nSí, trabajamos con IPROSS. ¿Qué necesitás: un control, una limpieza u otra consulta?', 184),
+      msj('5492944598765', 'paciente', 'Un control nomás, después veo. Gracias!', 180),
+      msj('5492944598765', 'asistente', 'De nada. Cuando quieras te paso horarios por acá.', 179),
+      msj('5492944512345', 'paciente', 'Hola, a mi hija de 8 le están saliendo los dientes de adelante torcidos, ¿hay que ponerle aparatos ya?', 45),
+      msj('5492944512345', 'asistente', 'Hola Marta, soy el asistente virtual del consultorio. Eso lo tiene que evaluar Nati, así que le paso tu consulta: te va a responder por acá en cuanto pueda.', 44),
+      msj('5492944512345', 'sistema', 'Derivada a Nati: Pregunta clínica\nMadre consulta por hija de 8 años con incisivos que salen torcidos; pregunta si necesita ortodoncia ya. No se dio turno todavía.', 44),
+      msj('5492944512345', 'paciente', 'Dale, gracias', 41),
+    ];
     profesional_servicios.forEach((x, i) => { x.id = 500 + i; });
     ipc.forEach((x, i) => { x.id = 950 + i; });
-    return { consultorios: [{ id: 1, nombre: 'Box 1', activo: true }, { id: 2, nombre: 'Box 2', activo: true }], profesionales: pros, alquileres, ausencias: [], turnos, calendario_tokens: [], servicios, obras_sociales, aranceles, profesional_servicios, ipc, pacientes, ajustes, seq: 1000 };
+    return { consultorios: [{ id: 1, nombre: 'Box 1', activo: true }, { id: 2, nombre: 'Box 2', activo: true }], profesionales: pros, alquileres, ausencias: [], turnos, calendario_tokens: [], servicios, obras_sociales, aranceles, profesional_servicios, ipc, pacientes, ajustes, wa_conversaciones, wa_mensajes, seq: 1000 };
   }
 
   let db;
   try { db = JSON.parse(localStorage.getItem(CLAVE)); } catch { db = null; }
-  if (!db?.profesionales || !db.aranceles) db = semilla();
+  if (!db?.profesionales || !db.aranceles || !db.wa_conversaciones) db = semilla();
   let sesion = null;
   try { sesion = JSON.parse(localStorage.getItem(`${CLAVE}-sesion`)); } catch { sesion = null; }
   const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(db)); localStorage.setItem(`${CLAVE}-sesion`, JSON.stringify(sesion)); } catch { /* sin almacenamiento: la demo sigue en memoria */ } };
@@ -125,6 +153,7 @@ export function crearDemo() {
   const yo = () => db.profesionales.find((p) => p.id === uid());
   const soyActivo = () => Boolean(yo()?.activo);
   const soyAdmin = () => Boolean(yo()?.activo && yo()?.es_admin);
+  const soyWhatsapp = () => Boolean(yo()?.activo && yo()?.atiende_whatsapp);
   const confirmado = (t) => t.estado === 'confirmado';
 
   // ── Precios (mismas cuentas que factor_ipc / monto_vigente / cotizar en SQL) ──
@@ -200,6 +229,49 @@ export function crearDemo() {
     }
   }
 
+  // Mismo efecto que el trigger proteger_conversacion de 03_whatsapp.sql
+  const conversacionNueva = (antes, nuevo) => (nuevo.estado === 'bot'
+    ? { motivo_derivacion: '', derivada_en: null, atendida_por: nuevo.atendida_por ?? null }
+    : antes.estado === 'bot' ? { derivada_en: nuevo.derivada_en ?? new Date().toISOString() } : {});
+
+  // ── WhatsApp: lo que en producción hace la función supabase/functions/whatsapp con la clave de servicio ──
+  const wa = {
+    registrar(telefono, nombre, texto) {
+      const ahora = new Date().toISOString();
+      let c = db.wa_conversaciones.find((x) => x.telefono === telefono);
+      if (!c) {
+        c = { telefono, nombre, estado: 'bot', motivo_derivacion: '', derivada_en: null, atendida_por: null, ultimo_entrante: null, ultimo_mensaje: ahora, no_leidos: 0, creado: ahora };
+        db.wa_conversaciones.push(c);
+      }
+      const m = { id: ++db.seq, telefono, direccion: 'entrante', autor: 'paciente', autor_id: null, texto: texto.slice(0, 4096), wa_id: null, creado: ahora };
+      db.wa_mensajes.push(m);
+      Object.assign(c, { nombre: nombre || c.nombre, ultimo_entrante: ahora, ultimo_mensaje: ahora, no_leidos: Math.min(c.no_leidos + 1, 999) });
+      guardar();
+      return { id: m.id, estado: c.estado, bot_activo: db.ajustes.find((x) => x.clave === 'bot_activo')?.valor !== 'false' };
+    },
+    guardarSaliente(telefono, autor, texto, autorId = null) {
+      db.wa_mensajes.push({ id: ++db.seq, telefono, direccion: 'saliente', autor, autor_id: autorId, texto: texto.slice(0, 4096), wa_id: null, creado: new Date().toISOString() });
+      db.wa_conversaciones.find((x) => x.telefono === telefono).ultimo_mensaje = new Date().toISOString();
+      guardar();
+      window.dispatchEvent(new CustomEvent('demo-whatsapp', { detail: { telefono } }));
+    },
+    derivar(telefono, motivo, resumen) {
+      const c = db.wa_conversaciones.find((x) => x.telefono === telefono);
+      Object.assign(c, { estado: 'humano', motivo_derivacion: motivo, derivada_en: new Date().toISOString() });
+      db.wa_mensajes.push({ id: ++db.seq, telefono, direccion: 'saliente', autor: 'sistema', autor_id: null, texto: `Derivada a Nati: ${motivo}\n${resumen}`.slice(0, 4096), wa_id: null, creado: new Date().toISOString() });
+      guardar();
+      window.dispatchEvent(new CustomEvent('demo-whatsapp', { detail: { telefono, derivada: true } }));
+    },
+    historial: (telefono) => db.wa_mensajes.filter((m) => m.telefono === telefono).sort((a, b) => a.id - b.id).map(({ autor, texto, creado }) => ({ autor, texto, creado })),
+    reiniciarConversacion(telefono) {
+      db.wa_conversaciones = db.wa_conversaciones.filter((x) => x.telefono !== telefono);
+      db.wa_mensajes = db.wa_mensajes.filter((x) => x.telefono !== telefono);
+      guardar();
+    },
+    conversacion: (telefono) => db.wa_conversaciones.find((x) => x.telefono === telefono) ?? null,
+    ajuste: (clave) => db.ajustes.find((x) => x.clave === clave)?.valor ?? '',
+  };
+
   const visibles = (tabla) => {
     const filas = db[tabla] ?? [];
     if (tabla === 'calendario_tokens') return soyActivo() ? filas.filter((r) => r.profesional_id === uid()) : [];
@@ -207,6 +279,7 @@ export function crearDemo() {
     if (tabla === 'profesionales') return filas.filter((r) => soyActivo() || r.id === uid());
     if (tabla === 'pacientes') return soyActivo() ? filas.filter((r) => db.turnos.some((t) => t.paciente_id === r.id && t.profesional_id === uid())) : [];
     if (tabla === 'aranceles_vigentes') return soyActivo() ? aVigentes() : [];
+    if (tabla === 'wa_conversaciones' || tabla === 'wa_mensajes') return soyWhatsapp() ? filas : [];
     return soyActivo() ? filas : [];
   };
 
@@ -252,6 +325,7 @@ export function crearDemo() {
       return { data: filas, error: null, count: this.conteo ? filas.length : null };
     }
     puedoEscribir() {
+      if (['wa_conversaciones', 'wa_mensajes'].includes(this.tabla)) throw error('permiso denegado');
       if (SOLO_ADMIN.includes(this.tabla) && !soyAdmin()) throw error('permiso denegado');
       if (!soyActivo()) throw error('permiso denegado');
       if (this.tabla === 'profesional_servicios' && !soyAdmin() && [this.fila, ...this.filas()].some((r) => r && r.profesional_id && r.profesional_id !== uid())) throw error('permiso denegado');
@@ -300,18 +374,22 @@ export function crearDemo() {
     _update() {
       const t = this.tabla;
       if (SOLO_ADMIN.includes(t) && !soyAdmin()) return { data: [], error: null };
+      if (t === 'wa_mensajes') throw error('permiso denegado');
+      if (t === 'wa_conversaciones' && Object.keys(this.cambios).some((c) => ['telefono', 'nombre', 'ultimo_entrante'].includes(c))) throw error('Ese dato no se edita desde el panel');
       if (t === 'profesional_servicios' && !soyAdmin()) this.filtros.push((r) => r.profesional_id === uid());
       const filas = this.filas().filter((r) => t !== 'profesionales' || r.id === uid() || soyAdmin());
-      if (t === 'profesionales' && !soyAdmin() && ['es_admin', 'activo', 'email'].some((c) => c in this.cambios)) throw error('Solo un administrador puede cambiar esos datos');
+      if (t === 'profesionales' && !soyAdmin() && ['es_admin', 'activo', 'email', 'atiende_whatsapp'].some((c) => c in this.cambios)) throw error('Solo un administrador puede cambiar esos datos');
       if (t === 'profesionales' && this.cambios.es_admin === false && filas.some((r) => r.id === uid())) throw error('No podés quitarte el rol de administrador a vos mismo');
       const actualizadas = filas.map((r) => {
         const nuevo = { ...r, ...this.cambios };
         if (t === 'alquileres') validarAlquiler(nuevo);
         if (t === 'turnos' && confirmado(nuevo) && (nuevo.inicio !== r.inicio || nuevo.fin !== r.fin)) validarTurno(nuevo);
         if (t === 'consultorios' && db.consultorios.some((c) => c.id !== r.id && c.nombre.toLowerCase() === String(nuevo.nombre).toLowerCase())) throw error('duplicate key value violates unique constraint');
+        if (t === 'wa_conversaciones') Object.assign(nuevo, conversacionNueva(r, nuevo));
         return nuevo;
       });
-      for (const n of actualizadas) Object.assign(db[t].find((r) => r.id === n.id), n);
+      const clave = t === 'wa_conversaciones' ? 'telefono' : 'id';
+      for (const n of actualizadas) Object.assign(db[t].find((r) => r[clave] === n[clave]), n);
       return this.devolver ? this.forma(actualizadas) : { data: null, error: null };
     }
     _delete() {
@@ -447,6 +525,28 @@ export function crearDemo() {
       }
       return out;
     },
+    // Funciones del asistente de WhatsApp (en producción solo las llama la función con clave de servicio)
+    wa_turnos: ({ p_telefono }) => {
+      const norm = (t) => (t || '').replace(/\D/g, '').slice(-10);
+      return db.turnos.filter((t) => confirmado(t) && t.inicio > new Date().toISOString() && norm(t.paciente_telefono) === norm(p_telefono))
+        .sort((a, b) => a.inicio.localeCompare(b.inicio))
+        .map((t) => {
+          const p = db.profesionales.find((x) => x.id === t.profesional_id);
+          return { id: t.id, inicio: t.inicio, profesional: p.nombre, servicio: db.servicios.find((s) => s.id === t.servicio_id)?.nombre ?? null, consultorio: db.consultorios.find((c) => c.id === t.consultorio_id)?.nombre, cancelable: t.inicio > masMin(new Date().toISOString(), p.aviso_cancelacion_horas * 60), aviso_cancelacion_horas: p.aviso_cancelacion_horas };
+        });
+    },
+    wa_cancelar_turno: ({ p_telefono, p_turno }) => {
+      const norm = (t) => (t || '').replace(/\D/g, '').slice(-10);
+      const t = db.turnos.find((x) => x.id === Number(p_turno) && confirmado(x) && norm(x.paciente_telefono) === norm(p_telefono));
+      if (!t) throw error('No encontré ese turno a nombre de este número');
+      return funciones.cancelar_turno({ p_token: t.token });
+    },
+    wa_reservar_turno: ({ p_telefono, p_paciente, ...resto }) => {
+      const r = funciones.reservar_turno({ ...resto, p_paciente: { ...(p_paciente || {}), telefono: p_telefono } });
+      db.turnos.find((x) => x.token === r.token).origen = 'whatsapp';
+      const { token, ...sinToken } = r;
+      return sinToken;
+    },
     turnos_en_alquiler: ({ p_alquiler, p_desde }) => {
       if (!soyAdmin()) throw error('Solo para administradores');
       const a = db.alquileres.find((x) => x.id === p_alquiler);
@@ -465,8 +565,19 @@ export function crearDemo() {
     },
     from: (tabla) => new Consulta(tabla),
     functions: {
-      async invoke(nombre) {
+      async invoke(nombre, { body = {} } = {}) {
         await new Promise((r) => setTimeout(r, 400));
+        if (nombre === 'whatsapp' && body.accion === 'enviar') {
+          // Respuesta de una persona desde la bandeja (en producción la manda la API de WhatsApp)
+          if (!soyWhatsapp()) return { data: null, error: { message: 'No tenés acceso a la bandeja de WhatsApp' } };
+          const c = db.wa_conversaciones.find((x) => x.telefono === body.telefono);
+          if (!c) return { data: null, error: { message: 'No existe esa conversación' } };
+          if (!c.ultimo_entrante || Date.parse(c.ultimo_entrante) < Date.now() - 24 * 3600e3) return { data: null, error: { message: 'Pasaron más de 24 horas desde el último mensaje del paciente. WhatsApp no deja escribirle hasta que vuelva a escribir (o con una plantilla aprobada).' } };
+          wa.guardarSaliente(c.telefono, 'persona', String(body.texto || '').trim(), uid());
+          Object.assign(c, conversacionNueva(c, { ...c, estado: 'humano' }), { estado: 'humano', atendida_por: uid(), no_leidos: 0 });
+          guardar();
+          return { data: { ok: true }, error: null };
+        }
         if (nombre === 'ipc') return { data: null, error: { message: 'En la demostración no hay conexión con INDEC. Con la base real, el índice se baja solo todos los meses; también podés cargarlo a mano acá abajo.' } };
         return { data: null, error: { message: 'Función no disponible en la demostración' } };
       },
@@ -479,6 +590,7 @@ export function crearDemo() {
       async signOut() { sesion = null; guardar(); avisarAuth('SIGNED_OUT', null); return { error: null }; },
     },
     demo: {
+      wa,
       entrarComo(id) { const p = db.profesionales.find((x) => x.id === id); sesion = { user: { id: p.id, email: p.email } }; guardar(); avisarAuth('SIGNED_IN', sesion); },
       reiniciar() { try { localStorage.removeItem(CLAVE); localStorage.removeItem(`${CLAVE}-sesion`); } catch { /* nada */ } },
     },

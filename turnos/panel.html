@@ -45,6 +45,7 @@
       <button role="tab" data-tab="profesionales" data-vistas="admin" aria-selected="false">Profesionales</button>
       <button role="tab" data-tab="consultorios" data-vistas="admin" aria-selected="false">Consultorios</button>
       <button role="tab" data-tab="precios" data-vistas="admin" aria-selected="false">Servicios y precios</button>
+      <button role="tab" data-tab="whatsapp" data-vistas="pro admin" aria-selected="false">WhatsApp <span class="wa-noleidos" id="wa-contador" hidden></span></button>
     </nav>
 
     <!-- Agenda -->
@@ -259,6 +260,18 @@
         </form>
         <div id="os-estado"></div>
         <div class="lista" id="os-lista"></div>
+      </div>
+    </section>
+
+    <section data-panel="whatsapp" class="stack" style="margin-top:1rem" hidden>
+      <div class="card" id="wa-bandeja-card" hidden>
+        <div class="stack"><h2>WhatsApp del consultorio</h2>
+          <p class="muted small">Conversaciones del asistente. Las marcadas "Para vos" las derivó a una persona: el asistente no responde ahí hasta que la devuelvas.</p></div>
+        <div id="wa-bandeja"></div>
+      </div>
+      <div class="card" id="wa-ajustes-card" hidden>
+        <h2>Asistente de WhatsApp</h2>
+        <div class="stack" id="wa-ajustes"></div>
       </div>
     </section>
 

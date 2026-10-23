@@ -226,3 +226,30 @@ footer.pie a { color: inherit; }
 .demo-bar { background: #FFF6E0; color: #6B4E00; font-size: .85rem; border-bottom: 1px solid #F0DFAF; }
 .demo-bar .wrap { padding-block: .55rem; }
 .demo-login { border-top: 1px dashed var(--line); padding-top: 1rem; display: grid; gap: .6rem; }
+
+/* Bandeja de WhatsApp */
+.wa-bandeja { display: grid; gap: 1rem; grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr); align-items: start; }
+@media (max-width: 720px) { .wa-bandeja { grid-template-columns: minmax(0, 1fr); } }
+.card:has(.wa-bandeja) { grid-template-columns: minmax(0, 1fr); }
+.wa-col { display: grid; gap: .5rem; }
+.wa-lista { display: grid; gap: .4rem; max-height: 32rem; overflow-y: auto; }
+.wa-conv { text-align: left; display: grid; gap: .25rem; padding: .65rem .8rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); cursor: pointer; font: inherit; color: inherit; min-height: 44px; }
+.wa-conv:hover { border-color: var(--sky); }
+.wa-conv.activa { border-color: #127285; box-shadow: 0 0 0 3px rgba(18,114,133,.12); }
+.wa-conv.humano { border-left: 4px solid #127285; }
+.wa-badge-humano { background: #127285; color: #fff; }
+.wa-noleidos { display: inline-grid; place-items: center; min-width: 1.3rem; height: 1.3rem; padding: 0 .35rem; border-radius: 999px; background: #127285; color: #fff; font-size: .72rem; font-weight: 600; }
+.wa-chat { display: grid; gap: .6rem; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.wa-chat:empty::before { content: "Elegí una conversación."; color: var(--muted); font-size: .9rem; }
+.wa-cab { display: flex; justify-content: space-between; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.wa-msjs { display: flex; flex-direction: column; gap: .35rem; max-height: 28rem; overflow-y: auto; padding: .75rem; border-radius: 12px; background: #EFEAE2; }
+.wa-msj { max-width: 85%; padding: .4rem .6rem .25rem; border-radius: 10px; background: #fff; box-shadow: 0 1px 1px rgba(0,0,0,.08); display: grid; gap: .1rem; font-size: .9rem; overflow-wrap: anywhere; }
+.wa-msj.entrante { align-self: flex-start; }
+.wa-msj.saliente { align-self: flex-end; background: #D9FDD3; }
+.wa-msj.persona { background: #CDEFF3; }
+.wa-texto { white-space: pre-wrap; }
+.wa-autor { font-size: .7rem; font-weight: 600; color: #127285; }
+.wa-hora { font-size: .68rem; color: var(--muted); justify-self: end; }
+.wa-nota { align-self: center; max-width: 90%; font-size: .75rem; color: #4B5668; background: #FFF6E0; border-radius: 8px; padding: .3rem .6rem; white-space: pre-wrap; text-align: center; }
+.wa-responder { display: flex; gap: .5rem; align-items: flex-end; }
+.wa-responder textarea { flex: 1; font: inherit; font-size: 1rem; padding: .6rem .8rem; border: 1px solid var(--line); border-radius: 12px; resize: vertical; min-height: 44px; }
