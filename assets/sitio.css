@@ -135,7 +135,7 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 .quick a { display: grid; gap: .35rem; padding: 1.4rem 1.5rem; background: var(--white); text-decoration: none; color: var(--graphite); transition: background .2s var(--ease); }
 .quick a:hover { background: var(--soft); }
 .quick a strong { display: flex; justify-content: space-between; align-items: center; font-weight: 500; color: var(--navy); }
-.quick a strong svg { transition: transform .2s var(--ease); color: var(--petrol); }
+.quick a strong svg { flex: none; transition: transform .2s var(--ease); color: var(--petrol); }
 .quick a:hover strong svg { transform: translateX(4px); }
 .quick a span { font-size: .88rem; }
 

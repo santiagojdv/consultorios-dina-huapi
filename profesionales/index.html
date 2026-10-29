@@ -26,7 +26,7 @@
 .plan .flag { position: absolute; top: 1.4rem; right: 1.4rem; font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; background: #8FD0DC; color: var(--navy); border-radius: 999px; padding: .25rem .7rem; }
 .plan h3 { font-family: var(--serif); text-transform: uppercase; letter-spacing: .04em; font-size: 1.8rem; font-weight: 500; line-height: 1.05; }
 .plan .price { font-family: var(--serif); font-size: 2.6rem; line-height: 1; color: var(--navy); font-variant-numeric: lining-nums tabular-nums; }
-.plan .price small { font-family: var(--sans); font-size: .85rem; font-weight: 300; letter-spacing: 0; opacity: .8; }
+.plan .price small { display: block; margin-top: .5rem; font-family: var(--sans); font-size: .85rem; font-weight: 300; letter-spacing: 0; opacity: .8; }
 .plan .ticks li { font-size: .92rem; padding-block: .7rem; }
 .plan .btn { justify-self: start; margin-top: .4rem; }
 /* Tabla comparativa */
@@ -88,20 +88,20 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
       <div class="hero-copy">
         <span class="eyebrow reveal">Para odontólogos · Dina Huapi</span>
         <h1 class="reveal d1" style="font-size:clamp(2.4rem,6vw,4.6rem)">Tu consultorio, <em>sin invertir</em> en uno</h1>
-        <p class="lead reveal d2">Un consultorio equipado en Dina Huapi, por turnos fijos semanales. <span class="key">Vos atendés; la limpieza, los residuos y la agenda online ya están resueltos.</span></p>
+        <p class="lead reveal d2">Alquilá un consultorio equipado en Dina Huapi, por bloques fijos semanales. <span class="key">Vos te ocupás de tus pacientes; nosotros, de la limpieza, los residuos y la agenda online.</span></p>
         <div class="actions reveal d3">
           <a class="btn" href="#visita">Coordinar una visita</a>
           <a class="btn ghost" href="#modalidades">Ver modalidades</a>
         </div>
         <div class="trust reveal d3">
-          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Consultorio equipado y listo para atender</span>
+          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Consultorio listo para atender</span>
           <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Alquiler mensual</span>
-          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Agenda online incluida para tus pacientes</span>
+          <span><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Agenda online incluida</span>
         </div>
       </div>
       <div class="hero-media reveal d1">
         <img src="../img/box.jpg" alt="Consultorio odontológico equipado con sillón, mesada y cortinas claras" width="1536" height="1024" fetchpriority="high">
-        <div class="hero-badge"><span class="dot" aria-hidden="true"></span><span><strong>Hay bloques disponibles.</strong><br>Consultanos qué días quedan libres. <!-- falta: bloques disponibles --></span></div>
+        <div class="hero-badge"><span class="dot" aria-hidden="true"></span><span><strong>Bloques disponibles</strong><br>Consultá los días y horarios libres. <!-- falta: bloques disponibles --></span></div>
       </div>
     </div>
   </section>
@@ -111,33 +111,33 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
     <div class="wrap">
       <div class="head split">
         <div style="display:grid;gap:1.1rem"><span class="eyebrow reveal">Modalidades</span><h2 class="reveal d1">Elegís tus bloques, <em>pagás por mes</em></h2></div>
-        <p class="lead reveal d2">Reservás siempre el mismo día y horario, así tus pacientes saben cuándo encontrarte. Podés sumar o soltar bloques con un mes de aviso.</p>
+        <p class="lead reveal d2">Cada bloque se repite el mismo día y horario todas las semanas, para que tus pacientes sepan cuándo encontrarte. Podés sumar o liberar bloques con un mes de aviso.</p>
       </div>
       <div class="plans">
         <article class="plan feat reveal d1">
-          <span class="flag">Más elegido</span>
+          <span class="flag">Recomendado</span>
           <span class="eyebrow">Turno fijo</span>
           <h3>Medio día semanal</h3>
-          <div class="price"><span class="consultar">Consultar</span> <small>por mes</small></div>
+          <div class="price"><span class="consultar">A consultar</span> <small>Alquiler mensual</small></div>
           <ul class="ticks">
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Un bloque de mañana o tarde, el mismo día cada semana.</li>
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Agenda online propia y link para tus pacientes.</li>
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Ideal para empezar a construir pacientes en la zona.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Agenda online propia, con un link para tus pacientes.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Una buena forma de empezar a formar tu cartera de pacientes en la zona.</li>
           </ul>
-          <a class="btn light" href="#visita" data-plan="Medio día semanal">Quiero este bloque</a>
+          <a class="btn light" href="#visita" data-plan="Medio día semanal">Solicitar este bloque</a>
         </article>
         <article class="plan reveal d2">
           <span class="eyebrow">Turno fijo</span>
           <h3>Día completo semanal</h3>
-          <div class="price"><span class="consultar">Consultar</span> <small>por mes</small></div>
+          <div class="price"><span class="consultar">A consultar</span> <small>Alquiler mensual</small></div>
           <ul class="ticks">
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Jornada entera, el mismo día cada semana.</li>
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Para agendas largas o cirugías.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Jornada completa, el mismo día cada semana.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Pensado para agendas extensas o cirugías.</li>
           </ul>
           <a class="btn ghost" href="#visita" data-plan="Día completo semanal">Consultar disponibilidad</a>
         </article>
       </div>
-      <p class="note reveal" style="margin-top:1.5rem">Te pasamos los valores y los horarios de cada bloque por WhatsApp. <!-- falta: IVA y horario de bloques (mañana 8 a 13 h, tarde 14 a 20 h?) --></p>
+      <p class="note reveal" style="margin-top:1.5rem">Te enviamos los valores y horarios de cada bloque por WhatsApp. <!-- falta: IVA y horario de bloques (mañana 8 a 13 h, tarde 14 a 20 h?) --></p>
     </div>
   </section>
 
@@ -149,13 +149,13 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
         <div class="copy reveal d1">
           <span class="eyebrow">Qué incluye</span>
           <h2>Llegás y <em>atendés</em></h2>
-          <p>El consultorio está limpio, equipado y con el material esterilizado cuando entrás.</p>
+          <p>Al llegar, encontrás el consultorio limpio, equipado y con el material esterilizado.</p>
           <ul class="ticks">
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Esterilización y área de lavado.</li>
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Limpieza y desinfección.</li>
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Retiro de residuos patogénicos y habilitación del consultorio.</li>
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Luz, gas y calefacción. <!-- falta: confirmar si hay wifi; si hay, sumarlo acá --></li>
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Sala de espera y kitchenette completa para profesionales.</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Sala de espera y kitchenette completa para los profesionales.</li>
           </ul>
         </div>
       </div>
@@ -170,9 +170,9 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Lámpara de fotocurado</li>
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Esterilización</li>
             <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Escritorio</li>
-            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Lugar para guardar tus cosas</li>
+            <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 10.5 8 14l8-8"/></svg>Espacio para guardar tus pertenencias</li>
           </ul>
-          <p class="note">Vos traés tu instrumental específico. <!-- falta: qué descartables incluye el abono --></p>
+          <p class="note">El instrumental específico lo traés vos. <!-- falta: qué descartables incluye el abono --></p>
         </div>
       </div>
     </div>
@@ -183,13 +183,13 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
     <div class="wrap">
       <div class="head split">
         <div style="display:grid;gap:1.1rem"><span class="eyebrow reveal">Agenda online incluida</span><h2 class="reveal d1">Tus pacientes reservan <em style="color:#8FD0DC">solos</em></h2></div>
-        <p class="lead reveal d2">Cada profesional tiene su agenda, su link para compartir y los datos de sus pacientes a mano en la web de la clínica. Los turnos caen solo dentro de tus bloques, sin superposiciones.</p>
+        <p class="lead reveal d2">Cada profesional tiene su propia agenda, un link para compartir y la información de sus pacientes disponible en la web de la clínica. Los turnos se asignan solo dentro de tus bloques, sin superposiciones.</p>
       </div>
       <div class="feat-grid reveal">
-        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4m8-4v4"/></svg><h3>Reserva online 24 h</h3><p>Tu link personal para Instagram o WhatsApp. El paciente elige el horario sin llamarte.</p></div>
-        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2M17 3h4v4"/></svg><h3>Sincroniza con tu calendario</h3><p>Ves tus turnos en Google Calendar o en el iPhone, junto con el resto de tu rutina.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4m8-4v4"/></svg><h3>Reserva online 24 h</h3><p>Compartís tu link en Instagram o WhatsApp y el paciente elige el horario, sin necesidad de llamarte.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2M17 3h4v4"/></svg><h3>Sincronización con tu calendario</h3><p>Tus turnos aparecen en Google Calendar o en el calendario del iPhone, junto con el resto de tu rutina.</p></div>
         <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8 7.5 9.5 4.3-1.5 7.5-4.9 7.5-9.5V6L12 3Z"/></svg><h3>Tus pacientes son tuyos</h3><p>Nadie más ve sus datos, ni siquiera la administración del consultorio.</p></div>
-        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><h3>Tu presencia en nuestra web</h3><p>Aparecés en el equipo de la clínica con tu presentación, tu agenda y una muestra de tu trabajo.</p></div>
+        <div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><h3>Tu presencia en nuestra web</h3><p>Aparecés en la sección Equipo de nuestra web, con tu presentación, tu agenda y tu trabajo o portfolio.</p></div>
       </div>
       <p class="reveal" style="margin-top:2rem"><a class="btn light" href="../turnos/panel.html">Ingresar a mi agenda</a></p>
     </div>
@@ -198,17 +198,17 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
   <!-- Comparativa -->
   <section class="section">
     <div class="wrap">
-      <div class="head center"><span class="eyebrow reveal">Números claros</span><h2 class="reveal d1">Consultorio propio <em>o compartido</em></h2></div>
+      <div class="head center"><span class="eyebrow reveal">Comparativa</span><h2 class="reveal d1">Consultorio propio <em>o compartido</em></h2></div>
       <div class="compare-wrap reveal">
         <table class="compare">
           <thead><tr><th scope="col"><span class="sr">Concepto</span></th><th scope="col">Consultorio propio</th><th scope="col" class="us">Consultorios Dina Huapi</th></tr></thead>
           <tbody>
             <tr><th scope="row">Inversión inicial</th><td>Sillón, rayos, autoclave, obra y habilitación</td><td class="us">Ninguna</td></tr>
             <tr><th scope="row">Costos fijos</th><td>Alquiler, servicios y personal, atiendas o no</td><td class="us">Un alquiler mensual por los bloques que usás</td></tr>
-            <tr><th scope="row">Habilitación y residuos</th><td>Trámites y contratos a tu cargo</td><td class="us">Resueltos</td></tr>
+            <tr><th scope="row">Habilitación y residuos</th><td>Trámites y contratos a tu cargo</td><td class="us">Incluidos</td></tr>
             <tr><th scope="row">Mantenimiento de equipos</th><td>A tu cargo</td><td class="us">Incluido</td></tr>
             <tr><th scope="row">Agenda y reservas</th><td>Software aparte o llamadas</td><td class="us">Agenda online incluida</td></tr>
-            <tr><th scope="row">Compromiso</th><td>Contrato de alquiler de años</td><td class="us">Contrato mensual</td></tr>
+            <tr><th scope="row">Compromiso</th><td>Contrato de alquiler por varios años</td><td class="us">Contrato mensual</td></tr>
           </tbody>
         </table>
       </div>
@@ -220,8 +220,8 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
     <div class="wrap">
       <div class="head"><span class="eyebrow reveal">Cómo empezar</span><h2 class="reveal d1">Empezás a atender <em>en tres pasos</em></h2></div>
       <div class="steps reveal">
-        <div class="step"><h3>Visitás el consultorio</h3><p>Coordinamos una visita sin compromiso para que conozcas el consultorio, la clínica y el equipamiento.</p></div>
-        <div class="step"><h3>Elegís tus bloques</h3><p>Ves qué días y horarios están libres y firmamos un contrato mensual.</p></div>
+        <div class="step"><h3>Visitás el consultorio</h3><p>Coordinamos una visita sin compromiso para que conozcas la clínica, el consultorio y el equipamiento.</p></div>
+        <div class="step"><h3>Elegís tus bloques</h3><p>Te mostramos los días y horarios disponibles y firmamos un contrato mensual.</p></div>
         <div class="step"><h3>Compartís tu link</h3><p>Activás tu agenda online y tus pacientes empiezan a reservar.</p></div>
       </div>
     </div>
@@ -232,12 +232,12 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
     <div class="wrap">
       <div class="head center"><span class="eyebrow reveal">Preguntas frecuentes</span><h2 class="reveal d1">Lo que <em>nos preguntan</em></h2></div>
       <div class="faq center reveal">
-        <details><summary>¿Qué necesito para atender?<span class="pm" aria-hidden="true"></span></summary><div>Título, matrícula vigente en Río Negro y seguro de mala praxis. <!-- falta: confirmar requisitos de habilitación provincial --></div></details>
+        <details><summary>¿Qué necesito para atender?<span class="pm" aria-hidden="true"></span></summary><div>Título habilitante, matrícula vigente en Río Negro y seguro de mala praxis. <!-- falta: confirmar requisitos de habilitación provincial --></div></details>
         <details><summary>¿Tengo que llevar mi instrumental?<span class="pm" aria-hidden="true"></span></summary><div>Sí, tu instrumental específico. Los equipos del consultorio y la esterilización están incluidos. <!-- falta: qué insumos básicos incluye el abono --></div></details>
         <details><summary>¿Puedo atender por obra social?<span class="pm" aria-hidden="true"></span></summary><div>Sí. La facturación a pacientes y obras sociales la hacés vos, como en tu propio consultorio.</div></details>
-        <details><summary>¿Puedo cambiar o sumar bloques?<span class="pm" aria-hidden="true"></span></summary><div>Sí, con aviso previo <!-- falta: plazo de aviso (¿un mes?) --> y según disponibilidad. Para un día puntual extra, consultanos.</div></details>
+        <details><summary>¿Puedo cambiar o sumar bloques?<span class="pm" aria-hidden="true"></span></summary><div>Sí, con aviso previo <!-- falta: plazo de aviso (¿un mes?) --> y según disponibilidad. Si necesitás un día adicional puntual, consultanos.</div></details>
         <details><summary>¿Quién ve los datos de mis pacientes?<span class="pm" aria-hidden="true"></span></summary><div>Solo vos. La agenda está armada para que ni otros profesionales ni la administración vean nombres ni teléfonos de tus pacientes.</div></details>
-        <details><summary>¿Hay consultorio para otras especialidades?<span class="pm" aria-hidden="true"></span></summary><div>Está previsto sumar un consultorio médico. <!-- falta: fecha estimada --></div></details>
+        <details><summary>¿Hay consultorio para otras especialidades?<span class="pm" aria-hidden="true"></span></summary><div>Por ahora el espacio es odontológico. Está previsto sumar un consultorio médico. <!-- falta: fecha estimada --></div></details>
       </div>
     </div>
   </section>
@@ -248,7 +248,7 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
       <div class="copy reveal">
         <span class="eyebrow">Contacto</span>
         <h2>Coordiná <em>una visita</em></h2>
-        <p class="lead">Contanos tu especialidad y qué días te interesan. Te respondemos por WhatsApp con la disponibilidad real.</p>
+        <p class="lead">Contanos tu especialidad y qué días te interesan. Te respondemos por WhatsApp con la disponibilidad actualizada.</p>
         <ul class="ticks">
           <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 18s6-5.2 6-10A6 6 0 0 0 4 8c0 4.8 6 10 6 10Z"/></svg>Estados Unidos 860, Oficina D, Dina Huapi</li>
           <li><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4l2.5 1.5"/></svg><span>Visitas con cita previa <!-- falta: horario de visitas --></span></li>
@@ -262,11 +262,11 @@ table.compare { width: 100%; min-width: 40rem; border-collapse: collapse; font-s
         </div>
         <div class="row2">
           <div class="field"><label for="v-plan">Modalidad</label>
-            <select id="v-plan"><option>Medio día semanal</option><option>Día completo semanal</option><option>Todavía no sé</option></select></div>
+            <select id="v-plan"><option>Medio día semanal</option><option>Día completo semanal</option><option>A definir</option></select></div>
           <div class="field"><label for="v-dias">Días que te interesan</label><input id="v-dias" placeholder="Ej.: martes a la tarde"></div>
         </div>
         <a class="btn" id="v-enviar" href="#">Enviar por WhatsApp</a>
-        <p class="note">Se abre WhatsApp con el mensaje armado. No guardamos tus datos en esta página.</p>
+        <p class="note">Se abrirá WhatsApp con el mensaje listo para enviar. Esta página no guarda tus datos.</p>
       </form>
     </div>
   </section>
