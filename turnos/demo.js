@@ -3,7 +3,7 @@
 // turnos solo dentro de horarios alquilados, cada profesional ve solo a sus pacientes) para que
 // todo el circuito se pueda probar antes de crear la base real. Los datos quedan en este navegador.
 export function crearDemo() {
-  const CLAVE = 'cdh-demo-v5';
+  const CLAVE = 'cdh-demo-v6';
   const minutos = (t) => { const [a, b] = t.split(':').map(Number); return a * 60 + b; };
   const hhmmDe = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
   const isodow = (iso) => new Date(`${iso}T12:00:00Z`).getUTCDay() || 7;
@@ -30,7 +30,7 @@ export function crearDemo() {
       { id: 'demo-nati', email: 'natalia@ejemplo.com', nombre: 'Dra. Natalia Cárdenas', especialidad: 'Ortodoncia y estética facial', telefono: '2944636977', publico: true, atiende_whatsapp: true, bio: 'Directora del consultorio. Ortodoncia, alineadores, ortopedia maxilar y estética facial.', web: 'nati/' },
       { id: 'demo-gomez', email: 'martin.gomez@ejemplo.com', nombre: 'Dr. Martín Gómez (ejemplo)', especialidad: 'Odontología general', telefono: '2944654321', publico: true, duracion_turno: 45, bio: 'Profesional de ejemplo para la demostración.' },
       { id: 'demo-ruiz', email: 'laura.ruiz@ejemplo.com', nombre: 'Dra. Laura Ruiz (ejemplo)', especialidad: 'Endodoncia', telefono: '', publico: true, duracion_turno: 60, bio: 'Profesional de ejemplo para la demostración.' },
-    ].map((p) => ({ duracion_turno: 30, anticipacion_horas: 2, ventana_dias: 30, aviso_cancelacion_horas: 12, activo: true, es_admin: false, atiende_whatsapp: false, bio: '', web: '', foto: '', ...p }));
+    ].map((p) => ({ duracion_turno: 30, anticipacion_horas: 2, ventana_dias: 30, aviso_cancelacion_horas: 24, activo: true, es_admin: false, atiende_whatsapp: false, bio: '', web: '', foto: '', ...p }));
     let n = 0;
     const alq = (pro, box, dia, ini, fin) => ({ id: ++n, profesional_id: pro, consultorio_id: box, dia_semana: dia, hora_inicio: `${ini}:00`, hora_fin: `${fin}:00`, vigente_desde: desde, vigente_hasta: hasta, nota: 'Abonado' });
     const alquileres = [
@@ -111,11 +111,11 @@ export function crearDemo() {
       { id: 903, clave: 'bot_activo', valor: 'true' }, { id: 904, clave: 'bot_retoma_horas', valor: '24' },
       { id: 905, clave: 'bot_info', valor: ['Consultorios Dina Huapi. Odontología general, ortodoncia y estética facial. Fundadora: Dra. Natalia Cárdenas.',
         'Dirección: Estados Unidos 860, Oficina D, Dina Huapi (Río Negro).',
-        'Horarios de atención (ejemplo): lunes a viernes de 9 a 20.',
+        'Horarios de atención: lunes a viernes de 9 a 19 h y sábados de 10 a 14 h.',
         'Medios de pago (ejemplo): efectivo, transferencia y tarjetas de débito y crédito.',
         'Obras sociales: las que figuran en la lista de precios. Si una no figura, se atiende como particular.',
         'Primera visita: llegar 10 minutos antes, traer DNI y credencial de la obra social.',
-        'Cancelaciones: se cancelan con el link que llega al reservar o pidiéndolo por acá, con 12 h de anticipación.',
+        'Cancelaciones: se cancelan con el link que llega al reservar o pidiéndolo por acá, con 24 h de anticipación.',
         'Urgencias: si hay dolor fuerte, golpe o una pieza rota, ofrecer el primer turno disponible de "Urgencia". Si hay sangrado que no para, fiebre o hinchazón de cara, indicar guardia médica.',
         'Niños: primera visita cerca del año; evaluación de ortopedia a los 6 o 7 años.'].join('\n') }];
     // Conversaciones de WhatsApp de ejemplo: una que resolvió el asistente y una derivada a Nati
