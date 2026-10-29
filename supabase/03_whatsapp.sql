@@ -32,12 +32,12 @@ insert into public.ajustes (clave, valor) values
   ('bot_retoma_horas', '24'),     -- una conversación derivada vuelve al asistente tras tantas horas sin movimiento
   ('bot_info', $txt$Consultorios Dina Huapi. Odontología general, ortodoncia y estética facial. Fundadora: Dra. Natalia Cárdenas.
 Dirección: Estados Unidos 860, Oficina D, Dina Huapi (Río Negro).
-Horarios de atención: [COMPLETAR]
+Horarios de atención: lunes a viernes de 9 a 19 h y sábados de 10 a 14 h.
 Cómo llegar / estacionamiento: [COMPLETAR]
 Medios de pago: [COMPLETAR]
 Obras sociales: las que figuran en la lista de precios. Si una no figura, se atiende como particular.
 Primera visita: llegar 10 minutos antes, traer DNI y credencial de la obra social.
-Cancelaciones: se cancelan con el link que llega al reservar o pidiéndolo por acá, con 12 h de anticipación.
+Cancelaciones: se cancelan con el link que llega al reservar o pidiéndolo por acá, con 24 h de anticipación.
 Urgencias: si hay dolor fuerte, golpe o una pieza rota, ofrecer el primer turno disponible de "Urgencia". Si hay sangrado que no para, fiebre o hinchazón de cara, indicar guardia médica.
 Niños: primera visita cerca del año; evaluación de ortopedia a los 6 o 7 años.$txt$)
 on conflict (clave) do nothing;

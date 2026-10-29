@@ -39,7 +39,7 @@ create table public.profesionales (
   duracion_turno          smallint not null default 30  check (duracion_turno between 10 and 240),
   anticipacion_horas      smallint not null default 2   check (anticipacion_horas between 0 and 168),
   ventana_dias            smallint not null default 30  check (ventana_dias between 1 and 120),
-  aviso_cancelacion_horas smallint not null default 12  check (aviso_cancelacion_horas between 0 and 168),
+  aviso_cancelacion_horas smallint not null default 24  check (aviso_cancelacion_horas between 0 and 168),
   publico                 boolean  not null default false, -- aparece en la página de pacientes
   activo                  boolean  not null default true,
   es_admin                boolean  not null default false,

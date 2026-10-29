@@ -130,7 +130,8 @@ h1 em, h2 em, .display em { font-style: normal; color: var(--petrol); }
 
 /* ── Accesos rápidos ── */
 .quick { display: grid; gap: 1px; background: var(--mist); border: 1px solid var(--mist); border-radius: 22px; overflow: hidden; }
-@media (min-width: 720px) { .quick { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 720px) { .quick { grid-template-columns: repeat(2, 1fr); } .quick a:first-child { grid-column: 1 / -1; } }
+@media (min-width: 1080px) { .quick { grid-template-columns: repeat(5, 1fr); } .quick a:first-child { grid-column: auto; } }
 .quick a { display: grid; gap: .35rem; padding: 1.4rem 1.5rem; background: var(--white); text-decoration: none; color: var(--graphite); transition: background .2s var(--ease); }
 .quick a:hover { background: var(--soft); }
 .quick a strong { display: flex; justify-content: space-between; align-items: center; font-weight: 500; color: var(--navy); }
